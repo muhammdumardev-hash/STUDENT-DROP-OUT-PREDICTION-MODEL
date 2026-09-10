@@ -2835,7 +2835,7 @@ elif page == "🔮 Predict Risk":
             # ====================================================
 
             r1.markdown(
-                '<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:15px;">'
+                '<div style="background:#14532d;border:1px solid #86efac;border-radius:12px;padding:15px;">'
                 '<h4 style="color:#15803d !important;">🟢 Low Risk</h4>'
                 '<p style="color:#166534 !important;">Dropout probability below 30%.</p>'
                 '</div>',
@@ -2847,7 +2847,7 @@ elif page == "🔮 Predict Risk":
             # ====================================================
 
             r2.markdown(
-                '<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:12px;padding:15px;">'
+                '<div style="background:#78350f;border:1px solid #fcd34d;border-radius:12px;padding:15px;">'
                 '<h4 style="color:#b45309 !important;">🟡 Medium Risk</h4>'
                 '<p style="color:#92400e !important;">Probability from 30% to below 60%.</p>'
                 '</div>',
@@ -2859,7 +2859,7 @@ elif page == "🔮 Predict Risk":
             # ====================================================
 
             r3.markdown(
-                '<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:12px;padding:15px;">'
+                '<div style="background:#7f1d1d;border:1px solid #fca5a5;border-radius:12px;padding:15px;">'
                 '<h4 style="color:#b91c1c !important;">🔴 High Risk</h4>'
                 '<p style="color:#991b1b !important;">Probability of 60% or higher.</p>'
                 '</div>',
