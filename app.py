@@ -65,10 +65,6 @@ st.markdown(
     """
     <style>
 
-    /* ======================================================
-       GLOBAL APP
-    ====================================================== */
-
     .stApp {
         background: #0f172a !important;
     }
@@ -81,11 +77,6 @@ st.markdown(
         padding-top: 2rem !important;
         padding-bottom: 3rem !important;
     }
-
-
-    /* ======================================================
-       GLOBAL TEXT
-    ====================================================== */
 
     .stMarkdown,
     .stMarkdown p,
@@ -120,11 +111,6 @@ st.markdown(
         color: #ffffff !important;
     }
 
-
-    /* ======================================================
-       MAIN TITLE
-    ====================================================== */
-
     .main-title {
         color: #ffffff !important;
         font-size: 2.25rem;
@@ -140,11 +126,6 @@ st.markdown(
         margin-bottom: 1.5rem;
         line-height: 1.65;
     }
-
-
-    /* ======================================================
-       METRIC CARDS
-    ====================================================== */
 
     .metric-card {
         background: #ffffff !important;
@@ -169,11 +150,6 @@ st.markdown(
         margin-top: 5px;
     }
 
-
-    /* ======================================================
-       SECTION BOX
-    ====================================================== */
-
     .section-box {
         background: #111827 !important;
         border: 1px solid #334155;
@@ -181,11 +157,6 @@ st.markdown(
         padding: 18px;
         margin-bottom: 15px;
     }
-
-
-    /* ======================================================
-       RESULT CARDS
-    ====================================================== */
 
     .result-card {
         border-radius: 14px;
@@ -233,11 +204,6 @@ st.markdown(
         color: #b91c1c !important;
     }
 
-
-    /* ======================================================
-       RISK BADGES
-    ====================================================== */
-
     .risk-badge {
         display: inline-block;
         padding: 11px 24px;
@@ -265,11 +231,6 @@ st.markdown(
         color: #b91c1c !important;
         border: 2px solid #fca5a5;
     }
-
-
-    /* ======================================================
-       SIDEBAR
-    ====================================================== */
 
     section[data-testid="stSidebar"] {
         background: #111827 !important;
@@ -301,11 +262,6 @@ st.markdown(
         color: #ffffff !important;
     }
 
-
-    /* ======================================================
-       SIDEBAR RADIO
-    ====================================================== */
-
     section[data-testid="stSidebar"]
     div[role="radiogroup"] label {
         color: #ffffff !important;
@@ -316,22 +272,12 @@ st.markdown(
         color: #ffffff !important;
     }
 
-
-    /* ======================================================
-       CAPTIONS
-    ====================================================== */
-
     .stCaption,
     [data-testid="stCaptionContainer"],
     [data-testid="stCaptionContainer"] p {
         color: #e0e0e0 !important;
         font-size: 0.90rem !important;
     }
-
-
-    /* ======================================================
-       TABS
-    ====================================================== */
 
     button[data-baseweb="tab"] {
         color: #d1d5db !important;
@@ -351,11 +297,6 @@ st.markdown(
         color: #ffffff !important;
     }
 
-
-    /* ======================================================
-       EXPANDERS
-    ====================================================== */
-
     [data-testid="stExpander"] {
         background: #111827 !important;
         border: 1px solid #334155 !important;
@@ -372,11 +313,6 @@ st.markdown(
         font-weight: 750 !important;
     }
 
-
-    /* ======================================================
-       FORM LABELS
-    ====================================================== */
-
     label {
         color: #ffffff !important;
         font-weight: 700 !important;
@@ -390,11 +326,6 @@ st.markdown(
         color: #ffffff !important;
         font-weight: 700 !important;
     }
-
-
-    /* ======================================================
-       INPUTS
-    ====================================================== */
 
     input {
         color: #111827 !important;
@@ -411,11 +342,6 @@ st.markdown(
         color: #6b7280 !important;
     }
 
-
-    /* ======================================================
-       SELECTBOX
-    ====================================================== */
-
     div[data-baseweb="select"] {
         color: #111827 !important;
     }
@@ -428,11 +354,6 @@ st.markdown(
     div[data-baseweb="select"] * {
         color: #111827 !important;
     }
-
-
-    /* ======================================================
-       SELECTBOX DROPDOWN
-    ====================================================== */
 
     div[role="listbox"] {
         background: #ffffff !important;
@@ -447,11 +368,6 @@ st.markdown(
         background: #f3f4f6 !important;
     }
 
-
-    /* ======================================================
-       BUTTONS
-    ====================================================== */
-
     button {
         font-weight: 700 !important;
     }
@@ -460,22 +376,12 @@ st.markdown(
         font-weight: 700 !important;
     }
 
-
-    /* ======================================================
-       DATAFRAME
-    ====================================================== */
-
     [data-testid="stDataFrame"] {
         border: 1px solid #475569 !important;
         border-radius: 10px !important;
         overflow: hidden;
         background: #ffffff !important;
     }
-
-
-    /* ======================================================
-       ALERTS
-    ====================================================== */
 
     [data-testid="stAlert"] {
         border-radius: 10px !important;
@@ -490,39 +396,19 @@ st.markdown(
         color: #111827 !important;
     }
 
-
-    /* ======================================================
-       DIVIDERS
-    ====================================================== */
-
     hr {
         border-color: #334155 !important;
     }
-
-
-    /* ======================================================
-       CONTAINER BORDERS
-    ====================================================== */
 
     [data-testid="stVerticalBlockBorderWrapper"] {
         border-color: #334155 !important;
         border-radius: 14px !important;
     }
 
-
-    /* ======================================================
-       NUMBER INPUT / TEXT INPUT
-    ====================================================== */
-
     div[data-baseweb="input"] {
         background: #ffffff !important;
         border-radius: 8px !important;
     }
-
-
-    /* ======================================================
-       CHECKBOX / RADIO TEXT
-    ====================================================== */
 
     [data-testid="stCheckbox"] label,
     [data-testid="stRadio"] label {
@@ -533,11 +419,6 @@ st.markdown(
     [data-testid="stRadio"] label p {
         color: #ffffff !important;
     }
-
-
-    /* ======================================================
-       MARKDOWN CONTAINER
-    ====================================================== */
 
     [data-testid="stMarkdownContainer"] p {
         color: #ffffff !important;
@@ -550,11 +431,6 @@ st.markdown(
     [data-testid="stMarkdownContainer"] strong {
         color: #ffffff !important;
     }
-
-
-    /* ======================================================
-       RISK INTERPRETATION CARDS
-    ====================================================== */
 
     .risk-info-card {
         border-radius: 12px;
@@ -688,11 +564,6 @@ def clean_data(df: pd.DataFrame):
 @st.cache_resource(show_spinner=True)
 def train_model(df: pd.DataFrame):
 
-    # ========================================================
-    # IMPORTANT:
-    # target is NEVER part of X.
-    # ========================================================
-
     X = df.drop(
         "target",
         axis=1
@@ -702,10 +573,6 @@ def train_model(df: pd.DataFrame):
 
     feature_names = X.columns.tolist()
 
-    # ========================================================
-    # TRAIN / TEST SPLIT
-    # ========================================================
-
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
@@ -713,11 +580,6 @@ def train_model(df: pd.DataFrame):
         random_state=42,
         stratify=y
     )
-
-    # ========================================================
-    # SCALER
-    # Fit ONLY on training data.
-    # ========================================================
 
     scaler = StandardScaler()
 
@@ -729,10 +591,6 @@ def train_model(df: pd.DataFrame):
         X_test
     )
 
-    # ========================================================
-    # LOGISTIC REGRESSION
-    # ========================================================
-
     model = LogisticRegression(
         max_iter=1000
     )
@@ -742,10 +600,6 @@ def train_model(df: pd.DataFrame):
         y_train
     )
 
-    # ========================================================
-    # TEST PREDICTIONS
-    # ========================================================
-
     y_pred = model.predict(
         X_test_scaled
     )
@@ -753,10 +607,6 @@ def train_model(df: pd.DataFrame):
     y_prob = model.predict_proba(
         X_test_scaled
     )[:, 1]
-
-    # ========================================================
-    # METRICS
-    # ========================================================
 
     cm = confusion_matrix(
         y_test,
@@ -939,9 +789,7 @@ st.sidebar.info(
 if page == "🏠 Overview":
 
     st.markdown(
-        '<p class="main-title">'
-        '🎓 Student Dropout Prediction'
-        '</p>',
+        '<p class="main-title">🎓 Student Dropout Prediction</p>',
         unsafe_allow_html=True
     )
 
@@ -1194,9 +1042,7 @@ if page == "🏠 Overview":
 elif page == "📊 Exploratory Analysis":
 
     st.markdown(
-        '<p class="main-title">'
-        '📊 Exploratory Data Analysis'
-        '</p>',
+        '<p class="main-title">📊 Exploratory Data Analysis</p>',
         unsafe_allow_html=True
     )
 
@@ -1219,15 +1065,7 @@ elif page == "📊 Exploratory Analysis":
         )
     )
 
-    # ========================================================
-    # ROW 1
-    # ========================================================
-
     col1, col2 = st.columns(2)
-
-    # ========================================================
-    # DROPOUT DISTRIBUTION
-    # ========================================================
 
     with col1:
 
@@ -1352,10 +1190,6 @@ elif page == "📊 Exploratory Analysis":
             dropout group.
             """
         )
-
-    # ========================================================
-    # TUITION FEES
-    # ========================================================
 
     with col2:
 
@@ -1496,22 +1330,11 @@ elif page == "📊 Exploratory Analysis":
                 "was not found."
             )
 
-    # ========================================================
-    # ROW 2
-    # ========================================================
-
     col3, col4 = st.columns(2)
-
-    # ========================================================
-    # 1ST SEMESTER
-    # ========================================================
 
     with col3:
 
-        if (
-            "Curricular units 1st sem (grade)"
-            in df.columns
-        ):
+        if "Curricular units 1st sem (grade)" in df.columns:
 
             st.subheader(
                 "1st Semester Grade vs Student Status"
@@ -1620,16 +1443,9 @@ elif page == "📊 Exploratory Analysis":
                 """
             )
 
-    # ========================================================
-    # 2ND SEMESTER
-    # ========================================================
-
     with col4:
 
-        if (
-            "Curricular units 2nd sem (grade)"
-            in df.columns
-        ):
+        if "Curricular units 2nd sem (grade)" in df.columns:
 
             st.subheader(
                 "2nd Semester Grade vs Student Status"
@@ -1735,10 +1551,6 @@ elif page == "📊 Exploratory Analysis":
                 """
             )
 
-    # ========================================================
-    # KEY OBSERVATIONS
-    # ========================================================
-
     st.write("")
 
     with st.container(border=True):
@@ -1779,10 +1591,6 @@ elif page == "📊 Exploratory Analysis":
             """
         )
 
-    # ========================================================
-    # CONSTANT COLUMNS
-    # ========================================================
-
     with st.expander(
         "🔎 Constant Columns / Zero Variance"
     ):
@@ -1818,9 +1626,7 @@ elif page == "📊 Exploratory Analysis":
 elif page == "🤖 Model Performance":
 
     st.markdown(
-        '<p class="main-title">'
-        '🤖 Model Performance'
-        '</p>',
+        '<p class="main-title">🤖 Model Performance</p>',
         unsafe_allow_html=True
     )
 
@@ -1896,10 +1702,6 @@ elif page == "🤖 Model Performance":
     st.write("")
 
     col1, col2 = st.columns(2)
-
-    # ========================================================
-    # CONFUSION MATRIX
-    # ========================================================
 
     with col1:
 
@@ -1982,10 +1784,6 @@ elif page == "🤖 Model Performance":
                 fig_cm,
                 use_container_width=True
             )
-
-    # ========================================================
-    # ROC CURVE
-    # ========================================================
 
     with col2:
 
@@ -2085,10 +1883,6 @@ elif page == "🤖 Model Performance":
                 use_container_width=True
             )
 
-    # ========================================================
-    # CLASSIFICATION REPORT
-    # ========================================================
-
     st.subheader(
         "Classification Report"
     )
@@ -2107,10 +1901,6 @@ elif page == "🤖 Model Performance":
             report_df,
             use_container_width=True
         )
-
-    # ========================================================
-    # PREDICTION DETAILS
-    # ========================================================
 
     st.subheader(
         "Prediction Details"
@@ -2157,9 +1947,7 @@ elif page == "🤖 Model Performance":
 elif page == "🔮 Predict Risk":
 
     st.markdown(
-        '<p class="main-title">'
-        '🔮 Student Risk Prediction'
-        '</p>',
+        '<p class="main-title">🔮 Student Risk Prediction</p>',
         unsafe_allow_html=True
     )
 
@@ -2170,10 +1958,6 @@ elif page == "🔮 Predict Risk":
         '</p>',
         unsafe_allow_html=True
     )
-
-    # ========================================================
-    # FEATURE / TEST DATA
-    # ========================================================
 
     feature_names = results[
         "feature_names"
@@ -2191,16 +1975,10 @@ elif page == "🔮 Predict Risk":
         "y_test"
     ]
 
-    # ========================================================
-    # SESSION STATE
-    # ========================================================
-
     if "sample_index" not in st.session_state:
-
         st.session_state.sample_index = None
 
     if "loaded_sample_index" not in st.session_state:
-
         st.session_state.loaded_sample_index = None
 
     # ========================================================
@@ -2251,10 +2029,6 @@ elif page == "🔮 Predict Risk":
             )
 
             st.rerun()
-
-    # ========================================================
-    # DATA FLOW / NO TARGET LEAKAGE
-    # ========================================================
 
     with st.expander(
         "🔐 How the Quick Test works"
@@ -2310,10 +2084,6 @@ elif page == "🔮 Predict Risk":
             """
         )
 
-    # ========================================================
-    # CURRENT SAMPLE INDEX
-    # ========================================================
-
     sample_index = (
         st.session_state.sample_index
     )
@@ -2331,10 +2101,6 @@ elif page == "🔮 Predict Risk":
             "during prediction."
         )
 
-    # ========================================================
-    # SELECTED TEST STUDENT
-    # ========================================================
-
     if sample_index is not None:
 
         selected_student = (
@@ -2346,10 +2112,6 @@ elif page == "🔮 Predict Risk":
     else:
 
         selected_student = None
-
-    # ========================================================
-    # SYNCHRONIZE EXACT TEST VALUES
-    # ========================================================
 
     if (
         selected_student is not None
@@ -2379,21 +2141,10 @@ elif page == "🔮 Predict Risk":
             sample_index
         )
 
-    # ========================================================
-    # DEFAULT VALUES
-    # ========================================================
-
     if selected_student is not None:
-
         defaults = selected_student
-
     else:
-
         defaults = None
-
-    # ========================================================
-    # VERIFY LOADED TEST STUDENT
-    # ========================================================
 
     if selected_student is not None:
 
@@ -2595,7 +2346,6 @@ elif page == "🔮 Predict Risk":
         ):
 
             if not columns:
-
                 return
 
             st.markdown(
@@ -2616,10 +2366,6 @@ elif page == "🔮 Predict Risk":
                     series
                     .dropna()
                 )
-
-                # =============================================
-                # DEFAULT
-                # =============================================
 
                 if defaults is not None:
 
@@ -2669,10 +2415,6 @@ elif page == "🔮 Predict Risk":
                     i % 3
                 ]:
 
-                    # =============================================
-                    # BINARY COLUMNS
-                    # =============================================
-
                     binary_columns = [
                         "Debtor",
                         "Tuition fees up to date",
@@ -2717,10 +2459,6 @@ elif page == "🔮 Predict Risk":
                             help="0 = No, 1 = Yes",
                         )
 
-                    # =============================================
-                    # NUMERIC
-                    # =============================================
-
                     elif pd.api.types.is_numeric_dtype(
                         series
                     ):
@@ -2753,7 +2491,6 @@ elif page == "🔮 Predict Risk":
                             )
                         )
 
-                        # INTEGER
                         if pd.api.types.is_integer_dtype(
                             series
                         ):
@@ -2780,7 +2517,6 @@ elif page == "🔮 Predict Risk":
                                 key=f"input_{col_name}",
                             )
 
-                        # DECIMAL
                         else:
 
                             value = st.number_input(
@@ -2792,10 +2528,6 @@ elif page == "🔮 Predict Risk":
                                 format="%.2f",
                                 key=f"input_{col_name}",
                             )
-
-                    # =============================================
-                    # CATEGORICAL
-                    # =============================================
 
                     else:
 
@@ -2887,10 +2619,6 @@ elif page == "🔮 Predict Risk":
 
     if submitted:
 
-        # ====================================================
-        # CREATE INPUT DATAFRAME
-        # ====================================================
-
         input_df = pd.DataFrame(
             [inputs]
         )
@@ -2901,10 +2629,6 @@ elif page == "🔮 Predict Risk":
 
         input_df = input_df.astype(float)
 
-        # ====================================================
-        # TARGET LEAKAGE SECURITY CHECK
-        # ====================================================
-
         if "target" in input_df.columns:
 
             st.error(
@@ -2914,20 +2638,12 @@ elif page == "🔮 Predict Risk":
 
             st.stop()
 
-        # ====================================================
-        # SCALE
-        # ====================================================
-
         input_scaled = (
             results["scaler"]
             .transform(
                 input_df
             )
         )
-
-        # ====================================================
-        # PREDICT PROBABILITY
-        # ====================================================
 
         probability = (
             results["model"]
@@ -2936,20 +2652,12 @@ elif page == "🔮 Predict Risk":
             )[0, 1]
         )
 
-        # ====================================================
-        # PREDICT CLASS
-        # ====================================================
-
         predicted_class = int(
             results["model"]
             .predict(
                 input_scaled
             )[0]
         )
-
-        # ====================================================
-        # SAVE
-        # ====================================================
 
         st.session_state.last_prediction = (
             predicted_class
@@ -3130,6 +2838,10 @@ elif page == "🔮 Predict Risk":
                 border=True
             ):
 
+                # ------------------------------------------------
+                # RISK BADGE
+                # ------------------------------------------------
+
                 st.markdown(
                     f"""
                     <div class="risk-badge {risk_css}">
@@ -3141,34 +2853,73 @@ elif page == "🔮 Predict Risk":
 
                 st.write("")
 
-                # --------------------------------------------
-                # PROBABILITY CARD
-                # --------------------------------------------
-
-                st.markdown(
-                    f"""
-                    <div class="result-card {result_css}">
-                        <div class="result-title">
-                            Dropout Probability
-                        </div>
-
-                        <div class="result-value">
-                            {probability * 100:.2f}%
-                        </div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
                 predicted_label = (
                     "Dropout"
                     if predicted_class == 1
                     else "Not Dropout"
                 )
 
-                # --------------------------------------------
+                # ------------------------------------------------
+                # PROBABILITY CARD
+                #
+                # FIX:
+                # This uses st.html instead of relying on
+                # markdown HTML parsing for the result block.
+                # ------------------------------------------------
+
+                probability_background = {
+                    "result-low": "#f0fdf4",
+                    "result-medium": "#fffbeb",
+                    "result-high": "#fef2f2",
+                }[result_css]
+
+                probability_border = {
+                    "result-low": "#86efac",
+                    "result-medium": "#fcd34d",
+                    "result-high": "#fca5a5",
+                }[result_css]
+
+                probability_text_color = {
+                    "result-low": "#15803d",
+                    "result-medium": "#b45309",
+                    "result-high": "#b91c1c",
+                }[result_css]
+
+                st.html(
+                    f"""
+                    <div style="
+                        background:{probability_background};
+                        border:2px solid {probability_border};
+                        border-radius:14px;
+                        padding:22px;
+                        margin-top:5px;
+                        margin-bottom:10px;
+                        width:100%;
+                        box-sizing:border-box;
+                    ">
+                        <div style="
+                            color:#1e1e1e;
+                            font-size:1.05rem;
+                            font-weight:750;
+                        ">
+                            Dropout Probability
+                        </div>
+
+                        <div style="
+                            color:{probability_text_color};
+                            font-size:1.65rem;
+                            font-weight:850;
+                            margin-top:5px;
+                        ">
+                            {probability * 100:.2f}%
+                        </div>
+                    </div>
+                    """
+                )
+
+                # ------------------------------------------------
                 # CLASS COLORS
-                # --------------------------------------------
+                # ------------------------------------------------
 
                 if predicted_class == 1:
 
@@ -3182,11 +2933,15 @@ elif page == "🔮 Predict Risk":
                     class_background = "#f0fdf4"
                     class_border = "#86efac"
 
-                # --------------------------------------------
+                # ------------------------------------------------
                 # PREDICTED CLASS
-                # --------------------------------------------
+                #
+                # FIX:
+                # Uses st.html so HTML is rendered rather than
+                # displayed as text.
+                # ------------------------------------------------
 
-                st.markdown(
+                st.html(
                     f"""
                     <div style="
                         background:{class_background};
@@ -3194,10 +2949,12 @@ elif page == "🔮 Predict Risk":
                         border-radius:14px;
                         padding:18px;
                         margin-bottom:12px;
+                        width:100%;
+                        box-sizing:border-box;
                     ">
 
                         <div style="
-                            color:#374151 !important;
+                            color:#374151;
                             font-size:1rem;
                             font-weight:700;
                         ">
@@ -3205,7 +2962,7 @@ elif page == "🔮 Predict Risk":
                         </div>
 
                         <div style="
-                            color:{class_color} !important;
+                            color:{class_color};
                             font-size:1.55rem;
                             font-weight:800;
                             margin-top:5px;
@@ -3214,13 +2971,12 @@ elif page == "🔮 Predict Risk":
                         </div>
 
                     </div>
-                    """,
-                    unsafe_allow_html=True
+                    """
                 )
 
-                # --------------------------------------------
+                # ------------------------------------------------
                 # PREDICTION MESSAGE
-                # --------------------------------------------
+                # ------------------------------------------------
 
                 if predicted_class == 1:
 
@@ -3243,10 +2999,6 @@ elif page == "🔮 Predict Risk":
         # ====================================================
 
         if sample_index is not None:
-
-            # ------------------------------------------------
-            # Compare input features with original X_test row.
-            # ------------------------------------------------
 
             original_values = (
                 X_test_raw
@@ -3278,11 +3030,6 @@ elif page == "🔮 Predict Risk":
 
             if same_as_original:
 
-                # --------------------------------------------
-                # Actual target is retrieved separately.
-                # It was NEVER given to the model.
-                # --------------------------------------------
-
                 actual_outcome = int(
                     y_test_raw.loc[
                         sample_index
@@ -3312,47 +3059,85 @@ elif page == "🔮 Predict Risk":
                         "during prediction."
                     )
 
+                    # ------------------------------------------------
+                    # ACTUAL OUTCOME CARD
+                    # ------------------------------------------------
+
                     if actual_outcome == 1:
 
-                        st.markdown(
+                        st.html(
                             """
-                            <div class="result-card result-high">
+                            <div style="
+                                background:#fef2f2;
+                                border:2px solid #fca5a5;
+                                border-radius:14px;
+                                padding:22px;
+                                margin-top:5px;
+                                margin-bottom:10px;
+                                width:100%;
+                                box-sizing:border-box;
+                            ">
 
-                                <div class="result-title">
+                                <div style="
+                                    color:#1e1e1e;
+                                    font-size:1.05rem;
+                                    font-weight:750;
+                                ">
                                     Actual Student Outcome
                                 </div>
 
-                                <div class="result-value">
+                                <div style="
+                                    color:#b91c1c;
+                                    font-size:1.65rem;
+                                    font-weight:850;
+                                    margin-top:5px;
+                                ">
                                     🔴 Dropout
                                 </div>
 
                             </div>
-                            """,
-                            unsafe_allow_html=True
+                            """
                         )
 
                     else:
 
-                        st.markdown(
+                        st.html(
                             """
-                            <div class="result-card result-low">
+                            <div style="
+                                background:#f0fdf4;
+                                border:2px solid #86efac;
+                                border-radius:14px;
+                                padding:22px;
+                                margin-top:5px;
+                                margin-bottom:10px;
+                                width:100%;
+                                box-sizing:border-box;
+                            ">
 
-                                <div class="result-title">
+                                <div style="
+                                    color:#1e1e1e;
+                                    font-size:1.05rem;
+                                    font-weight:750;
+                                ">
                                     Actual Student Outcome
                                 </div>
 
-                                <div class="result-value">
+                                <div style="
+                                    color:#15803d;
+                                    font-size:1.65rem;
+                                    font-weight:850;
+                                    margin-top:5px;
+                                ">
                                     🟢 Not Dropout
                                 </div>
 
                             </div>
-                            """,
-                            unsafe_allow_html=True
+                            """
                         )
 
-                    # ----------------------------------------
+                    # ------------------------------------------------
                     # PREDICTION VS ACTUAL
-                    # ----------------------------------------
+                    # ------------------------------------------------
 
                     if (
                         predicted_class
@@ -3373,9 +3158,9 @@ elif page == "🔮 Predict Risk":
                             "test student."
                         )
 
-                    # ----------------------------------------
+                    # ------------------------------------------------
                     # COMPARISON CARDS
-                    # ----------------------------------------
+                    # ------------------------------------------------
 
                     comparison_col1, comparison_col2 = (
                         st.columns(2)
@@ -3383,17 +3168,19 @@ elif page == "🔮 Predict Risk":
 
                     with comparison_col1:
 
-                        st.markdown(
+                        st.html(
                             f"""
                             <div style="
                                 background:#eff6ff;
                                 border:2px solid #93c5fd;
                                 border-radius:14px;
                                 padding:18px;
+                                width:100%;
+                                box-sizing:border-box;
                             ">
 
                                 <div style="
-                                    color:#1e3a8a !important;
+                                    color:#1e3a8a;
                                     font-size:0.95rem;
                                     font-weight:700;
                                 ">
@@ -3401,7 +3188,7 @@ elif page == "🔮 Predict Risk":
                                 </div>
 
                                 <div style="
-                                    color:#1d4ed8 !important;
+                                    color:#1d4ed8;
                                     font-size:1.45rem;
                                     font-weight:800;
                                     margin-top:5px;
@@ -3410,8 +3197,7 @@ elif page == "🔮 Predict Risk":
                                 </div>
 
                             </div>
-                            """,
-                            unsafe_allow_html=True
+                            """
                         )
 
                     with comparison_col2:
@@ -3434,17 +3220,19 @@ elif page == "🔮 Predict Risk":
                             else "#86efac"
                         )
 
-                        st.markdown(
+                        st.html(
                             f"""
                             <div style="
                                 background:{actual_display_bg};
                                 border:2px solid {actual_display_border};
                                 border-radius:14px;
                                 padding:18px;
+                                width:100%;
+                                box-sizing:border-box;
                             ">
 
                                 <div style="
-                                    color:#374151 !important;
+                                    color:#374151;
                                     font-size:0.95rem;
                                     font-weight:700;
                                 ">
@@ -3452,7 +3240,7 @@ elif page == "🔮 Predict Risk":
                                 </div>
 
                                 <div style="
-                                    color:{actual_display_color} !important;
+                                    color:{actual_display_color};
                                     font-size:1.45rem;
                                     font-weight:800;
                                     margin-top:5px;
@@ -3461,8 +3249,7 @@ elif page == "🔮 Predict Risk":
                                 </div>
 
                             </div>
-                            """,
-                            unsafe_allow_html=True
+                            """
                         )
 
             # =================================================
@@ -3506,73 +3293,124 @@ elif page == "🔮 Predict Risk":
 
             r1, r2, r3 = st.columns(3)
 
-            # =================================================
+            # ------------------------------------------------
             # LOW RISK
-            # =================================================
+            # ------------------------------------------------
 
             with r1:
 
-                st.markdown(
+                st.html(
                     """
-                    <div class="risk-info-card risk-info-low">
+                    <div style="
+                        background:#052e16;
+                        border:1px solid #166534;
+                        border-radius:12px;
+                        padding:16px;
+                        min-height:125px;
+                        box-sizing:border-box;
+                    ">
 
-                        <h4>
+                        <h4 style="
+                            color:#86efac;
+                            margin-top:0;
+                            margin-bottom:8px;
+                            font-size:1.10rem;
+                            font-weight:800;
+                        ">
                             🟢 Low Risk
                         </h4>
 
-                        <p>
+                        <p style="
+                            color:#dcfce7;
+                            margin:0;
+                            font-size:0.96rem;
+                            line-height:1.55;
+                        ">
                             Dropout probability below 30%.
                         </p>
 
                     </div>
-                    """,
-                    unsafe_allow_html=True
+                    """
                 )
 
-            # =================================================
+            # ------------------------------------------------
             # MEDIUM RISK
-            # =================================================
+            # ------------------------------------------------
 
             with r2:
 
-                st.markdown(
+                st.html(
                     """
-                    <div class="risk-info-card risk-info-medium">
+                    <div style="
+                        background:#422006;
+                        border:1px solid #a16207;
+                        border-radius:12px;
+                        padding:16px;
+                        min-height:125px;
+                        box-sizing:border-box;
+                    ">
 
-                        <h4>
+                        <h4 style="
+                            color:#fde047;
+                            margin-top:0;
+                            margin-bottom:8px;
+                            font-size:1.10rem;
+                            font-weight:800;
+                        ">
                             🟡 Medium Risk
                         </h4>
 
-                        <p>
+                        <p style="
+                            color:#fef3c7;
+                            margin:0;
+                            font-size:0.96rem;
+                            line-height:1.55;
+                        ">
                             Probability from 30% to below 60%.
                         </p>
 
                     </div>
-                    """,
-                    unsafe_allow_html=True
+                    """
                 )
 
-            # =================================================
+            # ------------------------------------------------
             # HIGH RISK
-            # =================================================
+            # ------------------------------------------------
 
             with r3:
 
-                st.markdown(
+                st.html(
                     """
-                    <div class="risk-info-card risk-info-high">
+                    <div style="
+                        background:#450a0a;
+                        border:1px solid #991b1b;
+                        border-radius:12px;
+                        padding:16px;
+                        min-height:125px;
+                        box-sizing:border-box;
+                    ">
 
-                        <h4>
+                        <h4 style="
+                            color:#fca5a5;
+                            margin-top:0;
+                            margin-bottom:8px;
+                            font-size:1.10rem;
+                            font-weight:800;
+                        ">
                             🔴 High Risk
                         </h4>
 
-                        <p>
+                        <p style="
+                            color:#fee2e2;
+                            margin:0;
+                            font-size:0.96rem;
+                            line-height:1.55;
+                        ">
                             Probability of 60% or higher.
                         </p>
 
                     </div>
-                    """,
-                    unsafe_allow_html=True
+                    """
                 )
 
             st.caption(
