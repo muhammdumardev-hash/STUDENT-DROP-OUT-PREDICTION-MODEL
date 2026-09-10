@@ -625,6 +625,11 @@ def clean_data(df: pd.DataFrame):
 @st.cache_resource(show_spinner=True)
 def train_model(df: pd.DataFrame):
 
+    # --------------------------------------------------------
+    # IMPORTANT:
+    # Target is completely removed before training.
+    # --------------------------------------------------------
+
     X = df.drop(
         "target",
         axis=1
@@ -634,6 +639,10 @@ def train_model(df: pd.DataFrame):
 
     feature_names = X.columns.tolist()
 
+    # --------------------------------------------------------
+    # 80% TRAIN / 20% TEST
+    # --------------------------------------------------------
+
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
@@ -641,6 +650,13 @@ def train_model(df: pd.DataFrame):
         random_state=42,
         stratify=y
     )
+
+    # --------------------------------------------------------
+    # SCALER
+    #
+    # Fit ONLY on training data.
+    # Test data is only transformed.
+    # --------------------------------------------------------
 
     scaler = StandardScaler()
 
@@ -652,6 +668,10 @@ def train_model(df: pd.DataFrame):
         X_test
     )
 
+    # --------------------------------------------------------
+    # LOGISTIC REGRESSION
+    # --------------------------------------------------------
+
     model = LogisticRegression(
         max_iter=1000
     )
@@ -661,6 +681,10 @@ def train_model(df: pd.DataFrame):
         y_train
     )
 
+    # --------------------------------------------------------
+    # TEST PREDICTIONS
+    # --------------------------------------------------------
+
     y_pred = model.predict(
         X_test_scaled
     )
@@ -668,6 +692,10 @@ def train_model(df: pd.DataFrame):
     y_prob = model.predict_proba(
         X_test_scaled
     )[:, 1]
+
+    # --------------------------------------------------------
+    # METRICS
+    # --------------------------------------------------------
 
     cm = confusion_matrix(
         y_test,
@@ -2138,7 +2166,7 @@ elif page == "🔮 Predict Risk":
         ):
 
             # ------------------------------------------------
-            # Select one REAL unseen student from X_test
+            # Select REAL unseen student
             # ------------------------------------------------
 
             random_index = np.random.choice(
@@ -2146,7 +2174,7 @@ elif page == "🔮 Predict Risk":
             )
 
             # ------------------------------------------------
-            # Save selected student's original index
+            # Store test student's ORIGINAL dataframe index
             # ------------------------------------------------
 
             st.session_state.sample_index = (
@@ -2154,27 +2182,43 @@ elif page == "🔮 Predict Risk":
             )
 
             # ------------------------------------------------
-            # IMPORTANT FIX
+            # Get EXACT row from X_test
             #
-            # Load ALL 36 test-student feature values
-            # into Streamlit session state.
-            #
-            # Target is NOT included.
+            # IMPORTANT:
+            # X_test contains ONLY the 36 FEATURES.
+            # target is not here.
             # ------------------------------------------------
 
-            selected_student = (
-                X_test_raw.loc[
-                    random_index
-                ]
-            )
+            selected_student = X_test_raw.loc[
+                random_index
+            ]
+
+            # ------------------------------------------------
+            # Load EXACT values into widget state
+            #
+            # Every input widget gets its value directly from
+            # the selected X_test row.
+            # ------------------------------------------------
 
             for col_name in feature_names:
 
-                st.session_state[
-                    f"input_{col_name}"
-                ] = selected_student[
+                value = selected_student[
                     col_name
                 ]
+
+                # Convert numpy scalar to normal Python scalar
+                # without changing the actual value.
+
+                if isinstance(
+                    value,
+                    np.generic
+                ):
+
+                    value = value.item()
+
+                st.session_state[
+                    f"input_{col_name}"
+                ] = value
 
             # ------------------------------------------------
             # Clear previous prediction
@@ -2196,7 +2240,7 @@ elif page == "🔮 Predict Risk":
             )
 
             # ------------------------------------------------
-            # Rerun so all widgets receive the selected values
+            # Rerun
             # ------------------------------------------------
 
             st.rerun()
@@ -2228,7 +2272,10 @@ elif page == "🔮 Predict Risk":
 
     if sample_index is not None:
 
-        # Use the selected test student's REAL values
+        # ----------------------------------------------------
+        # EXACT ORIGINAL TEST ROW
+        # ----------------------------------------------------
+
         defaults = X_test_raw.loc[
             sample_index
         ]
@@ -2360,30 +2407,34 @@ elif page == "🔮 Predict Risk":
                 columns
             ):
 
-                # ------------------------------------------------
-                # IMPORTANT FIX:
+                # =================================================
+                # IMPORTANT FIX #1
                 #
-                # Use COMPLETE dataset for available values.
-                # Do NOT use X_train here.
+                # ALWAYS use COMPLETE DATASET.
                 #
-                # A value may exist in X_test even if that exact
-                # value does not appear in X_train.
-                # ------------------------------------------------
+                # NEVER use X_train_raw here.
+                #
+                # This means a test value such as:
+                #
+                # Previous qualification = 127
+                #
+                # will remain available even if that exact value
+                # does not appear in X_train.
+                # =================================================
 
                 series = df[
                     col_name
                 ]
 
-                unique_values = sorted(
+                # Remove missing values
+                clean_series = (
                     series
                     .dropna()
-                    .unique()
-                    .tolist()
                 )
 
-                # ------------------------------------------------
-                # Determine default value
-                # ------------------------------------------------
+                # =================================================
+                # EXACT DEFAULT FROM SELECTED TEST STUDENT
+                # =================================================
 
                 if defaults is not None:
 
@@ -2393,27 +2444,187 @@ elif page == "🔮 Predict Risk":
 
                 else:
 
-                    default_value = series.median()
+                    if pd.api.types.is_numeric_dtype(
+                        series
+                    ):
+
+                        default_value = (
+                            series.median()
+                        )
+
+                    else:
+
+                        mode_values = (
+                            series
+                            .mode()
+                        )
+
+                        if len(mode_values) > 0:
+
+                            default_value = (
+                                mode_values.iloc[0]
+                            )
+
+                        else:
+
+                            default_value = (
+                                clean_series.iloc[0]
+                            )
+
+                # Convert numpy scalar to Python scalar
+                if isinstance(
+                    default_value,
+                    np.generic
+                ):
+
+                    default_value = (
+                        default_value.item()
+                    )
 
                 with input_cols[
                     i % 3
                 ]:
 
                     # =================================================
-                    # CATEGORICAL / LOW-UNIQUE-VALUE COLUMNS
+                    # BINARY COLUMNS
                     # =================================================
 
-                    if len(unique_values) <= 10:
+                    binary_columns = [
+                        "Debtor",
+                        "Tuition fees up to date",
+                        "Scholarship holder",
+                        "Displaced",
+                        "Educational special needs",
+                        "International",
+                    ]
 
-                        # ------------------------------------------------
-                        # Make sure selected/default value exists
-                        # in the dropdown options.
-                        # ------------------------------------------------
+                    if col_name in binary_columns:
 
-                        if (
-                            default_value
-                            in unique_values
-                        ):
+                        # ---------------------------------------------
+                        # Binary values are always represented as:
+                        #
+                        # 1 -> Yes (1)
+                        # 0 -> No (0)
+                        # ---------------------------------------------
+
+                        binary_options = [
+                            0,
+                            1
+                        ]
+
+                        try:
+
+                            default_binary = int(
+                                float(
+                                    default_value
+                                )
+                            )
+
+                        except Exception:
+
+                            default_binary = 0
+
+                        if default_binary not in binary_options:
+
+                            default_binary = 0
+
+                        selected_index = (
+                            binary_options.index(
+                                default_binary
+                            )
+                        )
+
+                        value = st.selectbox(
+                            col_name,
+                            options=binary_options,
+                            index=selected_index,
+                            format_func=lambda x:
+                                "Yes (1)"
+                                if x == 1
+                                else "No (0)",
+                            key=f"input_{col_name}",
+                            help="0 = No, 1 = Yes",
+                        )
+
+                    # =================================================
+                    # NUMERIC COLUMNS
+                    # =================================================
+
+                    elif pd.api.types.is_numeric_dtype(
+                        series
+                    ):
+
+                        # ---------------------------------------------
+                        # IMPORTANT FIX #2
+                        #
+                        # Numeric columns are NEVER treated as
+                        # categorical just because they have few
+                        # unique values.
+                        #
+                        # Example:
+                        #
+                        # Admission grade = 120.2
+                        #
+                        # It will remain EXACTLY 120.2.
+                        # ---------------------------------------------
+
+                        min_value = float(
+                            clean_series.min()
+                        )
+
+                        max_value = float(
+                            clean_series.max()
+                        )
+
+                        try:
+
+                            default_number = float(
+                                default_value
+                            )
+
+                        except Exception:
+
+                            default_number = float(
+                                clean_series.median()
+                            )
+
+                        # Keep value within dataset range
+                        default_number = max(
+                            min_value,
+                            min(
+                                default_number,
+                                max_value
+                            )
+                        )
+
+                        value = st.number_input(
+                            col_name,
+                            min_value=min_value,
+                            max_value=max_value,
+                            value=default_number,
+                            key=f"input_{col_name}",
+                        )
+
+                    # =================================================
+                    # NON-NUMERIC / CATEGORICAL COLUMNS
+                    # =================================================
+
+                    else:
+
+                        # ---------------------------------------------
+                        # Complete dataset values only.
+                        # ---------------------------------------------
+
+                        unique_values = (
+                            clean_series
+                            .unique()
+                            .tolist()
+                        )
+
+                        # Preserve dataset order rather than sorting
+                        # mixed data types.
+
+                        if default_value in unique_values:
 
                             selected_index = (
                                 unique_values.index(
@@ -2425,102 +2636,12 @@ elif page == "🔮 Predict Risk":
 
                             selected_index = 0
 
-                        binary_columns = [
-                            "Debtor",
-                            "Tuition fees up to date",
-                            "Scholarship holder",
-                            "Displaced",
-                            "Educational special needs",
-                            "International",
-                        ]
-
-                        # =================================================
-                        # BINARY COLUMNS
-                        # =================================================
-
-                        if (
-                            col_name
-                            in binary_columns
-                        ):
-
-                            def format_binary(
-                                value
-                            ):
-
-                                if value == 1:
-                                    return "Yes (1)"
-
-                                return "No (0)"
-
-                            value = st.selectbox(
-                                col_name,
-                                options=unique_values,
-                                index=selected_index,
-                                format_func=format_binary,
-                                key=f"input_{col_name}",
-                                help="0 = No, 1 = Yes",
-                            )
-
-                        # =================================================
-                        # OTHER CATEGORICAL COLUMNS
-                        # =================================================
-
-                        else:
-
-                            value = st.selectbox(
-                                col_name,
-                                options=unique_values,
-                                index=selected_index,
-                                key=f"input_{col_name}",
-                                help="Value/code from the dataset.",
-                            )
-
-                    # =================================================
-                    # NUMERIC COLUMNS
-                    # =================================================
-
-                    else:
-
-                        min_value = float(
-                            series.min()
-                        )
-
-                        max_value = float(
-                            series.max()
-                        )
-
-                        default_number = float(
-                            default_value
-                        )
-
-                        # ------------------------------------------------
-                        # Keep default value inside complete dataset range
-                        # ------------------------------------------------
-
-                        if (
-                            default_number
-                            < min_value
-                        ):
-
-                            default_number = (
-                                min_value
-                            )
-
-                        if (
-                            default_number
-                            > max_value
-                        ):
-
-                            default_number = (
-                                max_value
-                            )
-
-                        value = st.number_input(
+                        value = st.selectbox(
                             col_name,
-                            min_value=min_value,
-                            max_value=max_value,
-                            value=default_number,
+                            options=unique_values,
+                            index=selected_index,
                             key=f"input_{col_name}",
+                            help="Value/code from the complete dataset.",
                         )
 
                     # ------------------------------------------------
@@ -2584,16 +2705,23 @@ elif page == "🔮 Predict Risk":
     if submitted:
 
         # ----------------------------------------------------
-        # Create input dataframe using ONLY 36 features
+        # Create dataframe using ONLY 36 features
         # ----------------------------------------------------
 
         input_df = pd.DataFrame(
             [inputs]
         )
 
+        # Make absolutely sure target is never included
         input_df = input_df[
             feature_names
         ]
+
+        # ----------------------------------------------------
+        # Convert input values to numeric
+        # ----------------------------------------------------
+
+        input_df = input_df.astype(float)
 
         # ----------------------------------------------------
         # Scale input
@@ -2629,7 +2757,7 @@ elif page == "🔮 Predict Risk":
         )
 
         # ====================================================
-        # SAVE PREDICTION IN SESSION STATE
+        # SAVE PREDICTION
         # ====================================================
 
         st.session_state.last_prediction = int(
@@ -2845,7 +2973,7 @@ elif page == "🔮 Predict Risk":
                     class_border = "#86efac"
 
                 # ====================================================
-                # FIXED PREDICTED CLASS CARD
+                # PREDICTED CLASS CARD
                 # ====================================================
 
                 st.markdown(
@@ -2879,12 +3007,8 @@ elif page == "🔮 Predict Risk":
         if sample_index is not None:
 
             # ------------------------------------------------
-            # IMPORTANT:
-            #
-            # Confirm that the user did NOT modify the
-            # automatically loaded test student's values.
-            #
-            # Only then show the actual outcome.
+            # Compare entered values with EXACT original
+            # X_test values.
             # ------------------------------------------------
 
             original_values = (
@@ -2914,10 +3038,11 @@ elif page == "🔮 Predict Risk":
             if same_as_original:
 
                 # ------------------------------------------------
-                # IMPORTANT FIX:
+                # IMPORTANT:
                 #
-                # Get actual target from y_test.
-                # This confirms it belongs to held-out test set.
+                # Actual target comes ONLY from y_test.
+                #
+                # It is NEVER an input feature.
                 # ------------------------------------------------
 
                 actual_outcome = int(
