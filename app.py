@@ -38,9 +38,9 @@ st.markdown(
     """
     <style>
 
-    /* -------------------------------------------------
+    /* =================================================
        MAIN APP
-    ------------------------------------------------- */
+    ================================================= */
 
     .stApp,
     .main {
@@ -53,9 +53,9 @@ st.markdown(
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        GLOBAL TEXT
-    ------------------------------------------------- */
+    ================================================= */
 
     body,
     p,
@@ -75,9 +75,9 @@ st.markdown(
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        MAIN TITLE
-    ------------------------------------------------- */
+    ================================================= */
 
     .main-title {
         color: #ffffff !important;
@@ -93,9 +93,9 @@ st.markdown(
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        METRIC CARDS
-    ------------------------------------------------- */
+    ================================================= */
 
     .metric-card {
         background: #ffffff;
@@ -120,9 +120,9 @@ st.markdown(
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        SECTION BOX
-    ------------------------------------------------- */
+    ================================================= */
 
     .section-box {
         background: #111827;
@@ -133,88 +133,197 @@ st.markdown(
     }
 
 
-    /* -------------------------------------------------
-       RESULT CARDS
-    ------------------------------------------------- */
+    /* =================================================
+       PREDICTION RESULT CARDS
+    ================================================= */
 
     .result-card {
-        border-radius: 14px;
+        background: #111827 !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px;
         padding: 18px 20px;
-        border: 1px solid;
-        margin-bottom: 15px;
-    }
-
-    .result-low {
-        background: #f0fdf4;
-        border-color: #86efac;
-    }
-
-    .result-medium {
-        background: #fffbeb;
-        border-color: #fcd34d;
-    }
-
-    .result-high {
-        background: #fef2f2;
-        border-color: #fca5a5;
+        margin-bottom: 14px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
     }
 
     .result-title {
-        color: #1e1e1e !important;
-        font-size: 0.95rem;
-        font-weight: 700;
+        color: #94A3B8 !important;
+        font-size: 0.88rem;
+        font-weight: 600;
         margin-bottom: 6px;
+        letter-spacing: 0.2px;
     }
 
     .result-value {
-        font-size: 1.65rem;
-        font-weight: 850;
+        color: #FFFFFF !important;
+        font-size: 1.55rem;
+        font-weight: 800;
+        line-height: 1.2;
     }
 
+
+    /* =================================================
+       RISK-SPECIFIC RESULT VALUES
+    ================================================= */
+
     .result-low .result-value {
-        color: #15803d !important;
+        color: #34D399 !important;
     }
 
     .result-medium .result-value {
-        color: #b45309 !important;
+        color: #FBBF24 !important;
     }
 
     .result-high .result-value {
-        color: #b91c1c !important;
+        color: #F87171 !important;
     }
 
 
-    /* -------------------------------------------------
-       RISK BADGES
-    ------------------------------------------------- */
+    /* =================================================
+       PREDICTED CLASS CARD
+    ================================================= */
 
-    .risk-badge {
-        display: inline-block;
-        padding: 6px 14px;
-        border-radius: 999px;
+    .predicted-class-card {
+        background: #111827 !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px;
+        padding: 18px 20px;
+        margin-bottom: 14px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+    }
+
+    .predicted-class-title {
+        color: #94A3B8 !important;
+        font-size: 0.88rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .predicted-class-value {
+        font-size: 1.55rem;
         font-weight: 800;
-        font-size: 0.9rem;
+        line-height: 1.2;
     }
 
-    .risk-low {
-        background: #dcfce7;
-        color: #15803d !important;
+    .predicted-dropout {
+        color: #F87171 !important;
     }
 
-    .risk-medium {
-        background: #fef3c7;
-        color: #b45309 !important;
-    }
-
-    .risk-high {
-        background: #fee2e2;
-        color: #b91c1c !important;
+    .predicted-not-dropout {
+        color: #34D399 !important;
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
+       RISK INTERPRETATION CARDS
+    ================================================= */
+
+    .risk-info-card {
+        background: #111827 !important;
+        border-radius: 10px;
+        padding: 18px;
+        min-height: 155px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+    }
+
+    .risk-info-card h4 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 1.05rem;
+        font-weight: 800;
+    }
+
+    .risk-info-card p {
+        margin: 0;
+        line-height: 1.55;
+        font-size: 0.92rem;
+        font-weight: 500;
+    }
+
+
+    /* =================================================
+       LOW RISK
+    ================================================= */
+
+    .risk-info-low {
+        border: 1px solid #34D399;
+    }
+
+    .risk-info-low h4 {
+        color: #34D399 !important;
+    }
+
+    .risk-info-low p {
+        color: #A7F3D0 !important;
+    }
+
+
+    /* =================================================
+       MEDIUM RISK
+    ================================================= */
+
+    .risk-info-medium {
+        border: 1px solid #FBBF24;
+    }
+
+    .risk-info-medium h4 {
+        color: #FBBF24 !important;
+    }
+
+    .risk-info-medium p {
+        color: #FDE68A !important;
+    }
+
+
+    /* =================================================
+       HIGH RISK
+    ================================================= */
+
+    .risk-info-high {
+        border: 1px solid #F87171;
+    }
+
+    .risk-info-high h4 {
+        color: #F87171 !important;
+    }
+
+    .risk-info-high p {
+        color: #FECACA !important;
+    }
+
+
+    /* =================================================
+       ACTUAL TEST OUTCOME
+    ================================================= */
+
+    .actual-outcome-card {
+        background: #111827 !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px;
+        padding: 18px 20px;
+        margin: 15px 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+    }
+
+    .actual-outcome-card h4 {
+        color: #FFFFFF !important;
+        margin-top: 0;
+        margin-bottom: 8px;
+    }
+
+    .actual-outcome-card p {
+        color: #E2E8F0 !important;
+        margin: 0;
+    }
+
+    .actual-outcome-card strong {
+        color: #FFFFFF !important;
+    }
+
+
+    /* =================================================
        SIDEBAR
-    ------------------------------------------------- */
+    ================================================= */
 
     section[data-testid="stSidebar"] {
         background: #111827 !important;
@@ -233,9 +342,9 @@ st.markdown(
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        TABS
-    ------------------------------------------------- */
+    ================================================= */
 
     button[data-baseweb="tab"] {
         color: #ffffff !important;
@@ -246,9 +355,9 @@ st.markdown(
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        EXPANDERS
-    ------------------------------------------------- */
+    ================================================= */
 
     div[data-testid="stExpander"] {
         background: #111827 !important;
@@ -257,9 +366,9 @@ st.markdown(
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        FORMS
-    ------------------------------------------------- */
+    ================================================= */
 
     div[data-testid="stForm"] {
         border: 1px solid #334155;
@@ -273,9 +382,9 @@ st.markdown(
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        INPUTS
-    ------------------------------------------------- */
+    ================================================= */
 
     div[data-baseweb="select"] > div {
         background-color: #ffffff !important;
@@ -297,9 +406,9 @@ st.markdown(
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        DATAFRAME
-    ------------------------------------------------- */
+    ================================================= */
 
     div[data-testid="stDataFrame"] {
         border: 1px solid #475569;
@@ -309,9 +418,9 @@ st.markdown(
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        CAPTIONS
-    ------------------------------------------------- */
+    ================================================= */
 
     .stCaption,
     div[data-testid="stCaptionContainer"] {
@@ -319,36 +428,36 @@ st.markdown(
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        ALERTS
-    ------------------------------------------------- */
+    ================================================= */
 
     div[data-testid="stAlert"] * {
         color: #111827 !important;
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        DIVIDERS
-    ------------------------------------------------- */
+    ================================================= */
 
     hr {
         border-color: #334155 !important;
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        CONTAINERS
-    ------------------------------------------------- */
+    ================================================= */
 
     div[data-testid="stVerticalBlockBorderWrapper"] {
         border-color: #334155 !important;
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        CHECKBOX / RADIO
-    ------------------------------------------------- */
+    ================================================= */
 
     div[data-testid="stCheckbox"] label,
     div[data-testid="stRadio"] label {
@@ -356,9 +465,9 @@ st.markdown(
     }
 
 
-    /* -------------------------------------------------
+    /* =================================================
        MARKDOWN
-    ------------------------------------------------- */
+    ================================================= */
 
     .stMarkdown {
         color: #ffffff;
@@ -720,10 +829,6 @@ if page == "🏠 Overview":
     )
 
 
-    # -----------------------------------------------------
-    # METRICS
-    # -----------------------------------------------------
-
     col1, col2, col3, col4 = st.columns(4)
 
 
@@ -809,11 +914,6 @@ if page == "🏠 Overview":
 
     st.write("")
 
-
-    # -----------------------------------------------------
-    # PROJECT SUMMARY
-    # -----------------------------------------------------
-
     st.markdown(
         "## 📌 Project Summary"
     )
@@ -897,10 +997,6 @@ if page == "🏠 Overview":
             unsafe_allow_html=True
         )
 
-
-    # -----------------------------------------------------
-    # DATASET INFORMATION
-    # -----------------------------------------------------
 
     st.markdown(
         "## 📁 Dataset Information"
@@ -1050,10 +1146,6 @@ elif page == "📊 Exploratory Analysis":
     )
 
 
-    # -----------------------------------------------------
-    # DROPOUT DISTRIBUTION
-    # -----------------------------------------------------
-
     st.markdown(
         "## 1️⃣ Dropout Distribution"
     )
@@ -1132,10 +1224,6 @@ elif page == "📊 Exploratory Analysis":
         "while a smaller group was classified as dropout."
     )
 
-
-    # -----------------------------------------------------
-    # TUITION FEES
-    # -----------------------------------------------------
 
     st.markdown(
         "## 2️⃣ Tuition Fees Status vs Dropout Rate"
@@ -1228,10 +1316,6 @@ elif page == "📊 Exploratory Analysis":
     )
 
 
-    # -----------------------------------------------------
-    # 1ST SEMESTER
-    # -----------------------------------------------------
-
     st.markdown(
         "## 3️⃣ 1st Semester Grade vs Dropout"
     )
@@ -1294,10 +1378,6 @@ elif page == "📊 Exploratory Analysis":
     )
 
 
-    # -----------------------------------------------------
-    # 2ND SEMESTER
-    # -----------------------------------------------------
-
     st.markdown(
         "## 4️⃣ 2nd Semester Grade vs Dropout"
     )
@@ -1359,10 +1439,6 @@ elif page == "📊 Exploratory Analysis":
         "are strongly associated with dropout in this dataset."
     )
 
-
-    # -----------------------------------------------------
-    # KEY OBSERVATIONS
-    # -----------------------------------------------------
 
     st.markdown(
         "## 🔎 Key Observations"
@@ -1428,10 +1504,6 @@ elif page == "📊 Exploratory Analysis":
     )
 
 
-    # -----------------------------------------------------
-    # CONSTANT COLUMNS
-    # -----------------------------------------------------
-
     with st.expander(
         "🔍 Check Constant Columns"
     ):
@@ -1478,10 +1550,6 @@ elif page == "🤖 Model Performance":
         unsafe_allow_html=True
     )
 
-
-    # -----------------------------------------------------
-    # PERFORMANCE METRICS
-    # -----------------------------------------------------
 
     metric_cols = st.columns(5)
 
@@ -1589,10 +1657,6 @@ elif page == "🤖 Model Performance":
     st.write("")
 
 
-    # -----------------------------------------------------
-    # CONFUSION MATRIX
-    # -----------------------------------------------------
-
     st.markdown(
         "## 🔲 Confusion Matrix"
     )
@@ -1656,7 +1720,6 @@ elif page == "🤖 Model Performance":
 
 
     tn, fp, fn, tp = cm.ravel()
-
 
     cm_cols = st.columns(4)
 
@@ -1741,10 +1804,6 @@ elif page == "🤖 Model Performance":
         )
 
 
-    # -----------------------------------------------------
-    # ROC CURVE
-    # -----------------------------------------------------
-
     st.markdown(
         "## 📈 ROC Curve"
     )
@@ -1813,10 +1872,6 @@ elif page == "🤖 Model Performance":
     )
 
 
-    # -----------------------------------------------------
-    # CLASSIFICATION REPORT
-    # -----------------------------------------------------
-
     st.markdown(
         "## 📋 Classification Report"
     )
@@ -1837,10 +1892,6 @@ elif page == "🤖 Model Performance":
         use_container_width=True
     )
 
-
-    # -----------------------------------------------------
-    # MODEL INTERPRETATION
-    # -----------------------------------------------------
 
     st.markdown(
         "## 🧠 Model Interpretation"
@@ -1924,18 +1975,18 @@ elif page == "🔮 Predict Risk":
     )
 
 
-    # -----------------------------------------------------
+    # =====================================================
     # FEATURE NAMES
-    # -----------------------------------------------------
+    # =====================================================
 
     feature_names = list(
         X_train_raw.columns
     )
 
 
-    # -----------------------------------------------------
+    # =====================================================
     # RANDOM TEST CASE
-    # -----------------------------------------------------
+    # =====================================================
 
     if "sample_index" not in st.session_state:
 
@@ -1980,9 +2031,9 @@ elif page == "🔮 Predict Risk":
         sample_row = X_train_raw.iloc[0]
 
 
-    # -----------------------------------------------------
+    # =====================================================
     # INPUT RENDER FUNCTION
-    # -----------------------------------------------------
+    # =====================================================
 
     def render_input_group(
         columns,
@@ -2004,6 +2055,7 @@ elif page == "🔮 Predict Risk":
                 )
 
                 current_value = sample[column]
+
 
                 # -----------------------------------------
                 # SMALL CATEGORICAL FEATURES
@@ -2053,6 +2105,7 @@ elif page == "🔮 Predict Risk":
                         )
 
                     input_values[column] = selected
+
 
                 # -----------------------------------------
                 # NUMERIC FEATURES
@@ -2329,25 +2382,37 @@ elif page == "🔮 Predict Risk":
         if prediction_probability < 0.30:
 
             risk_level = "Low Risk"
-            risk_class = "risk-low"
             result_class = "result-low"
 
         elif prediction_probability < 0.60:
 
             risk_level = "Medium Risk"
-            risk_class = "risk-medium"
             result_class = "result-medium"
 
         else:
 
             risk_level = "High Risk"
-            risk_class = "risk-high"
             result_class = "result-high"
 
 
         probability_percent = (
             prediction_probability * 100
         )
+
+
+        # =================================================
+        # PREDICTED CLASS
+        # =================================================
+
+        if predicted_class == 1:
+
+            predicted_class_text = "Dropout"
+            predicted_class_style = "predicted-dropout"
+
+        else:
+
+            predicted_class_text = "Not Dropout"
+            predicted_class_style = "predicted-not-dropout"
 
 
         # =================================================
@@ -2422,6 +2487,10 @@ elif page == "🔮 Predict Risk":
 
         with result_col2:
 
+            # ---------------------------------------------
+            # RISK LEVEL
+            # ---------------------------------------------
+
             st.markdown(
                 f"""
                 <div class="result-card {result_class}">
@@ -2439,6 +2508,10 @@ elif page == "🔮 Predict Risk":
                 unsafe_allow_html=True
             )
 
+
+            # ---------------------------------------------
+            # DROPOUT PROBABILITY
+            # ---------------------------------------------
 
             st.markdown(
                 f"""
@@ -2458,52 +2531,19 @@ elif page == "🔮 Predict Risk":
             )
 
 
-            # -------------------------------------------------
+            # ---------------------------------------------
             # PREDICTED CLASS
-            # -------------------------------------------------
-
-            if predicted_class == 1:
-
-                predicted_class_text = "Dropout"
-
-                class_color = "#b91c1c"
-                class_background = "#fff1f2"
-                class_border = "#fb7185"
-
-            else:
-
-                predicted_class_text = "Not Dropout"
-
-                class_color = "#047857"
-                class_background = "#ecfdf5"
-                class_border = "#34d399"
-
+            # ---------------------------------------------
 
             st.markdown(
                 f"""
-                <div style="
-                    background:{class_background};
-                    border:1px solid {class_border};
-                    border-radius:14px;
-                    padding:18px 20px;
-                    margin-bottom:15px;
-                ">
+                <div class="predicted-class-card">
 
-                    <div style="
-                        color:#1e1e1e;
-                        font-size:0.95rem;
-                        font-weight:700;
-                        margin-bottom:6px;
-                    ">
+                    <div class="predicted-class-title">
                         Predicted Class
                     </div>
 
-                    <div style="
-                        color:{class_color} !important;
-                        font-size:1.55rem;
-                        font-weight:850;
-                        margin-top:5px;
-                    ">
+                    <div class="predicted-class-value {predicted_class_style}">
                         {predicted_class_text}
                     </div>
 
@@ -2533,7 +2573,7 @@ elif page == "🔮 Predict Risk":
 
 
         # =================================================
-        # ACTUAL OUTCOME FOR QUICK TEST CASE
+        # ACTUAL TEST DATASET OUTCOME
         # =================================================
 
         if st.session_state.sample_index is not None:
@@ -2554,9 +2594,11 @@ elif page == "🔮 Predict Risk":
 
             st.markdown(
                 f"""
-                <div class="section-box">
+                <div class="actual-outcome-card">
 
-                    <h4>📌 Actual Test Dataset Outcome</h4>
+                    <h4>
+                        📌 Actual Test Dataset Outcome
+                    </h4>
 
                     <p>
                         Actual outcome for this unseen test
@@ -2582,31 +2624,20 @@ elif page == "🔮 Predict Risk":
 
 
         # -------------------------------------------------
-        # LOW
+        # LOW RISK
         # -------------------------------------------------
 
         with risk_cols[0]:
 
             st.markdown(
                 """
-                <div style="
-                    background:#ecfdf5;
-                    border:1px solid #34d399;
-                    border-radius:14px;
-                    padding:18px;
-                    min-height:145px;
-                ">
+                <div class="risk-info-card risk-info-low">
 
-                    <h4 style="
-                        color:#047857 !important;
-                        margin-top:0;
-                    ">
+                    <h4>
                         🟢 Low Risk
                     </h4>
 
-                    <p style="
-                        color:#065f46 !important;
-                    ">
+                    <p>
                         Dropout probability is below 30%.
                         The model considers the student to
                         have a relatively low predicted risk.
@@ -2619,31 +2650,20 @@ elif page == "🔮 Predict Risk":
 
 
         # -------------------------------------------------
-        # MEDIUM
+        # MEDIUM RISK
         # -------------------------------------------------
 
         with risk_cols[1]:
 
             st.markdown(
                 """
-                <div style="
-                    background:#fffbeb;
-                    border:1px solid #f59e0b;
-                    border-radius:14px;
-                    padding:18px;
-                    min-height:145px;
-                ">
+                <div class="risk-info-card risk-info-medium">
 
-                    <h4 style="
-                        color:#92400e !important;
-                        margin-top:0;
-                    ">
+                    <h4>
                         🟡 Medium Risk
                     </h4>
 
-                    <p style="
-                        color:#78350f !important;
-                    ">
+                    <p>
                         Dropout probability is between 30%
                         and 60%. The student may benefit
                         from additional monitoring.
@@ -2656,31 +2676,20 @@ elif page == "🔮 Predict Risk":
 
 
         # -------------------------------------------------
-        # HIGH
+        # HIGH RISK
         # -------------------------------------------------
 
         with risk_cols[2]:
 
             st.markdown(
                 """
-                <div style="
-                    background:#fff1f2;
-                    border:1px solid #fb7185;
-                    border-radius:14px;
-                    padding:18px;
-                    min-height:145px;
-                ">
+                <div class="risk-info-card risk-info-high">
 
-                    <h4 style="
-                        color:#be123c !important;
-                        margin-top:0;
-                    ">
+                    <h4>
                         🔴 High Risk
                     </h4>
 
-                    <p style="
-                        color:#9f1239 !important;
-                    ">
+                    <p>
                         Dropout probability is above 60%.
                         The student may require closer
                         academic or support intervention.
