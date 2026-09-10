@@ -66,6 +66,59 @@ st.markdown(
     <style>
 
     /* ======================================================
+       GLOBAL TEXT VISIBILITY
+    ====================================================== */
+
+    html,
+    body,
+    [class*="css"],
+    .stApp {
+        color: #111827 !important;
+    }
+
+    /* Main Streamlit text */
+    .stMarkdown,
+    .stText,
+    .stCaption,
+    .stAlert,
+    .stInfo,
+    .stSuccess,
+    .stWarning,
+    .stError {
+        color: #111827 !important;
+    }
+
+    /* Paragraphs */
+    p {
+        color: #111827 !important;
+        font-size: 1rem;
+        line-height: 1.65;
+    }
+
+    /* Bold text */
+    strong,
+    b {
+        color: #111827 !important;
+        font-weight: 750 !important;
+    }
+
+    /* Lists */
+    li {
+        color: #111827 !important;
+        line-height: 1.65;
+    }
+
+    /* Headings */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: #111827 !important;
+    }
+
+    /* ======================================================
        MAIN TITLE
     ====================================================== */
 
@@ -73,14 +126,15 @@ st.markdown(
         font-size: 2.2rem;
         font-weight: 800;
         margin-bottom: 0px;
-        color: #111827;
+        color: #111827 !important;
     }
 
     .subtitle {
-        color: #4b5563;
-        font-size: 1rem;
+        color: #374151 !important;
+        font-size: 1.05rem;
         margin-top: 0px;
         margin-bottom: 1.5rem;
+        line-height: 1.6;
     }
 
 
@@ -90,21 +144,21 @@ st.markdown(
 
     .metric-card {
         background: #ffffff;
-        border: 1px solid #d1d5db;
+        border: 1px solid #9ca3af;
         border-radius: 14px;
         padding: 18px 20px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
         min-height: 105px;
     }
 
     .metric-title {
-        color: #4b5563;
+        color: #374151 !important;
         font-size: 0.9rem;
-        font-weight: 600;
+        font-weight: 700;
     }
 
     .metric-value {
-        color: #111827;
+        color: #111827 !important;
         font-size: 1.8rem;
         font-weight: 800;
         margin-top: 5px;
@@ -127,19 +181,19 @@ st.markdown(
 
     .risk-low {
         background: #dcfce7;
-        color: #15803d;
+        color: #15803d !important;
         border: 2px solid #86efac;
     }
 
     .risk-medium {
         background: #fef3c7;
-        color: #b45309;
+        color: #b45309 !important;
         border: 2px solid #fcd34d;
     }
 
     .risk-high {
         background: #fee2e2;
-        color: #b91c1c;
+        color: #b91c1c !important;
         border: 2px solid #fca5a5;
     }
 
@@ -173,7 +227,7 @@ st.markdown(
     .result-title {
         font-size: 1.05rem;
         font-weight: 700;
-        color: #374151;
+        color: #374151 !important;
     }
 
     .result-value {
@@ -183,15 +237,15 @@ st.markdown(
     }
 
     .result-low .result-value {
-        color: #15803d;
+        color: #15803d !important;
     }
 
     .result-medium .result-value {
-        color: #b45309;
+        color: #b45309 !important;
     }
 
     .result-high .result-value {
-        color: #b91c1c;
+        color: #b91c1c !important;
     }
 
 
@@ -200,7 +254,7 @@ st.markdown(
     ====================================================== */
 
     .section-box {
-        border: 1px solid #d1d5db;
+        border: 1px solid #9ca3af;
         border-radius: 14px;
         padding: 18px;
         background: #ffffff;
@@ -216,6 +270,14 @@ st.markdown(
         border-right: 1px solid #d1d5db;
     }
 
+    section[data-testid="stSidebar"] * {
+        color: #111827 !important;
+    }
+
+    section[data-testid="stSidebar"] p {
+        color: #374151 !important;
+    }
+
 
     /* ======================================================
        DATAFRAMES
@@ -227,13 +289,8 @@ st.markdown(
         overflow: hidden;
     }
 
-
-    /* ======================================================
-       STREAMLIT TABLE TEXT
-    ====================================================== */
-
     [data-testid="stDataFrame"] div {
-        color: #111827;
+        color: #111827 !important;
     }
 
 
@@ -243,7 +300,111 @@ st.markdown(
 
     label {
         color: #111827 !important;
-        font-weight: 600 !important;
+        font-weight: 650 !important;
+    }
+
+    [data-testid="stWidgetLabel"] {
+        color: #111827 !important;
+    }
+
+    [data-testid="stWidgetLabel"] p {
+        color: #111827 !important;
+        font-weight: 650 !important;
+    }
+
+
+    /* ======================================================
+       INPUT TEXT
+    ====================================================== */
+
+    input {
+        color: #111827 !important;
+    }
+
+    textarea {
+        color: #111827 !important;
+    }
+
+    /* Selectbox text */
+    div[data-baseweb="select"] {
+        color: #111827 !important;
+    }
+
+    div[data-baseweb="select"] * {
+        color: #111827 !important;
+    }
+
+
+    /* ======================================================
+       CAPTIONS
+    ====================================================== */
+
+    .stCaption,
+    [data-testid="stCaptionContainer"] {
+        color: #374151 !important;
+        font-size: 0.9rem !important;
+    }
+
+
+    /* ======================================================
+       INFO / SUCCESS / WARNING / ERROR BOXES
+    ====================================================== */
+
+    [data-testid="stAlert"] p {
+        color: #111827 !important;
+        font-weight: 500;
+    }
+
+    [data-testid="stAlert"] strong {
+        color: #111827 !important;
+    }
+
+
+    /* ======================================================
+       TABS
+    ====================================================== */
+
+    button[data-baseweb="tab"] {
+        color: #374151 !important;
+        font-weight: 650 !important;
+    }
+
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: #111827 !important;
+        font-weight: 800 !important;
+    }
+
+
+    /* ======================================================
+       EXPANDER
+    ====================================================== */
+
+    [data-testid="stExpander"] summary {
+        color: #111827 !important;
+        font-weight: 700 !important;
+    }
+
+    [data-testid="stExpander"] summary p {
+        color: #111827 !important;
+        font-weight: 700 !important;
+    }
+
+
+    /* ======================================================
+       BUTTONS
+    ====================================================== */
+
+    button {
+        font-weight: 650 !important;
+    }
+
+
+    /* ======================================================
+       DIVIDERS
+    ====================================================== */
+
+    hr {
+        border-color: #d1d5db !important;
     }
 
 
@@ -251,9 +412,18 @@ st.markdown(
        GENERAL TEXT
     ====================================================== */
 
-    p,
-    li {
-        color: #1f2937;
+    .stMarkdown p,
+    .stMarkdown li {
+        color: #111827 !important;
+    }
+
+    .stMarkdown h1,
+    .stMarkdown h2,
+    .stMarkdown h3,
+    .stMarkdown h4,
+    .stMarkdown h5,
+    .stMarkdown h6 {
+        color: #111827 !important;
     }
 
     </style>
@@ -2021,9 +2191,11 @@ elif page == "🔮 Predict Risk":
                         )
 
                         if default_number < min_value:
+
                             default_number = min_value
 
                         if default_number > max_value:
+
                             default_number = max_value
 
                         value = st.number_input(
@@ -2329,7 +2501,7 @@ elif page == "🔮 Predict Risk":
                         margin-bottom:12px;
                     ">
                         <div style="
-                            color:#374151;
+                            color:#374151 !important;
                             font-size:1rem;
                             font-weight:700;
                         ">
@@ -2337,7 +2509,7 @@ elif page == "🔮 Predict Risk":
                         </div>
 
                         <div style="
-                            color:{class_color};
+                            color:{class_color} !important;
                             font-size:1.55rem;
                             font-weight:800;
                             margin-top:5px;
@@ -2493,10 +2665,10 @@ elif page == "🔮 Predict Risk":
                     border-radius:12px;
                     padding:15px;
                 ">
-                    <h4 style="color:#15803d;">
+                    <h4 style="color:#15803d !important;">
                         🟢 Low Risk
                     </h4>
-                    <p style="color:#166534;">
+                    <p style="color:#166534 !important;">
                         Dropout probability below 30%.
                     </p>
                 </div>
@@ -2512,10 +2684,10 @@ elif page == "🔮 Predict Risk":
                     border-radius:12px;
                     padding:15px;
                 ">
-                    <h4 style="color:#b45309;">
+                    <h4 style="color:#b45309 !important;">
                         🟡 Medium Risk
                     </h4>
-                    <p style="color:#92400e;">
+                    <p style="color:#92400e !important;">
                         Probability from 30% to below 60%.
                     </p>
                 </div>
@@ -2531,10 +2703,10 @@ elif page == "🔮 Predict Risk":
                     border-radius:12px;
                     padding:15px;
                 ">
-                    <h4 style="color:#b91c1c;">
+                    <h4 style="color:#b91c1c !important;">
                         🔴 High Risk
                     </h4>
-                    <p style="color:#991b1b;">
+                    <p style="color:#991b1b !important;">
                         Probability of 60% or higher.
                     </p>
                 </div>
