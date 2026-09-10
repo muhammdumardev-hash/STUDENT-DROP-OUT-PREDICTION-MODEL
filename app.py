@@ -66,75 +66,79 @@ st.markdown(
     <style>
 
     /* ======================================================
-       GLOBAL TEXT VISIBILITY
+       GLOBAL APP BACKGROUND
     ====================================================== */
 
-    html,
-    body,
-    [class*="css"],
     .stApp {
-        color: #111827 !important;
+        background: #0f172a !important;
     }
 
-    /* Main Streamlit text */
+    .main {
+        background: #0f172a !important;
+    }
+
+    .block-container {
+        padding-top: 2rem !important;
+        padding-bottom: 3rem !important;
+    }
+
+
+    /* ======================================================
+       GLOBAL TEXT
+    ====================================================== */
+
     .stMarkdown,
+    .stMarkdown p,
+    .stMarkdown li,
     .stText,
-    .stCaption,
-    .stAlert,
-    .stInfo,
-    .stSuccess,
-    .stWarning,
-    .stError {
-        color: #111827 !important;
+    p,
+    li {
+        color: #ffffff !important;
     }
 
-    /* Paragraphs */
-    p {
-        color: #111827 !important;
-        font-size: 1rem;
-        line-height: 1.65;
-    }
-
-    /* Bold text */
     strong,
     b {
-        color: #111827 !important;
+        color: #ffffff !important;
         font-weight: 750 !important;
     }
 
-    /* Lists */
-    li {
-        color: #111827 !important;
-        line-height: 1.65;
-    }
-
-    /* Headings */
     h1,
     h2,
     h3,
     h4,
     h5,
     h6 {
-        color: #111827 !important;
+        color: #ffffff !important;
     }
+
+    .stMarkdown h1,
+    .stMarkdown h2,
+    .stMarkdown h3,
+    .stMarkdown h4,
+    .stMarkdown h5,
+    .stMarkdown h6 {
+        color: #ffffff !important;
+    }
+
 
     /* ======================================================
        MAIN TITLE
     ====================================================== */
 
     .main-title {
-        font-size: 2.2rem;
-        font-weight: 800;
-        margin-bottom: 0px;
-        color: #111827 !important;
+        color: #ffffff !important;
+        font-size: 2.25rem;
+        font-weight: 850;
+        margin-bottom: 0.15rem;
+        letter-spacing: -0.5px;
     }
 
     .subtitle {
-        color: #374151 !important;
+        color: #e0e0e0 !important;
         font-size: 1.05rem;
-        margin-top: 0px;
+        margin-top: 0;
         margin-bottom: 1.5rem;
-        line-height: 1.6;
+        line-height: 1.65;
     }
 
 
@@ -143,58 +147,39 @@ st.markdown(
     ====================================================== */
 
     .metric-card {
-        background: #ffffff;
-        border: 1px solid #9ca3af;
-        border-radius: 14px;
-        padding: 18px 20px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
-        min-height: 105px;
+        background: #ffffff !important;
+        border: 1px solid #d1d5db;
+        border-radius: 15px;
+        padding: 19px 20px;
+        min-height: 108px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.20);
     }
 
     .metric-title {
-        color: #374151 !important;
-        font-size: 0.9rem;
-        font-weight: 700;
+        color: #1e1e1e !important;
+        font-size: 0.90rem;
+        font-weight: 750;
+        letter-spacing: 0.1px;
     }
 
     .metric-value {
-        color: #111827 !important;
-        font-size: 1.8rem;
-        font-weight: 800;
+        color: #000000 !important;
+        font-size: 1.85rem;
+        font-weight: 850;
         margin-top: 5px;
     }
 
 
     /* ======================================================
-       RISK BADGES
+       SECTION BOX
     ====================================================== */
 
-    .risk-badge {
-        display: inline-block;
-        padding: 11px 24px;
-        border-radius: 999px;
-        font-weight: 800;
-        font-size: 1.15rem;
-        text-align: center;
-        margin-bottom: 10px;
-    }
-
-    .risk-low {
-        background: #dcfce7;
-        color: #15803d !important;
-        border: 2px solid #86efac;
-    }
-
-    .risk-medium {
-        background: #fef3c7;
-        color: #b45309 !important;
-        border: 2px solid #fcd34d;
-    }
-
-    .risk-high {
-        background: #fee2e2;
-        color: #b91c1c !important;
-        border: 2px solid #fca5a5;
+    .section-box {
+        background: #111827 !important;
+        border: 1px solid #334155;
+        border-radius: 15px;
+        padding: 18px;
+        margin-bottom: 15px;
     }
 
 
@@ -210,29 +195,29 @@ st.markdown(
     }
 
     .result-low {
-        background: #f0fdf4;
+        background: #f0fdf4 !important;
         border: 2px solid #86efac;
     }
 
     .result-medium {
-        background: #fffbeb;
+        background: #fffbeb !important;
         border: 2px solid #fcd34d;
     }
 
     .result-high {
-        background: #fef2f2;
+        background: #fef2f2 !important;
         border: 2px solid #fca5a5;
     }
 
     .result-title {
+        color: #1e1e1e !important;
         font-size: 1.05rem;
-        font-weight: 700;
-        color: #374151 !important;
+        font-weight: 750;
     }
 
     .result-value {
         font-size: 1.65rem;
-        font-weight: 800;
+        font-weight: 850;
         margin-top: 5px;
     }
 
@@ -250,15 +235,35 @@ st.markdown(
 
 
     /* ======================================================
-       SECTION BOXES
+       RISK BADGES
     ====================================================== */
 
-    .section-box {
-        border: 1px solid #9ca3af;
-        border-radius: 14px;
-        padding: 18px;
-        background: #ffffff;
-        margin-bottom: 15px;
+    .risk-badge {
+        display: inline-block;
+        padding: 11px 24px;
+        border-radius: 999px;
+        font-weight: 850;
+        font-size: 1.15rem;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .risk-low {
+        background: #dcfce7 !important;
+        color: #15803d !important;
+        border: 2px solid #86efac;
+    }
+
+    .risk-medium {
+        background: #fef3c7 !important;
+        color: #b45309 !important;
+        border: 2px solid #fcd34d;
+    }
+
+    .risk-high {
+        background: #fee2e2 !important;
+        color: #b91c1c !important;
+        border: 2px solid #fca5a5;
     }
 
 
@@ -267,71 +272,48 @@ st.markdown(
     ====================================================== */
 
     section[data-testid="stSidebar"] {
-        border-right: 1px solid #d1d5db;
+        background: #111827 !important;
+        border-right: 1px solid #334155 !important;
     }
 
     section[data-testid="stSidebar"] * {
-        color: #111827 !important;
+        color: #ffffff !important;
     }
 
     section[data-testid="stSidebar"] p {
-        color: #374151 !important;
+        color: #e0e0e0 !important;
+    }
+
+    section[data-testid="stSidebar"] .stCaption {
+        color: #cbd5e1 !important;
+    }
+
+    section[data-testid="stSidebar"] label {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+    }
+
+    section[data-testid="stSidebar"] [data-testid="stMetricLabel"] {
+        color: #e0e0e0 !important;
+    }
+
+    section[data-testid="stSidebar"] [data-testid="stMetricValue"] {
+        color: #ffffff !important;
     }
 
 
     /* ======================================================
-       DATAFRAMES
+       SIDEBAR RADIO
     ====================================================== */
 
-    [data-testid="stDataFrame"] {
-        border: 1px solid #9ca3af;
-        border-radius: 10px;
-        overflow: hidden;
+    section[data-testid="stSidebar"]
+    div[role="radiogroup"] label {
+        color: #ffffff !important;
     }
 
-    [data-testid="stDataFrame"] div {
-        color: #111827 !important;
-    }
-
-
-    /* ======================================================
-       FORM LABELS
-    ====================================================== */
-
-    label {
-        color: #111827 !important;
-        font-weight: 650 !important;
-    }
-
-    [data-testid="stWidgetLabel"] {
-        color: #111827 !important;
-    }
-
-    [data-testid="stWidgetLabel"] p {
-        color: #111827 !important;
-        font-weight: 650 !important;
-    }
-
-
-    /* ======================================================
-       INPUT TEXT
-    ====================================================== */
-
-    input {
-        color: #111827 !important;
-    }
-
-    textarea {
-        color: #111827 !important;
-    }
-
-    /* Selectbox text */
-    div[data-baseweb="select"] {
-        color: #111827 !important;
-    }
-
-    div[data-baseweb="select"] * {
-        color: #111827 !important;
+    section[data-testid="stSidebar"]
+    div[role="radiogroup"] label p {
+        color: #ffffff !important;
     }
 
 
@@ -340,23 +322,10 @@ st.markdown(
     ====================================================== */
 
     .stCaption,
-    [data-testid="stCaptionContainer"] {
-        color: #374151 !important;
-        font-size: 0.9rem !important;
-    }
-
-
-    /* ======================================================
-       INFO / SUCCESS / WARNING / ERROR BOXES
-    ====================================================== */
-
-    [data-testid="stAlert"] p {
-        color: #111827 !important;
-        font-weight: 500;
-    }
-
-    [data-testid="stAlert"] strong {
-        color: #111827 !important;
+    [data-testid="stCaptionContainer"],
+    [data-testid="stCaptionContainer"] p {
+        color: #e0e0e0 !important;
+        font-size: 0.90rem !important;
     }
 
 
@@ -365,28 +334,117 @@ st.markdown(
     ====================================================== */
 
     button[data-baseweb="tab"] {
-        color: #374151 !important;
-        font-weight: 650 !important;
+        color: #d1d5db !important;
+        font-weight: 700 !important;
+    }
+
+    button[data-baseweb="tab"] p {
+        color: #d1d5db !important;
     }
 
     button[data-baseweb="tab"][aria-selected="true"] {
-        color: #111827 !important;
-        font-weight: 800 !important;
+        color: #ffffff !important;
+        font-weight: 850 !important;
+    }
+
+    button[data-baseweb="tab"][aria-selected="true"] p {
+        color: #ffffff !important;
     }
 
 
     /* ======================================================
-       EXPANDER
+       EXPANDERS
     ====================================================== */
 
+    [data-testid="stExpander"] {
+        background: #111827 !important;
+        border: 1px solid #334155 !important;
+        border-radius: 12px !important;
+    }
+
     [data-testid="stExpander"] summary {
-        color: #111827 !important;
-        font-weight: 700 !important;
+        color: #ffffff !important;
+        font-weight: 750 !important;
     }
 
     [data-testid="stExpander"] summary p {
-        color: #111827 !important;
+        color: #ffffff !important;
+        font-weight: 750 !important;
+    }
+
+
+    /* ======================================================
+       FORM LABELS
+    ====================================================== */
+
+    label {
+        color: #ffffff !important;
         font-weight: 700 !important;
+    }
+
+    [data-testid="stWidgetLabel"] {
+        color: #ffffff !important;
+    }
+
+    [data-testid="stWidgetLabel"] p {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+    }
+
+
+    /* ======================================================
+       INPUTS
+    ====================================================== */
+
+    input {
+        color: #111827 !important;
+        background-color: #ffffff !important;
+    }
+
+    textarea {
+        color: #111827 !important;
+        background-color: #ffffff !important;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: #6b7280 !important;
+    }
+
+
+    /* ======================================================
+       SELECTBOX
+    ====================================================== */
+
+    div[data-baseweb="select"] {
+        color: #111827 !important;
+    }
+
+    div[data-baseweb="select"] > div {
+        background-color: #ffffff !important;
+        border-color: #9ca3af !important;
+    }
+
+    div[data-baseweb="select"] * {
+        color: #111827 !important;
+    }
+
+
+    /* ======================================================
+       SELECTBOX DROPDOWN
+    ====================================================== */
+
+    div[role="listbox"] {
+        background: #ffffff !important;
+    }
+
+    div[role="option"] {
+        color: #111827 !important;
+        background: #ffffff !important;
+    }
+
+    div[role="option"]:hover {
+        background: #f3f4f6 !important;
     }
 
 
@@ -395,7 +453,41 @@ st.markdown(
     ====================================================== */
 
     button {
-        font-weight: 650 !important;
+        font-weight: 700 !important;
+    }
+
+    button p {
+        font-weight: 700 !important;
+    }
+
+
+    /* ======================================================
+       DATAFRAME
+    ====================================================== */
+
+    [data-testid="stDataFrame"] {
+        border: 1px solid #475569 !important;
+        border-radius: 10px !important;
+        overflow: hidden;
+        background: #ffffff !important;
+    }
+
+
+    /* ======================================================
+       ALERTS
+    ====================================================== */
+
+    [data-testid="stAlert"] {
+        border-radius: 10px !important;
+    }
+
+    [data-testid="stAlert"] p {
+        color: #111827 !important;
+        font-weight: 550;
+    }
+
+    [data-testid="stAlert"] strong {
+        color: #111827 !important;
     }
 
 
@@ -404,26 +496,59 @@ st.markdown(
     ====================================================== */
 
     hr {
-        border-color: #d1d5db !important;
+        border-color: #334155 !important;
     }
 
 
     /* ======================================================
-       GENERAL TEXT
+       CONTAINER BORDERS
     ====================================================== */
 
-    .stMarkdown p,
-    .stMarkdown li {
-        color: #111827 !important;
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        border-color: #334155 !important;
+        border-radius: 14px !important;
     }
 
-    .stMarkdown h1,
-    .stMarkdown h2,
-    .stMarkdown h3,
-    .stMarkdown h4,
-    .stMarkdown h5,
-    .stMarkdown h6 {
-        color: #111827 !important;
+
+    /* ======================================================
+       NUMBER INPUT / TEXT INPUT
+    ====================================================== */
+
+    div[data-baseweb="input"] {
+        background: #ffffff !important;
+        border-radius: 8px !important;
+    }
+
+
+    /* ======================================================
+       CHECKBOX / RADIO TEXT
+    ====================================================== */
+
+    [data-testid="stCheckbox"] label,
+    [data-testid="stRadio"] label {
+        color: #ffffff !important;
+    }
+
+    [data-testid="stCheckbox"] label p,
+    [data-testid="stRadio"] label p {
+        color: #ffffff !important;
+    }
+
+
+    /* ======================================================
+       FILE / MISC STREAMLIT TEXT
+    ====================================================== */
+
+    [data-testid="stMarkdownContainer"] p {
+        color: #ffffff !important;
+    }
+
+    [data-testid="stMarkdownContainer"] li {
+        color: #ffffff !important;
+    }
+
+    [data-testid="stMarkdownContainer"] strong {
+        color: #ffffff !important;
     }
 
     </style>
@@ -907,7 +1032,11 @@ if page == "🏠 Overview":
 
         fig.update_traces(
             textposition="outside",
-            cliponaxis=False
+            cliponaxis=False,
+            textfont=dict(
+                color="#000000",
+                size=13
+            )
         )
 
         fig.update_layout(
@@ -923,17 +1052,20 @@ if page == "🏠 Overview":
                 t=50,
                 b=55
             ),
+            font=dict(
+                color="#111827"
+            ),
         )
 
         fig.update_xaxes(
             showline=True,
             linecolor="#6b7280",
             tickfont=dict(
-                color="#111827",
+                color="#000000",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#000000"
             )
         )
 
@@ -943,11 +1075,11 @@ if page == "🏠 Overview":
             showline=True,
             linecolor="#6b7280",
             tickfont=dict(
-                color="#111827",
+                color="#000000",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#000000"
             )
         )
 
@@ -1058,7 +1190,11 @@ elif page == "📊 Exploratory Analysis":
 
         fig.update_traces(
             textposition="outside",
-            cliponaxis=False
+            cliponaxis=False,
+            textfont=dict(
+                color="#000000",
+                size=13
+            )
         )
 
         fig.update_layout(
@@ -1074,17 +1210,20 @@ elif page == "📊 Exploratory Analysis":
                 t=50,
                 b=55
             ),
+            font=dict(
+                color="#111827"
+            ),
         )
 
         fig.update_xaxes(
             showline=True,
             linecolor="#6b7280",
             tickfont=dict(
-                color="#111827",
+                color="#000000",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#000000"
             )
         )
 
@@ -1094,11 +1233,11 @@ elif page == "📊 Exploratory Analysis":
             showline=True,
             linecolor="#6b7280",
             tickfont=dict(
-                color="#111827",
+                color="#000000",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#000000"
             )
         )
 
@@ -1183,7 +1322,11 @@ elif page == "📊 Exploratory Analysis":
 
             fig.update_traces(
                 textposition="outside",
-                cliponaxis=False
+                cliponaxis=False,
+                textfont=dict(
+                    color="#000000",
+                    size=13
+                )
             )
 
             fig.update_layout(
@@ -1199,17 +1342,20 @@ elif page == "📊 Exploratory Analysis":
                     t=50,
                     b=55
                 ),
+                font=dict(
+                    color="#111827"
+                ),
             )
 
             fig.update_xaxes(
                 showline=True,
                 linecolor="#6b7280",
                 tickfont=dict(
-                    color="#111827",
+                    color="#000000",
                     size=13
                 ),
                 title_font=dict(
-                    color="#111827"
+                    color="#000000"
                 )
             )
 
@@ -1222,11 +1368,11 @@ elif page == "📊 Exploratory Analysis":
                 showline=True,
                 linecolor="#6b7280",
                 tickfont=dict(
-                    color="#111827",
+                    color="#000000",
                     size=13
                 ),
                 title_font=dict(
-                    color="#111827"
+                    color="#000000"
                 )
             )
 
@@ -1321,6 +1467,9 @@ elif page == "📊 Exploratory Analysis":
                     t=55,
                     b=55
                 ),
+                font=dict(
+                    color="#111827"
+                ),
             )
 
             fig.update_xaxes(
@@ -1328,11 +1477,11 @@ elif page == "📊 Exploratory Analysis":
                 showline=True,
                 linecolor="#6b7280",
                 tickfont=dict(
-                    color="#111827",
+                    color="#000000",
                     size=13
                 ),
                 title_font=dict(
-                    color="#111827"
+                    color="#000000"
                 )
             )
 
@@ -1346,11 +1495,11 @@ elif page == "📊 Exploratory Analysis":
                 showline=True,
                 linecolor="#6b7280",
                 tickfont=dict(
-                    color="#111827",
+                    color="#000000",
                     size=13
                 ),
                 title_font=dict(
-                    color="#111827"
+                    color="#000000"
                 )
             )
 
@@ -1436,6 +1585,9 @@ elif page == "📊 Exploratory Analysis":
                     t=55,
                     b=55
                 ),
+                font=dict(
+                    color="#111827"
+                ),
             )
 
             fig.update_xaxes(
@@ -1443,11 +1595,11 @@ elif page == "📊 Exploratory Analysis":
                 showline=True,
                 linecolor="#6b7280",
                 tickfont=dict(
-                    color="#111827",
+                    color="#000000",
                     size=13
                 ),
                 title_font=dict(
-                    color="#111827"
+                    color="#000000"
                 )
             )
 
@@ -1461,11 +1613,11 @@ elif page == "📊 Exploratory Analysis":
                 showline=True,
                 linecolor="#6b7280",
                 tickfont=dict(
-                    color="#111827",
+                    color="#000000",
                     size=13
                 ),
                 title_font=dict(
-                    color="#111827"
+                    color="#000000"
                 )
             )
 
@@ -1693,29 +1845,51 @@ elif page == "🤖 Model Performance":
             ],
         )
 
+        fig_cm.update_traces(
+            textfont=dict(
+                color="#000000",
+                size=18
+            )
+        )
+
         fig_cm.update_layout(
             height=450,
             plot_bgcolor="white",
             paper_bgcolor="white",
+            font=dict(
+                color="#000000"
+            ),
+            margin=dict(
+                l=75,
+                r=30,
+                t=55,
+                b=65
+            ),
         )
 
         fig_cm.update_xaxes(
+            showline=True,
+            linecolor="#6b7280",
             tickfont=dict(
-                color="#111827",
+                color="#000000",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#000000",
+                size=14
             )
         )
 
         fig_cm.update_yaxes(
+            showline=True,
+            linecolor="#6b7280",
             tickfont=dict(
-                color="#111827",
+                color="#000000",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#000000",
+                size=14
             )
         )
 
@@ -1758,7 +1932,7 @@ elif page == "🤖 Model Performance":
                 mode="lines",
                 name="Random Guess",
                 line=dict(
-                    color="gray",
+                    color="#6b7280",
                     dash="dash"
                 ),
             )
@@ -1770,31 +1944,54 @@ elif page == "🤖 Model Performance":
             height=450,
             plot_bgcolor="white",
             paper_bgcolor="white",
+            font=dict(
+                color="#000000"
+            ),
+            legend=dict(
+                font=dict(
+                    color="#000000",
+                    size=12
+                )
+            ),
+            margin=dict(
+                l=65,
+                r=30,
+                t=55,
+                b=65
+            ),
         )
 
         fig_roc.update_xaxes(
             range=[0, 1],
+            dtick=0.2,
             showgrid=True,
             gridcolor="#e5e7eb",
+            showline=True,
+            linecolor="#6b7280",
             tickfont=dict(
-                color="#111827",
+                color="#000000",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#000000",
+                size=14
             )
         )
 
         fig_roc.update_yaxes(
             range=[0, 1],
+            dtick=0.2,
             showgrid=True,
             gridcolor="#e5e7eb",
+            showline=True,
+            linecolor="#6b7280",
             tickfont=dict(
-                color="#111827",
+                color="#000000",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#000000",
+                size=14
             )
         )
 
@@ -1973,10 +2170,6 @@ elif page == "🔮 Predict Risk":
     with st.form(
         "prediction_form"
     ):
-
-        # ====================================================
-        # COLUMNS
-        # ====================================================
 
         st.markdown(
             "### 👤 Demographic Information"
@@ -2191,11 +2384,9 @@ elif page == "🔮 Predict Risk":
                         )
 
                         if default_number < min_value:
-
                             default_number = min_value
 
                         if default_number > max_value:
-
                             default_number = max_value
 
                         value = st.number_input(
@@ -2344,7 +2535,7 @@ elif page == "🔮 Predict Risk":
                         "suffix": "%",
                         "font": {
                             "size": 38,
-                            "color": risk_color
+                            "color": "#000000"
                         }
                     },
                     title={
@@ -2352,7 +2543,7 @@ elif page == "🔮 Predict Risk":
                         "Dropout Probability",
                         "font": {
                             "size": 18,
-                            "color": "#111827"
+                            "color": "#000000"
                         }
                     },
                     gauge={
@@ -2364,7 +2555,7 @@ elif page == "🔮 Predict Risk":
                             "tickwidth": 1,
                             "tickcolor": "#374151",
                             "tickfont": {
-                                "color": "#111827"
+                                "color": "#000000"
                             }
                         },
 
@@ -2425,7 +2616,7 @@ elif page == "🔮 Predict Risk":
                 ),
                 paper_bgcolor="white",
                 font=dict(
-                    color="#111827"
+                    color="#000000"
                 )
             )
 
@@ -2501,7 +2692,7 @@ elif page == "🔮 Predict Risk":
                         margin-bottom:12px;
                     ">
                         <div style="
-                            color:#374151 !important;
+                            color:#1e1e1e !important;
                             font-size:1rem;
                             font-weight:700;
                         ">
