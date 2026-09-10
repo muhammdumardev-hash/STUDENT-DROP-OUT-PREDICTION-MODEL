@@ -2685,9 +2685,10 @@ elif page == "🔮 Predict Risk":
                 # ====================================================
                 # FIXED PREDICTED CLASS CARD
                 # ====================================================
-st.markdown(
-    f'<div style="background:{class_background};border:2px solid {class_border};border-radius:14px;padding:18px;margin-bottom:12px;">'
-    f'<div style="color:#ffffff !important;font-size:1rem;font-weight:700;">Predicted Class</div>'
+
+               st.markdown(
+    f'<div style="background:#e0f2fe;border:2px solid {class_border};border-radius:14px;padding:18px;margin-bottom:12px;">'
+    f'<div style="color:#374151 !important;font-size:1rem;font-weight:700;">Predicted Class</div>'
     f'<div style="color:{class_color} !important;font-size:1.55rem;font-weight:800;margin-top:5px;">{predicted_label}</div>'
     f'</div>',
     unsafe_allow_html=True
