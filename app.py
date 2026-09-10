@@ -2088,6 +2088,10 @@ elif page == "🔮 Predict Risk":
         unsafe_allow_html=True
     )
 
+    # ========================================================
+    # FEATURE / TEST DATA
+    # ========================================================
+
     feature_names = results[
         "feature_names"
     ]
@@ -2098,6 +2102,10 @@ elif page == "🔮 Predict Risk":
 
     X_test_raw = results[
         "X_test"
+    ]
+
+    y_test_raw = results[
+        "y_test"
     ]
 
     # ========================================================
@@ -2119,8 +2127,9 @@ elif page == "🔮 Predict Risk":
         )
 
         st.caption(
-            "Load a real student record from the test set. "
-            "You can then modify the values and test the model."
+            "Load a real unseen student record from the test set. "
+            "All 36 input features will be automatically loaded "
+            "into the prediction fields."
         )
 
         if st.button(
@@ -2128,15 +2137,73 @@ elif page == "🔮 Predict Risk":
             use_container_width=True
         ):
 
+            # ------------------------------------------------
+            # Select one REAL unseen student from X_test
+            # ------------------------------------------------
+
             random_index = np.random.choice(
                 X_test_raw.index
             )
+
+            # ------------------------------------------------
+            # Save selected student's original index
+            # ------------------------------------------------
 
             st.session_state.sample_index = (
                 random_index
             )
 
+            # ------------------------------------------------
+            # IMPORTANT FIX
+            #
+            # Load ALL 36 test-student feature values
+            # into Streamlit session state.
+            #
+            # Target is NOT included.
+            # ------------------------------------------------
+
+            selected_student = (
+                X_test_raw.loc[
+                    random_index
+                ]
+            )
+
+            for col_name in feature_names:
+
+                st.session_state[
+                    f"input_{col_name}"
+                ] = selected_student[
+                    col_name
+                ]
+
+            # ------------------------------------------------
+            # Clear previous prediction
+            # ------------------------------------------------
+
+            st.session_state.pop(
+                "last_prediction",
+                None
+            )
+
+            st.session_state.pop(
+                "last_probability",
+                None
+            )
+
+            st.session_state.pop(
+                "last_input_index",
+                None
+            )
+
+            # ------------------------------------------------
+            # Rerun so all widgets receive the selected values
+            # ------------------------------------------------
+
             st.rerun()
+
+    # ========================================================
+    # CURRENT SAMPLE INDEX
+    # ========================================================
 
     sample_index = (
         st.session_state.sample_index
@@ -2149,12 +2216,19 @@ elif page == "🔮 Predict Risk":
             f"(record index: {sample_index})."
         )
 
+        st.caption(
+            "This student belongs to the held-out test set. "
+            "The target value is kept separate and is not used "
+            "as an input feature."
+        )
+
     # ========================================================
     # DEFAULT VALUES
     # ========================================================
 
     if sample_index is not None:
 
+        # Use the selected test student's REAL values
         defaults = X_test_raw.loc[
             sample_index
         ]
@@ -2286,7 +2360,17 @@ elif page == "🔮 Predict Risk":
                 columns
             ):
 
-                series = X_train_raw[
+                # ------------------------------------------------
+                # IMPORTANT FIX:
+                #
+                # Use COMPLETE dataset for available values.
+                # Do NOT use X_train here.
+                #
+                # A value may exist in X_test even if that exact
+                # value does not appear in X_train.
+                # ------------------------------------------------
+
+                series = df[
                     col_name
                 ]
 
@@ -2297,6 +2381,10 @@ elif page == "🔮 Predict Risk":
                     .tolist()
                 )
 
+                # ------------------------------------------------
+                # Determine default value
+                # ------------------------------------------------
+
                 if defaults is not None:
 
                     default_value = defaults[
@@ -2305,17 +2393,27 @@ elif page == "🔮 Predict Risk":
 
                 else:
 
-                    default_value = (
-                        series.median()
-                    )
+                    default_value = series.median()
 
                 with input_cols[
                     i % 3
                 ]:
 
+                    # =================================================
+                    # CATEGORICAL / LOW-UNIQUE-VALUE COLUMNS
+                    # =================================================
+
                     if len(unique_values) <= 10:
 
-                        if default_value in unique_values:
+                        # ------------------------------------------------
+                        # Make sure selected/default value exists
+                        # in the dropdown options.
+                        # ------------------------------------------------
+
+                        if (
+                            default_value
+                            in unique_values
+                        ):
 
                             selected_index = (
                                 unique_values.index(
@@ -2335,6 +2433,10 @@ elif page == "🔮 Predict Risk":
                             "Educational special needs",
                             "International",
                         ]
+
+                        # =================================================
+                        # BINARY COLUMNS
+                        # =================================================
 
                         if (
                             col_name
@@ -2359,6 +2461,10 @@ elif page == "🔮 Predict Risk":
                                 help="0 = No, 1 = Yes",
                             )
 
+                        # =================================================
+                        # OTHER CATEGORICAL COLUMNS
+                        # =================================================
+
                         else:
 
                             value = st.selectbox(
@@ -2368,6 +2474,10 @@ elif page == "🔮 Predict Risk":
                                 key=f"input_{col_name}",
                                 help="Value/code from the dataset.",
                             )
+
+                    # =================================================
+                    # NUMERIC COLUMNS
+                    # =================================================
 
                     else:
 
@@ -2383,11 +2493,27 @@ elif page == "🔮 Predict Risk":
                             default_value
                         )
 
-                        if default_number < min_value:
-                            default_number = min_value
+                        # ------------------------------------------------
+                        # Keep default value inside complete dataset range
+                        # ------------------------------------------------
 
-                        if default_number > max_value:
-                            default_number = max_value
+                        if (
+                            default_number
+                            < min_value
+                        ):
+
+                            default_number = (
+                                min_value
+                            )
+
+                        if (
+                            default_number
+                            > max_value
+                        ):
+
+                            default_number = (
+                                max_value
+                            )
 
                         value = st.number_input(
                             col_name,
@@ -2396,6 +2522,10 @@ elif page == "🔮 Predict Risk":
                             value=default_number,
                             key=f"input_{col_name}",
                         )
+
+                    # ------------------------------------------------
+                    # Save current widget value
+                    # ------------------------------------------------
 
                     inputs[
                         col_name
@@ -2453,6 +2583,10 @@ elif page == "🔮 Predict Risk":
 
     if submitted:
 
+        # ----------------------------------------------------
+        # Create input dataframe using ONLY 36 features
+        # ----------------------------------------------------
+
         input_df = pd.DataFrame(
             [inputs]
         )
@@ -2461,12 +2595,20 @@ elif page == "🔮 Predict Risk":
             feature_names
         ]
 
+        # ----------------------------------------------------
+        # Scale input
+        # ----------------------------------------------------
+
         input_scaled = (
             results["scaler"]
             .transform(
                 input_df
             )
         )
+
+        # ----------------------------------------------------
+        # Probability
+        # ----------------------------------------------------
 
         probability = (
             results["model"]
@@ -2475,11 +2617,31 @@ elif page == "🔮 Predict Risk":
             )[0, 1]
         )
 
+        # ----------------------------------------------------
+        # Predicted class
+        # ----------------------------------------------------
+
         predicted_class = (
             results["model"]
             .predict(
                 input_scaled
             )[0]
+        )
+
+        # ====================================================
+        # SAVE PREDICTION IN SESSION STATE
+        # ====================================================
+
+        st.session_state.last_prediction = int(
+            predicted_class
+        )
+
+        st.session_state.last_probability = float(
+            probability
+        )
+
+        st.session_state.last_input_index = (
+            sample_index
         )
 
         # ====================================================
@@ -2687,12 +2849,13 @@ elif page == "🔮 Predict Risk":
                 # ====================================================
 
                 st.markdown(
-                    f'<div style="background:#e0f2fe;border:2px solid {class_border};border-radius:14px;padding:18px;margin-bottom:12px;">'
+                    f'<div style="background:{class_background};border:2px solid {class_border};border-radius:14px;padding:18px;margin-bottom:12px;">'
                     f'<div style="color:#374151 !important;font-size:1rem;font-weight:700;">Predicted Class</div>'
                     f'<div style="color:{class_color} !important;font-size:1.55rem;font-weight:800;margin-top:5px;">{predicted_label}</div>'
                     f'</div>',
                     unsafe_allow_html=True
                 )
+
                 if predicted_class == 1:
 
                     st.warning(
@@ -2714,6 +2877,15 @@ elif page == "🔮 Predict Risk":
         # ====================================================
 
         if sample_index is not None:
+
+            # ------------------------------------------------
+            # IMPORTANT:
+            #
+            # Confirm that the user did NOT modify the
+            # automatically loaded test student's values.
+            #
+            # Only then show the actual outcome.
+            # ------------------------------------------------
 
             original_values = (
                 X_test_raw
@@ -2741,10 +2913,16 @@ elif page == "🔮 Predict Risk":
 
             if same_as_original:
 
+                # ------------------------------------------------
+                # IMPORTANT FIX:
+                #
+                # Get actual target from y_test.
+                # This confirms it belongs to held-out test set.
+                # ------------------------------------------------
+
                 actual_outcome = int(
-                    df.loc[
-                        sample_index,
-                        "target"
+                    results["y_test"].loc[
+                        sample_index
                     ]
                 )
 
@@ -2813,6 +2991,14 @@ elif page == "🔮 Predict Risk":
                             "does not match the actual outcome."
                         )
 
+            else:
+
+                st.info(
+                    "ℹ️ The test student's input values were "
+                    "modified. Therefore, the original actual "
+                    "outcome is not shown for this prediction."
+                )
+
         # ====================================================
         # RISK INTERPRETATION
         # ====================================================
@@ -2830,7 +3016,7 @@ elif page == "🔮 Predict Risk":
             r1, r2, r3 = st.columns(3)
 
             # ====================================================
-            # FIXED LOW RISK CARD
+            # LOW RISK
             # ====================================================
 
             r1.markdown(
@@ -2842,7 +3028,7 @@ elif page == "🔮 Predict Risk":
             )
 
             # ====================================================
-            # FIXED MEDIUM RISK CARD
+            # MEDIUM RISK
             # ====================================================
 
             r2.markdown(
@@ -2854,7 +3040,7 @@ elif page == "🔮 Predict Risk":
             )
 
             # ====================================================
-            # FIXED HIGH RISK CARD
+            # HIGH RISK
             # ====================================================
 
             r3.markdown(
