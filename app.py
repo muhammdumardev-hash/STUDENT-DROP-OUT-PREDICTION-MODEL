@@ -66,7 +66,7 @@ st.markdown(
     <style>
 
     /* ======================================================
-       GLOBAL APP BACKGROUND
+       GLOBAL APP
     ====================================================== */
 
     .stApp {
@@ -536,7 +536,7 @@ st.markdown(
 
 
     /* ======================================================
-       FILE / MISC STREAMLIT TEXT
+       MARKDOWN CONTAINER
     ====================================================== */
 
     [data-testid="stMarkdownContainer"] p {
@@ -549,6 +549,69 @@ st.markdown(
 
     [data-testid="stMarkdownContainer"] strong {
         color: #ffffff !important;
+    }
+
+
+    /* ======================================================
+       RISK INTERPRETATION CARDS
+    ====================================================== */
+
+    .risk-info-card {
+        border-radius: 12px;
+        padding: 16px;
+        min-height: 125px;
+    }
+
+    .risk-info-card h4 {
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-size: 1.10rem;
+        font-weight: 800;
+    }
+
+    .risk-info-card p {
+        margin: 0;
+        font-size: 0.96rem;
+        line-height: 1.55;
+    }
+
+    .risk-info-low {
+        background: #052e16 !important;
+        border: 1px solid #166534;
+    }
+
+    .risk-info-medium {
+        background: #422006 !important;
+        border: 1px solid #a16207;
+    }
+
+    .risk-info-high {
+        background: #450a0a !important;
+        border: 1px solid #991b1b;
+    }
+
+    .risk-info-low h4 {
+        color: #86efac !important;
+    }
+
+    .risk-info-low p {
+        color: #dcfce7 !important;
+    }
+
+    .risk-info-medium h4 {
+        color: #fde047 !important;
+    }
+
+    .risk-info-medium p {
+        color: #fef3c7 !important;
+    }
+
+    .risk-info-high h4 {
+        color: #fca5a5 !important;
+    }
+
+    .risk-info-high p {
+        color: #fee2e2 !important;
     }
 
     </style>
@@ -626,7 +689,8 @@ def clean_data(df: pd.DataFrame):
 def train_model(df: pd.DataFrame):
 
     # ========================================================
-    # TARGET IS REMOVED COMPLETELY FROM MODEL FEATURES
+    # IMPORTANT:
+    # target is NEVER part of X.
     # ========================================================
 
     X = df.drop(
@@ -639,7 +703,7 @@ def train_model(df: pd.DataFrame):
     feature_names = X.columns.tolist()
 
     # ========================================================
-    # 80% TRAIN / 20% TEST
+    # TRAIN / TEST SPLIT
     # ========================================================
 
     X_train, X_test, y_train, y_test = train_test_split(
@@ -652,7 +716,6 @@ def train_model(df: pd.DataFrame):
 
     # ========================================================
     # SCALER
-    #
     # Fit ONLY on training data.
     # ========================================================
 
@@ -1282,8 +1345,7 @@ elif page == "📊 Exploratory Analysis":
 
             **Observation:**   
             The dataset contains more **Not Dropout** students
-            than **Dropout** students. Approximately 67.9% of
-            students are Not Dropout, while 32.1% are Dropout.
+            than **Dropout** students.
 
             This difference is important because the model needs
             to correctly identify the smaller but important
@@ -1690,8 +1752,8 @@ elif page == "📊 Exploratory Analysis":
             **1. Student Distribution**
 
             Most students in the dataset are classified as
-            **Not Dropout**, while approximately one-third are
-            classified as **Dropout**.
+            **Not Dropout**, while a smaller group is classified
+            as **Dropout**.
 
             **2. Tuition Fee Status**
 
@@ -2152,11 +2214,10 @@ elif page == "🔮 Predict Risk":
         )
 
         st.caption(
-            "Load a real student from the held-out test set. "
+            "Load a student from the held-out test set. "
             "The model receives only the 36 feature values. "
-            "The student's target remains separate and is used "
-            "only to compare the model prediction with the "
-            "actual dataset outcome."
+            "The student's target is kept completely separate "
+            "and is used only after prediction for comparison."
         )
 
         if st.button(
@@ -2164,35 +2225,15 @@ elif page == "🔮 Predict Risk":
             use_container_width=True
         ):
 
-            # ------------------------------------------------
-            # Select one student from X_test.
-            #
-            # IMPORTANT:
-            # X_test contains ONLY feature columns.
-            # target is NOT present here.
-            # ------------------------------------------------
-
             random_index = np.random.choice(
                 X_test_raw.index
             )
-
-            # ------------------------------------------------
-            # Store original dataframe index.
-            # ------------------------------------------------
 
             st.session_state.sample_index = (
                 random_index
             )
 
-            # ------------------------------------------------
-            # Force new test student to load fresh values.
-            # ------------------------------------------------
-
             st.session_state.loaded_sample_index = None
-
-            # ------------------------------------------------
-            # Clear old prediction.
-            # ------------------------------------------------
 
             st.session_state.pop(
                 "last_prediction",
@@ -2209,14 +2250,65 @@ elif page == "🔮 Predict Risk":
                 None
             )
 
-            # ------------------------------------------------
-            # Rerun.
-            #
-            # On next run, the selected student's values will
-            # be synchronized into all widgets.
-            # ------------------------------------------------
-
             st.rerun()
+
+    # ========================================================
+    # DATA FLOW / NO TARGET LEAKAGE
+    # ========================================================
+
+    with st.expander(
+        "🔐 How the Quick Test works"
+    ):
+
+        st.markdown(
+            """
+            **Dataset**
+
+            `datasett.csv`
+
+            ↓
+
+            **Features (X)**  
+            36 student feature columns
+
+            **Target (y)**  
+            Dropout / Not Dropout
+
+            ↓
+
+            **Train/Test Split**
+
+            - 80% → Training data
+            - 20% → Held-out test data
+
+            ↓
+
+            **Model**
+
+            The Logistic Regression model receives only the
+            36 feature values.
+
+            **The `target` column is NOT included in the model input.**
+
+            ↓
+
+            **Prediction**
+
+            The model calculates the dropout probability from
+            the student's feature values.
+
+            ↓
+
+            **Actual Outcome**
+
+            For a test-set student, the original target from
+            `y_test` is shown separately only after prediction
+            so the prediction can be evaluated.
+
+            **Therefore, the model does not simply read the answer
+            from the dataset.**
+            """
+        )
 
     # ========================================================
     # CURRENT SAMPLE INDEX
@@ -2257,13 +2349,6 @@ elif page == "🔮 Predict Risk":
 
     # ========================================================
     # SYNCHRONIZE EXACT TEST VALUES
-    #
-    # IMPORTANT FIX:
-    #
-    # Whenever a NEW test student is selected, every widget
-    # gets the exact value from that student's X_test row.
-    #
-    # This prevents old widget values from remaining active.
     # ========================================================
 
     if (
@@ -2411,10 +2496,6 @@ elif page == "🔮 Predict Risk":
         "prediction_form"
     ):
 
-        st.markdown(
-            "### 👤 Demographic Information"
-        )
-
         demographic_columns = [
             "Marital status",
             "Nacionality",
@@ -2514,6 +2595,7 @@ elif page == "🔮 Predict Risk":
         ):
 
             if not columns:
+
                 return
 
             st.markdown(
@@ -2526,13 +2608,6 @@ elif page == "🔮 Predict Risk":
                 columns
             ):
 
-                # =================================================
-                # COMPLETE DATASET
-                #
-                # Used only for UI ranges/options.
-                # This does NOT train the model.
-                # =================================================
-
                 series = df[
                     col_name
                 ]
@@ -2542,9 +2617,9 @@ elif page == "🔮 Predict Risk":
                     .dropna()
                 )
 
-                # =================================================
-                # DEFAULT VALUE
-                # =================================================
+                # =============================================
+                # DEFAULT
+                # =============================================
 
                 if defaults is not None:
 
@@ -2581,9 +2656,6 @@ elif page == "🔮 Predict Risk":
                                 clean_series.iloc[0]
                             )
 
-                # Convert numpy scalar
-                # to Python scalar.
-
                 if isinstance(
                     default_value,
                     np.generic
@@ -2597,9 +2669,9 @@ elif page == "🔮 Predict Risk":
                     i % 3
                 ]:
 
-                    # =================================================
+                    # =============================================
                     # BINARY COLUMNS
-                    # =================================================
+                    # =============================================
 
                     binary_columns = [
                         "Debtor",
@@ -2611,11 +2683,6 @@ elif page == "🔮 Predict Risk":
                     ]
 
                     if col_name in binary_columns:
-
-                        binary_options = [
-                            0,
-                            1
-                        ]
 
                         try:
 
@@ -2629,23 +2696,19 @@ elif page == "🔮 Predict Risk":
 
                             default_binary = 0
 
-                        if (
-                            default_binary
-                            not in binary_options
-                        ):
-
-                            default_binary = 0
-
-                        selected_index = (
-                            binary_options.index(
-                                default_binary
-                            )
+                        default_binary = (
+                            1
+                            if default_binary == 1
+                            else 0
                         )
 
                         value = st.selectbox(
                             col_name,
-                            options=binary_options,
-                            index=selected_index,
+                            options=[
+                                0,
+                                1
+                            ],
+                            index=default_binary,
                             format_func=lambda x:
                                 "Yes (1)"
                                 if x == 1
@@ -2654,9 +2717,9 @@ elif page == "🔮 Predict Risk":
                             help="0 = No, 1 = Yes",
                         )
 
-                    # =================================================
-                    # NUMERIC COLUMNS
-                    # =================================================
+                    # =============================================
+                    # NUMERIC
+                    # =============================================
 
                     elif pd.api.types.is_numeric_dtype(
                         series
@@ -2682,8 +2745,6 @@ elif page == "🔮 Predict Risk":
                                 clean_series.median()
                             )
 
-                        # Keep inside dataset range.
-
                         default_number = max(
                             min_value,
                             min(
@@ -2692,10 +2753,7 @@ elif page == "🔮 Predict Risk":
                             )
                         )
 
-                        # ---------------------------------------------
-                        # INTEGER COLUMNS
-                        # ---------------------------------------------
-
+                        # INTEGER
                         if pd.api.types.is_integer_dtype(
                             series
                         ):
@@ -2722,10 +2780,7 @@ elif page == "🔮 Predict Risk":
                                 key=f"input_{col_name}",
                             )
 
-                        # ---------------------------------------------
-                        # FLOAT / DECIMAL COLUMNS
-                        # ---------------------------------------------
-
+                        # DECIMAL
                         else:
 
                             value = st.number_input(
@@ -2738,9 +2793,9 @@ elif page == "🔮 Predict Risk":
                                 key=f"input_{col_name}",
                             )
 
-                    # =================================================
-                    # NON-NUMERIC / CATEGORICAL COLUMNS
-                    # =================================================
+                    # =============================================
+                    # CATEGORICAL
+                    # =============================================
 
                     else:
 
@@ -2776,14 +2831,12 @@ elif page == "🔮 Predict Risk":
                             ),
                         )
 
-                    # Save current widget value.
-
                     inputs[
                         col_name
                     ] = value
 
         # ====================================================
-        # RENDER FORM
+        # RENDER INPUTS
         # ====================================================
 
         render_input_group(
@@ -2836,10 +2889,6 @@ elif page == "🔮 Predict Risk":
 
         # ====================================================
         # CREATE INPUT DATAFRAME
-        #
-        # ONLY 36 FEATURES.
-        #
-        # target is NOT included.
         # ====================================================
 
         input_df = pd.DataFrame(
@@ -2853,7 +2902,7 @@ elif page == "🔮 Predict Risk":
         input_df = input_df.astype(float)
 
         # ====================================================
-        # VERIFY THAT TARGET IS NOT INCLUDED
+        # TARGET LEAKAGE SECURITY CHECK
         # ====================================================
 
         if "target" in input_df.columns:
@@ -2866,7 +2915,7 @@ elif page == "🔮 Predict Risk":
             st.stop()
 
         # ====================================================
-        # SCALE INPUT
+        # SCALE
         # ====================================================
 
         input_scaled = (
@@ -2877,10 +2926,7 @@ elif page == "🔮 Predict Risk":
         )
 
         # ====================================================
-        # MODEL PROBABILITY
-        #
-        # Model calculates this from feature values.
-        # It does NOT read the dataset target.
+        # PREDICT PROBABILITY
         # ====================================================
 
         probability = (
@@ -2891,7 +2937,7 @@ elif page == "🔮 Predict Risk":
         )
 
         # ====================================================
-        # MODEL PREDICTED CLASS
+        # PREDICT CLASS
         # ====================================================
 
         predicted_class = int(
@@ -2902,7 +2948,7 @@ elif page == "🔮 Predict Risk":
         )
 
         # ====================================================
-        # SAVE PREDICTION
+        # SAVE
         # ====================================================
 
         st.session_state.last_prediction = (
@@ -2943,7 +2989,7 @@ elif page == "🔮 Predict Risk":
             risk_color = "#dc2626"
 
         # ====================================================
-        # RESULT
+        # RESULT SECTION
         # ====================================================
 
         st.write("---")
@@ -2966,6 +3012,7 @@ elif page == "🔮 Predict Risk":
                 go.Indicator(
                     mode="gauge+number",
                     value=probability * 100,
+
                     number={
                         "suffix": "%",
                         "font": {
@@ -2973,15 +3020,17 @@ elif page == "🔮 Predict Risk":
                             "color": "#000000"
                         }
                     },
+
                     title={
-                        "text":
-                        "Dropout Probability",
+                        "text": "Dropout Probability",
                         "font": {
                             "size": 18,
                             "color": "#000000"
                         }
                     },
+
                     gauge={
+
                         "axis": {
                             "range": [
                                 0,
@@ -2995,46 +3044,50 @@ elif page == "🔮 Predict Risk":
                         },
 
                         "bar": {
-                            "color":
-                            risk_color
+                            "color": risk_color
                         },
 
                         "borderwidth": 1,
+
                         "bordercolor": "#9ca3af",
 
                         "steps": [
+
                             {
                                 "range": [
                                     0,
                                     30
                                 ],
-                                "color":
-                                "#dcfce7"
+                                "color": "#dcfce7"
                             },
+
                             {
                                 "range": [
                                     30,
                                     60
                                 ],
-                                "color":
-                                "#fef3c7"
+                                "color": "#fef3c7"
                             },
+
                             {
                                 "range": [
                                     60,
                                     100
                                 ],
-                                "color":
-                                "#fee2e2"
+                                "color": "#fee2e2"
                             },
+
                         ],
 
                         "threshold": {
+
                             "line": {
                                 "color": risk_color,
                                 "width": 5
                             },
+
                             "thickness": 0.8,
+
                             "value": probability * 100
                         }
                     },
@@ -3043,13 +3096,16 @@ elif page == "🔮 Predict Risk":
 
             gauge.update_layout(
                 height=350,
+
                 margin=dict(
                     l=25,
                     r=25,
                     t=55,
                     b=20
                 ),
+
                 paper_bgcolor="white",
+
                 font=dict(
                     color="#000000"
                 )
@@ -3085,12 +3141,17 @@ elif page == "🔮 Predict Risk":
 
                 st.write("")
 
+                # --------------------------------------------
+                # PROBABILITY CARD
+                # --------------------------------------------
+
                 st.markdown(
                     f"""
                     <div class="result-card {result_css}">
                         <div class="result-title">
                             Dropout Probability
                         </div>
+
                         <div class="result-value">
                             {probability * 100:.2f}%
                         </div>
@@ -3105,6 +3166,10 @@ elif page == "🔮 Predict Risk":
                     else "Not Dropout"
                 )
 
+                # --------------------------------------------
+                # CLASS COLORS
+                # --------------------------------------------
+
                 if predicted_class == 1:
 
                     class_color = "#dc2626"
@@ -3117,9 +3182,9 @@ elif page == "🔮 Predict Risk":
                     class_background = "#f0fdf4"
                     class_border = "#86efac"
 
-                # =================================================
-                # PREDICTED CLASS CARD
-                # =================================================
+                # --------------------------------------------
+                # PREDICTED CLASS
+                # --------------------------------------------
 
                 st.markdown(
                     f"""
@@ -3130,6 +3195,7 @@ elif page == "🔮 Predict Risk":
                         padding:18px;
                         margin-bottom:12px;
                     ">
+
                         <div style="
                             color:#374151 !important;
                             font-size:1rem;
@@ -3146,10 +3212,15 @@ elif page == "🔮 Predict Risk":
                         ">
                             {predicted_label}
                         </div>
+
                     </div>
                     """,
                     unsafe_allow_html=True
                 )
+
+                # --------------------------------------------
+                # PREDICTION MESSAGE
+                # --------------------------------------------
 
                 if predicted_class == 1:
 
@@ -3174,8 +3245,7 @@ elif page == "🔮 Predict Risk":
         if sample_index is not None:
 
             # ------------------------------------------------
-            # Compare the entered features with the exact
-            # original X_test row.
+            # Compare input features with original X_test row.
             # ------------------------------------------------
 
             original_values = (
@@ -3202,15 +3272,16 @@ elif page == "🔮 Predict Risk":
                 atol=1e-8
             )
 
+            # =================================================
+            # UNCHANGED TEST STUDENT
+            # =================================================
+
             if same_as_original:
 
-                # ============================================
-                # IMPORTANT:
-                #
-                # Actual target comes from y_test ONLY.
-                #
-                # It is NOT passed to the model.
-                # ============================================
+                # --------------------------------------------
+                # Actual target is retrieved separately.
+                # It was NEVER given to the model.
+                # --------------------------------------------
 
                 actual_outcome = int(
                     y_test_raw.loc[
@@ -3246,6 +3317,7 @@ elif page == "🔮 Predict Risk":
                         st.markdown(
                             """
                             <div class="result-card result-high">
+
                                 <div class="result-title">
                                     Actual Student Outcome
                                 </div>
@@ -3253,6 +3325,7 @@ elif page == "🔮 Predict Risk":
                                 <div class="result-value">
                                     🔴 Dropout
                                 </div>
+
                             </div>
                             """,
                             unsafe_allow_html=True
@@ -3263,6 +3336,7 @@ elif page == "🔮 Predict Risk":
                         st.markdown(
                             """
                             <div class="result-card result-low">
+
                                 <div class="result-title">
                                     Actual Student Outcome
                                 </div>
@@ -3270,14 +3344,15 @@ elif page == "🔮 Predict Risk":
                                 <div class="result-value">
                                     🟢 Not Dropout
                                 </div>
+
                             </div>
                             """,
                             unsafe_allow_html=True
                         )
 
-                    # ==========================================
+                    # ----------------------------------------
                     # PREDICTION VS ACTUAL
-                    # ==========================================
+                    # ----------------------------------------
 
                     if (
                         predicted_class
@@ -3294,13 +3369,13 @@ elif page == "🔮 Predict Risk":
                         st.warning(
                             "⚠️ Model Prediction ≠ Dataset "
                             "Actual Outcome. This is a valid "
-                            "model error on the unseen test "
-                            "student."
+                            "model error on the held-out "
+                            "test student."
                         )
 
-                    # ==========================================
-                    # CLEAR COMPARISON
-                    # ==========================================
+                    # ----------------------------------------
+                    # COMPARISON CARDS
+                    # ----------------------------------------
 
                     comparison_col1, comparison_col2 = (
                         st.columns(2)
@@ -3316,6 +3391,7 @@ elif page == "🔮 Predict Risk":
                                 border-radius:14px;
                                 padding:18px;
                             ">
+
                                 <div style="
                                     color:#1e3a8a !important;
                                     font-size:0.95rem;
@@ -3332,6 +3408,7 @@ elif page == "🔮 Predict Risk":
                                 ">
                                     {predicted_label}
                                 </div>
+
                             </div>
                             """,
                             unsafe_allow_html=True
@@ -3365,6 +3442,7 @@ elif page == "🔮 Predict Risk":
                                 border-radius:14px;
                                 padding:18px;
                             ">
+
                                 <div style="
                                     color:#374151 !important;
                                     font-size:0.95rem;
@@ -3381,10 +3459,15 @@ elif page == "🔮 Predict Risk":
                                 ">
                                     {actual_label}
                                 </div>
+
                             </div>
                             """,
                             unsafe_allow_html=True
                         )
+
+            # =================================================
+            # MODIFIED TEST STUDENT
+            # =================================================
 
             else:
 
@@ -3396,7 +3479,7 @@ elif page == "🔮 Predict Risk":
                 )
 
         # ====================================================
-        # MANUAL INPUT MESSAGE
+        # MANUAL INPUT
         # ====================================================
 
         else:
@@ -3427,85 +3510,70 @@ elif page == "🔮 Predict Risk":
             # LOW RISK
             # =================================================
 
-            r1.markdown(
-                """
-                <div style="
-                    background:#14532d;
-                    border:1px solid #86efac;
-                    border-radius:12px;
-                    padding:15px;
-                ">
-                    <h4 style="
-                        color:#bbf7d0 !important;
-                    ">
-                        🟢 Low Risk
-                    </h4>
+            with r1:
 
-                    <p style="
-                        color:#dcfce7 !important;
-                    ">
-                        Dropout probability below 30%.
-                    </p>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+                st.markdown(
+                    """
+                    <div class="risk-info-card risk-info-low">
+
+                        <h4>
+                            🟢 Low Risk
+                        </h4>
+
+                        <p>
+                            Dropout probability below 30%.
+                        </p>
+
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
             # =================================================
             # MEDIUM RISK
             # =================================================
 
-            r2.markdown(
-                """
-                <div style="
-                    background:#78350f;
-                    border:1px solid #fcd34d;
-                    border-radius:12px;
-                    padding:15px;
-                ">
-                    <h4 style="
-                        color:#fde68a !important;
-                    ">
-                        🟡 Medium Risk
-                    </h4>
+            with r2:
 
-                    <p style="
-                        color:#fef3c7 !important;
-                    ">
-                        Probability from 30% to below 60%.
-                    </p>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+                st.markdown(
+                    """
+                    <div class="risk-info-card risk-info-medium">
+
+                        <h4>
+                            🟡 Medium Risk
+                        </h4>
+
+                        <p>
+                            Probability from 30% to below 60%.
+                        </p>
+
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
             # =================================================
             # HIGH RISK
             # =================================================
 
-            r3.markdown(
-                """
-                <div style="
-                    background:#7f1d1d;
-                    border:1px solid #fca5a5;
-                    border-radius:12px;
-                    padding:15px;
-                ">
-                    <h4 style="
-                        color:#fecaca !important;
-                    ">
-                        🔴 High Risk
-                    </h4>
+            with r3:
 
-                    <p style="
-                        color:#fee2e2 !important;
-                    ">
-                        Probability of 60% or higher.
-                    </p>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+                st.markdown(
+                    """
+                    <div class="risk-info-card risk-info-high">
+
+                        <h4>
+                            🔴 High Risk
+                        </h4>
+
+                        <p>
+                            Probability of 60% or higher.
+                        </p>
+
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
             st.caption(
                 "These risk bands are project-level thresholds "
