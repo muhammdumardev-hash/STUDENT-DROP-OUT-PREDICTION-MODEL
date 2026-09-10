@@ -625,10 +625,9 @@ def clean_data(df: pd.DataFrame):
 @st.cache_resource(show_spinner=True)
 def train_model(df: pd.DataFrame):
 
-    # --------------------------------------------------------
-    # IMPORTANT:
-    # Target is completely removed before training.
-    # --------------------------------------------------------
+    # ========================================================
+    # TARGET IS REMOVED COMPLETELY FROM MODEL FEATURES
+    # ========================================================
 
     X = df.drop(
         "target",
@@ -639,9 +638,9 @@ def train_model(df: pd.DataFrame):
 
     feature_names = X.columns.tolist()
 
-    # --------------------------------------------------------
+    # ========================================================
     # 80% TRAIN / 20% TEST
-    # --------------------------------------------------------
+    # ========================================================
 
     X_train, X_test, y_train, y_test = train_test_split(
         X,
@@ -651,12 +650,11 @@ def train_model(df: pd.DataFrame):
         stratify=y
     )
 
-    # --------------------------------------------------------
+    # ========================================================
     # SCALER
     #
     # Fit ONLY on training data.
-    # Test data is only transformed.
-    # --------------------------------------------------------
+    # ========================================================
 
     scaler = StandardScaler()
 
@@ -668,9 +666,9 @@ def train_model(df: pd.DataFrame):
         X_test
     )
 
-    # --------------------------------------------------------
+    # ========================================================
     # LOGISTIC REGRESSION
-    # --------------------------------------------------------
+    # ========================================================
 
     model = LogisticRegression(
         max_iter=1000
@@ -681,9 +679,9 @@ def train_model(df: pd.DataFrame):
         y_train
     )
 
-    # --------------------------------------------------------
+    # ========================================================
     # TEST PREDICTIONS
-    # --------------------------------------------------------
+    # ========================================================
 
     y_pred = model.predict(
         X_test_scaled
@@ -693,9 +691,9 @@ def train_model(df: pd.DataFrame):
         X_test_scaled
     )[:, 1]
 
-    # --------------------------------------------------------
+    # ========================================================
     # METRICS
-    # --------------------------------------------------------
+    # ========================================================
 
     cm = confusion_matrix(
         y_test,
@@ -1423,11 +1421,6 @@ elif page == "📊 Exploratory Analysis":
                 have a much higher dropout rate than students whose
                 fees were up to date.
 
-                In this dataset, the dropout rate is approximately
-                **86.6%** for students whose fees were not up to date,
-                compared with approximately **24.7%** for students
-                whose fees were up to date.
-
                 This is a strong relationship in the dataset, but
                 it should not be interpreted as proof that fee status
                 directly causes dropout.
@@ -2144,6 +2137,10 @@ elif page == "🔮 Predict Risk":
 
         st.session_state.sample_index = None
 
+    if "loaded_sample_index" not in st.session_state:
+
+        st.session_state.loaded_sample_index = None
+
     # ========================================================
     # QUICK TEST CASE
     # ========================================================
@@ -2155,9 +2152,11 @@ elif page == "🔮 Predict Risk":
         )
 
         st.caption(
-            "Load a real unseen student record from the test set. "
-            "All 36 input features will be automatically loaded "
-            "into the prediction fields."
+            "Load a real student from the held-out test set. "
+            "The model receives only the 36 feature values. "
+            "The student's target remains separate and is used "
+            "only to compare the model prediction with the "
+            "actual dataset outcome."
         )
 
         if st.button(
@@ -2166,7 +2165,11 @@ elif page == "🔮 Predict Risk":
         ):
 
             # ------------------------------------------------
-            # Select REAL unseen student
+            # Select one student from X_test.
+            #
+            # IMPORTANT:
+            # X_test contains ONLY feature columns.
+            # target is NOT present here.
             # ------------------------------------------------
 
             random_index = np.random.choice(
@@ -2174,7 +2177,7 @@ elif page == "🔮 Predict Risk":
             )
 
             # ------------------------------------------------
-            # Store test student's ORIGINAL dataframe index
+            # Store original dataframe index.
             # ------------------------------------------------
 
             st.session_state.sample_index = (
@@ -2182,46 +2185,13 @@ elif page == "🔮 Predict Risk":
             )
 
             # ------------------------------------------------
-            # Get EXACT row from X_test
-            #
-            # IMPORTANT:
-            # X_test contains ONLY the 36 FEATURES.
-            # target is not here.
+            # Force new test student to load fresh values.
             # ------------------------------------------------
 
-            selected_student = X_test_raw.loc[
-                random_index
-            ]
+            st.session_state.loaded_sample_index = None
 
             # ------------------------------------------------
-            # Load EXACT values into widget state
-            #
-            # Every input widget gets its value directly from
-            # the selected X_test row.
-            # ------------------------------------------------
-
-            for col_name in feature_names:
-
-                value = selected_student[
-                    col_name
-                ]
-
-                # Convert numpy scalar to normal Python scalar
-                # without changing the actual value.
-
-                if isinstance(
-                    value,
-                    np.generic
-                ):
-
-                    value = value.item()
-
-                st.session_state[
-                    f"input_{col_name}"
-                ] = value
-
-            # ------------------------------------------------
-            # Clear previous prediction
+            # Clear old prediction.
             # ------------------------------------------------
 
             st.session_state.pop(
@@ -2240,7 +2210,10 @@ elif page == "🔮 Predict Risk":
             )
 
             # ------------------------------------------------
-            # Rerun
+            # Rerun.
+            #
+            # On next run, the selected student's values will
+            # be synchronized into all widgets.
             # ------------------------------------------------
 
             st.rerun()
@@ -2262,27 +2235,173 @@ elif page == "🔮 Predict Risk":
 
         st.caption(
             "This student belongs to the held-out test set. "
-            "The target value is kept separate and is not used "
-            "as an input feature."
+            "The model does NOT receive the student's target "
+            "during prediction."
+        )
+
+    # ========================================================
+    # SELECTED TEST STUDENT
+    # ========================================================
+
+    if sample_index is not None:
+
+        selected_student = (
+            X_test_raw.loc[
+                sample_index
+            ]
+        )
+
+    else:
+
+        selected_student = None
+
+    # ========================================================
+    # SYNCHRONIZE EXACT TEST VALUES
+    #
+    # IMPORTANT FIX:
+    #
+    # Whenever a NEW test student is selected, every widget
+    # gets the exact value from that student's X_test row.
+    #
+    # This prevents old widget values from remaining active.
+    # ========================================================
+
+    if (
+        selected_student is not None
+        and st.session_state.get(
+            "loaded_sample_index"
+        ) != sample_index
+    ):
+
+        for col_name in feature_names:
+
+            value = selected_student[
+                col_name
+            ]
+
+            if isinstance(
+                value,
+                np.generic
+            ):
+
+                value = value.item()
+
+            st.session_state[
+                f"input_{col_name}"
+            ] = value
+
+        st.session_state.loaded_sample_index = (
+            sample_index
         )
 
     # ========================================================
     # DEFAULT VALUES
     # ========================================================
 
-    if sample_index is not None:
+    if selected_student is not None:
 
-        # ----------------------------------------------------
-        # EXACT ORIGINAL TEST ROW
-        # ----------------------------------------------------
-
-        defaults = X_test_raw.loc[
-            sample_index
-        ]
+        defaults = selected_student
 
     else:
 
         defaults = None
+
+    # ========================================================
+    # VERIFY LOADED TEST STUDENT
+    # ========================================================
+
+    if selected_student is not None:
+
+        with st.expander(
+            "🔎 Verify Loaded Test Student Values"
+        ):
+
+            verification_rows = []
+
+            for col_name in feature_names:
+
+                original_value = (
+                    selected_student[
+                        col_name
+                    ]
+                )
+
+                loaded_value = (
+                    st.session_state.get(
+                        f"input_{col_name}",
+                        original_value
+                    )
+                )
+
+                try:
+
+                    original_numeric = float(
+                        original_value
+                    )
+
+                    loaded_numeric = float(
+                        loaded_value
+                    )
+
+                    is_match = np.isclose(
+                        original_numeric,
+                        loaded_numeric,
+                        rtol=1e-5,
+                        atol=1e-8
+                    )
+
+                except Exception:
+
+                    is_match = (
+                        str(original_value)
+                        == str(loaded_value)
+                    )
+
+                verification_rows.append(
+                    {
+                        "Feature": col_name,
+                        "Original Test Value": original_value,
+                        "Loaded Input Value": loaded_value,
+                        "Match": (
+                            "✅"
+                            if is_match
+                            else "❌"
+                        ),
+                    }
+                )
+
+            verification_df = pd.DataFrame(
+                verification_rows
+            )
+
+            st.dataframe(
+                verification_df,
+                use_container_width=True,
+                hide_index=True
+            )
+
+            mismatch_count = int(
+                (
+                    verification_df["Match"]
+                    == "❌"
+                ).sum()
+            )
+
+            if mismatch_count == 0:
+
+                st.success(
+                    f"✅ All {len(feature_names)} "
+                    "test-student feature values "
+                    "are loaded correctly."
+                )
+
+            else:
+
+                st.error(
+                    f"❌ {mismatch_count} feature "
+                    "value(s) do not match the "
+                    "original test record."
+                )
 
     # ========================================================
     # PREDICTION FORM
@@ -2408,32 +2527,23 @@ elif page == "🔮 Predict Risk":
             ):
 
                 # =================================================
-                # IMPORTANT FIX #1
+                # COMPLETE DATASET
                 #
-                # ALWAYS use COMPLETE DATASET.
-                #
-                # NEVER use X_train_raw here.
-                #
-                # This means a test value such as:
-                #
-                # Previous qualification = 127
-                #
-                # will remain available even if that exact value
-                # does not appear in X_train.
+                # Used only for UI ranges/options.
+                # This does NOT train the model.
                 # =================================================
 
                 series = df[
                     col_name
                 ]
 
-                # Remove missing values
                 clean_series = (
                     series
                     .dropna()
                 )
 
                 # =================================================
-                # EXACT DEFAULT FROM SELECTED TEST STUDENT
+                # DEFAULT VALUE
                 # =================================================
 
                 if defaults is not None:
@@ -2471,7 +2581,9 @@ elif page == "🔮 Predict Risk":
                                 clean_series.iloc[0]
                             )
 
-                # Convert numpy scalar to Python scalar
+                # Convert numpy scalar
+                # to Python scalar.
+
                 if isinstance(
                     default_value,
                     np.generic
@@ -2500,13 +2612,6 @@ elif page == "🔮 Predict Risk":
 
                     if col_name in binary_columns:
 
-                        # ---------------------------------------------
-                        # Binary values are always represented as:
-                        #
-                        # 1 -> Yes (1)
-                        # 0 -> No (0)
-                        # ---------------------------------------------
-
                         binary_options = [
                             0,
                             1
@@ -2524,7 +2629,10 @@ elif page == "🔮 Predict Risk":
 
                             default_binary = 0
 
-                        if default_binary not in binary_options:
+                        if (
+                            default_binary
+                            not in binary_options
+                        ):
 
                             default_binary = 0
 
@@ -2554,20 +2662,6 @@ elif page == "🔮 Predict Risk":
                         series
                     ):
 
-                        # ---------------------------------------------
-                        # IMPORTANT FIX #2
-                        #
-                        # Numeric columns are NEVER treated as
-                        # categorical just because they have few
-                        # unique values.
-                        #
-                        # Example:
-                        #
-                        # Admission grade = 120.2
-                        #
-                        # It will remain EXACTLY 120.2.
-                        # ---------------------------------------------
-
                         min_value = float(
                             clean_series.min()
                         )
@@ -2588,7 +2682,8 @@ elif page == "🔮 Predict Risk":
                                 clean_series.median()
                             )
 
-                        # Keep value within dataset range
+                        # Keep inside dataset range.
+
                         default_number = max(
                             min_value,
                             min(
@@ -2597,13 +2692,51 @@ elif page == "🔮 Predict Risk":
                             )
                         )
 
-                        value = st.number_input(
-                            col_name,
-                            min_value=min_value,
-                            max_value=max_value,
-                            value=default_number,
-                            key=f"input_{col_name}",
-                        )
+                        # ---------------------------------------------
+                        # INTEGER COLUMNS
+                        # ---------------------------------------------
+
+                        if pd.api.types.is_integer_dtype(
+                            series
+                        ):
+
+                            value = st.number_input(
+                                col_name,
+                                min_value=int(
+                                    np.floor(
+                                        min_value
+                                    )
+                                ),
+                                max_value=int(
+                                    np.ceil(
+                                        max_value
+                                    )
+                                ),
+                                value=int(
+                                    round(
+                                        default_number
+                                    )
+                                ),
+                                step=1,
+                                format="%d",
+                                key=f"input_{col_name}",
+                            )
+
+                        # ---------------------------------------------
+                        # FLOAT / DECIMAL COLUMNS
+                        # ---------------------------------------------
+
+                        else:
+
+                            value = st.number_input(
+                                col_name,
+                                min_value=min_value,
+                                max_value=max_value,
+                                value=default_number,
+                                step=0.01,
+                                format="%.2f",
+                                key=f"input_{col_name}",
+                            )
 
                     # =================================================
                     # NON-NUMERIC / CATEGORICAL COLUMNS
@@ -2611,20 +2744,16 @@ elif page == "🔮 Predict Risk":
 
                     else:
 
-                        # ---------------------------------------------
-                        # Complete dataset values only.
-                        # ---------------------------------------------
-
                         unique_values = (
                             clean_series
                             .unique()
                             .tolist()
                         )
 
-                        # Preserve dataset order rather than sorting
-                        # mixed data types.
-
-                        if default_value in unique_values:
+                        if (
+                            default_value
+                            in unique_values
+                        ):
 
                             selected_index = (
                                 unique_values.index(
@@ -2641,12 +2770,13 @@ elif page == "🔮 Predict Risk":
                             options=unique_values,
                             index=selected_index,
                             key=f"input_{col_name}",
-                            help="Value/code from the complete dataset.",
+                            help=(
+                                "Value/code from the "
+                                "complete dataset."
+                            ),
                         )
 
-                    # ------------------------------------------------
-                    # Save current widget value
-                    # ------------------------------------------------
+                    # Save current widget value.
 
                     inputs[
                         col_name
@@ -2704,28 +2834,40 @@ elif page == "🔮 Predict Risk":
 
     if submitted:
 
-        # ----------------------------------------------------
-        # Create dataframe using ONLY 36 features
-        # ----------------------------------------------------
+        # ====================================================
+        # CREATE INPUT DATAFRAME
+        #
+        # ONLY 36 FEATURES.
+        #
+        # target is NOT included.
+        # ====================================================
 
         input_df = pd.DataFrame(
             [inputs]
         )
 
-        # Make absolutely sure target is never included
         input_df = input_df[
             feature_names
         ]
 
-        # ----------------------------------------------------
-        # Convert input values to numeric
-        # ----------------------------------------------------
-
         input_df = input_df.astype(float)
 
-        # ----------------------------------------------------
-        # Scale input
-        # ----------------------------------------------------
+        # ====================================================
+        # VERIFY THAT TARGET IS NOT INCLUDED
+        # ====================================================
+
+        if "target" in input_df.columns:
+
+            st.error(
+                "❌ Security check failed: target "
+                "was included in model input."
+            )
+
+            st.stop()
+
+        # ====================================================
+        # SCALE INPUT
+        # ====================================================
 
         input_scaled = (
             results["scaler"]
@@ -2734,9 +2876,12 @@ elif page == "🔮 Predict Risk":
             )
         )
 
-        # ----------------------------------------------------
-        # Probability
-        # ----------------------------------------------------
+        # ====================================================
+        # MODEL PROBABILITY
+        #
+        # Model calculates this from feature values.
+        # It does NOT read the dataset target.
+        # ====================================================
 
         probability = (
             results["model"]
@@ -2745,11 +2890,11 @@ elif page == "🔮 Predict Risk":
             )[0, 1]
         )
 
-        # ----------------------------------------------------
-        # Predicted class
-        # ----------------------------------------------------
+        # ====================================================
+        # MODEL PREDICTED CLASS
+        # ====================================================
 
-        predicted_class = (
+        predicted_class = int(
             results["model"]
             .predict(
                 input_scaled
@@ -2760,12 +2905,12 @@ elif page == "🔮 Predict Risk":
         # SAVE PREDICTION
         # ====================================================
 
-        st.session_state.last_prediction = int(
+        st.session_state.last_prediction = (
             predicted_class
         )
 
-        st.session_state.last_probability = float(
-            probability
+        st.session_state.last_probability = (
+            float(probability)
         )
 
         st.session_state.last_input_index = (
@@ -2972,15 +3117,37 @@ elif page == "🔮 Predict Risk":
                     class_background = "#f0fdf4"
                     class_border = "#86efac"
 
-                # ====================================================
+                # =================================================
                 # PREDICTED CLASS CARD
-                # ====================================================
+                # =================================================
 
                 st.markdown(
-                    f'<div style="background:{class_background};border:2px solid {class_border};border-radius:14px;padding:18px;margin-bottom:12px;">'
-                    f'<div style="color:#374151 !important;font-size:1rem;font-weight:700;">Predicted Class</div>'
-                    f'<div style="color:{class_color} !important;font-size:1.55rem;font-weight:800;margin-top:5px;">{predicted_label}</div>'
-                    f'</div>',
+                    f"""
+                    <div style="
+                        background:{class_background};
+                        border:2px solid {class_border};
+                        border-radius:14px;
+                        padding:18px;
+                        margin-bottom:12px;
+                    ">
+                        <div style="
+                            color:#374151 !important;
+                            font-size:1rem;
+                            font-weight:700;
+                        ">
+                            Predicted Class
+                        </div>
+
+                        <div style="
+                            color:{class_color} !important;
+                            font-size:1.55rem;
+                            font-weight:800;
+                            margin-top:5px;
+                        ">
+                            {predicted_label}
+                        </div>
+                    </div>
+                    """,
                     unsafe_allow_html=True
                 )
 
@@ -3001,14 +3168,14 @@ elif page == "🔮 Predict Risk":
                     )
 
         # ====================================================
-        # ACTUAL OUTCOME
+        # ACTUAL DATASET OUTCOME
         # ====================================================
 
         if sample_index is not None:
 
             # ------------------------------------------------
-            # Compare entered values with EXACT original
-            # X_test values.
+            # Compare the entered features with the exact
+            # original X_test row.
             # ------------------------------------------------
 
             original_values = (
@@ -3037,16 +3204,16 @@ elif page == "🔮 Predict Risk":
 
             if same_as_original:
 
-                # ------------------------------------------------
+                # ============================================
                 # IMPORTANT:
                 #
-                # Actual target comes ONLY from y_test.
+                # Actual target comes from y_test ONLY.
                 #
-                # It is NEVER an input feature.
-                # ------------------------------------------------
+                # It is NOT passed to the model.
+                # ============================================
 
                 actual_outcome = int(
-                    results["y_test"].loc[
+                    y_test_raw.loc[
                         sample_index
                     ]
                 )
@@ -3064,7 +3231,14 @@ elif page == "🔮 Predict Risk":
                 ):
 
                     st.subheader(
-                        "📌 Actual Outcome"
+                        "📌 Dataset Actual Outcome"
+                    )
+
+                    st.caption(
+                        "This is the original target value "
+                        "stored in datasett.csv for this test "
+                        "student. It was NOT given to the model "
+                        "during prediction."
                     )
 
                     if actual_outcome == 1:
@@ -3075,6 +3249,7 @@ elif page == "🔮 Predict Risk":
                                 <div class="result-title">
                                     Actual Student Outcome
                                 </div>
+
                                 <div class="result-value">
                                     🔴 Dropout
                                 </div>
@@ -3091,6 +3266,7 @@ elif page == "🔮 Predict Risk":
                                 <div class="result-title">
                                     Actual Student Outcome
                                 </div>
+
                                 <div class="result-value">
                                     🟢 Not Dropout
                                 </div>
@@ -3099,30 +3275,137 @@ elif page == "🔮 Predict Risk":
                             unsafe_allow_html=True
                         )
 
+                    # ==========================================
+                    # PREDICTION VS ACTUAL
+                    # ==========================================
+
                     if (
                         predicted_class
                         == actual_outcome
                     ):
 
                         st.success(
-                            "✅ The model prediction "
-                            "matches the actual outcome."
+                            "✅ Model Prediction = Dataset "
+                            "Actual Outcome"
                         )
 
                     else:
 
                         st.warning(
-                            "⚠️ The model prediction "
-                            "does not match the actual outcome."
+                            "⚠️ Model Prediction ≠ Dataset "
+                            "Actual Outcome. This is a valid "
+                            "model error on the unseen test "
+                            "student."
+                        )
+
+                    # ==========================================
+                    # CLEAR COMPARISON
+                    # ==========================================
+
+                    comparison_col1, comparison_col2 = (
+                        st.columns(2)
+                    )
+
+                    with comparison_col1:
+
+                        st.markdown(
+                            f"""
+                            <div style="
+                                background:#eff6ff;
+                                border:2px solid #93c5fd;
+                                border-radius:14px;
+                                padding:18px;
+                            ">
+                                <div style="
+                                    color:#1e3a8a !important;
+                                    font-size:0.95rem;
+                                    font-weight:700;
+                                ">
+                                    Model Prediction
+                                </div>
+
+                                <div style="
+                                    color:#1d4ed8 !important;
+                                    font-size:1.45rem;
+                                    font-weight:800;
+                                    margin-top:5px;
+                                ">
+                                    {predicted_label}
+                                </div>
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
+
+                    with comparison_col2:
+
+                        actual_display_color = (
+                            "#dc2626"
+                            if actual_outcome == 1
+                            else "#16a34a"
+                        )
+
+                        actual_display_bg = (
+                            "#fef2f2"
+                            if actual_outcome == 1
+                            else "#f0fdf4"
+                        )
+
+                        actual_display_border = (
+                            "#fca5a5"
+                            if actual_outcome == 1
+                            else "#86efac"
+                        )
+
+                        st.markdown(
+                            f"""
+                            <div style="
+                                background:{actual_display_bg};
+                                border:2px solid {actual_display_border};
+                                border-radius:14px;
+                                padding:18px;
+                            ">
+                                <div style="
+                                    color:#374151 !important;
+                                    font-size:0.95rem;
+                                    font-weight:700;
+                                ">
+                                    Dataset Actual Target
+                                </div>
+
+                                <div style="
+                                    color:{actual_display_color} !important;
+                                    font-size:1.45rem;
+                                    font-weight:800;
+                                    margin-top:5px;
+                                ">
+                                    {actual_label}
+                                </div>
+                            </div>
+                            """,
+                            unsafe_allow_html=True
                         )
 
             else:
 
                 st.info(
-                    "ℹ️ The test student's input values were "
-                    "modified. Therefore, the original actual "
-                    "outcome is not shown for this prediction."
+                    "ℹ️ This was originally a test-set student, "
+                    "but one or more feature values were changed. "
+                    "Therefore, the original dataset target is "
+                    "not shown for this modified prediction."
                 )
+
+        # ====================================================
+        # MANUAL INPUT MESSAGE
+        # ====================================================
+
+        else:
+
+            st.info(
+                "💡 This is a manually entered prediction. "
+                "Because no original test-set student was loaded, "
+                "there is no dataset actual outcome to compare."
+            )
 
         # ====================================================
         # RISK INTERPRETATION
@@ -3140,39 +3423,87 @@ elif page == "🔮 Predict Risk":
 
             r1, r2, r3 = st.columns(3)
 
-            # ====================================================
+            # =================================================
             # LOW RISK
-            # ====================================================
+            # =================================================
 
             r1.markdown(
-                '<div style="background:#14532d;border:1px solid #86efac;border-radius:12px;padding:15px;">'
-                '<h4 style="color:#15803d !important;">🟢 Low Risk</h4>'
-                '<p style="color:#166534 !important;">Dropout probability below 30%.</p>'
-                '</div>',
+                """
+                <div style="
+                    background:#14532d;
+                    border:1px solid #86efac;
+                    border-radius:12px;
+                    padding:15px;
+                ">
+                    <h4 style="
+                        color:#bbf7d0 !important;
+                    ">
+                        🟢 Low Risk
+                    </h4>
+
+                    <p style="
+                        color:#dcfce7 !important;
+                    ">
+                        Dropout probability below 30%.
+                    </p>
+                </div>
+                """,
                 unsafe_allow_html=True
             )
 
-            # ====================================================
+            # =================================================
             # MEDIUM RISK
-            # ====================================================
+            # =================================================
 
             r2.markdown(
-                '<div style="background:#78350f;border:1px solid #fcd34d;border-radius:12px;padding:15px;">'
-                '<h4 style="color:#b45309 !important;">🟡 Medium Risk</h4>'
-                '<p style="color:#92400e !important;">Probability from 30% to below 60%.</p>'
-                '</div>',
+                """
+                <div style="
+                    background:#78350f;
+                    border:1px solid #fcd34d;
+                    border-radius:12px;
+                    padding:15px;
+                ">
+                    <h4 style="
+                        color:#fde68a !important;
+                    ">
+                        🟡 Medium Risk
+                    </h4>
+
+                    <p style="
+                        color:#fef3c7 !important;
+                    ">
+                        Probability from 30% to below 60%.
+                    </p>
+                </div>
+                """,
                 unsafe_allow_html=True
             )
 
-            # ====================================================
+            # =================================================
             # HIGH RISK
-            # ====================================================
+            # =================================================
 
             r3.markdown(
-                '<div style="background:#7f1d1d;border:1px solid #fca5a5;border-radius:12px;padding:15px;">'
-                '<h4 style="color:#b91c1c !important;">🔴 High Risk</h4>'
-                '<p style="color:#991b1b !important;">Probability of 60% or higher.</p>'
-                '</div>',
+                """
+                <div style="
+                    background:#7f1d1d;
+                    border:1px solid #fca5a5;
+                    border-radius:12px;
+                    padding:15px;
+                ">
+                    <h4 style="
+                        color:#fecaca !important;
+                    ">
+                        🔴 High Risk
+                    </h4>
+
+                    <p style="
+                        color:#fee2e2 !important;
+                    ">
+                        Probability of 60% or higher.
+                    </p>
+                </div>
+                """,
                 unsafe_allow_html=True
             )
 
