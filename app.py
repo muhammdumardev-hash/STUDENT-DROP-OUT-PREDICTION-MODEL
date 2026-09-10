@@ -65,27 +65,28 @@ st.markdown(
     """
     <style>
 
-    /* ------------------------------------------------------
-       Main title
-    ------------------------------------------------------ */
+    /* ======================================================
+       MAIN TITLE
+    ====================================================== */
 
     .main-title {
         font-size: 2.2rem;
         font-weight: 800;
         margin-bottom: 0px;
+        color: #111827;
     }
 
     .subtitle {
-        color: #6b7280;
+        color: #4b5563;
         font-size: 1rem;
         margin-top: 0px;
         margin-bottom: 1.5rem;
     }
 
 
-    /* ------------------------------------------------------
-       Metric cards
-    ------------------------------------------------------ */
+    /* ======================================================
+       METRIC CARDS
+    ====================================================== */
 
     .metric-card {
         background: #ffffff;
@@ -97,7 +98,7 @@ st.markdown(
     }
 
     .metric-title {
-        color: #6b7280;
+        color: #4b5563;
         font-size: 0.9rem;
         font-weight: 600;
     }
@@ -110,41 +111,93 @@ st.markdown(
     }
 
 
-    /* ------------------------------------------------------
-       Risk badges
-    ------------------------------------------------------ */
+    /* ======================================================
+       RISK BADGES
+    ====================================================== */
 
     .risk-badge {
         display: inline-block;
-        padding: 10px 22px;
+        padding: 11px 24px;
         border-radius: 999px;
-        font-weight: 700;
-        font-size: 1.1rem;
+        font-weight: 800;
+        font-size: 1.15rem;
         text-align: center;
+        margin-bottom: 10px;
     }
 
     .risk-low {
         background: #dcfce7;
         color: #15803d;
-        border: 1px solid #86efac;
+        border: 2px solid #86efac;
     }
 
     .risk-medium {
-        background: #fef9c3;
-        color: #a16207;
-        border: 1px solid #fde047;
+        background: #fef3c7;
+        color: #b45309;
+        border: 2px solid #fcd34d;
     }
 
     .risk-high {
         background: #fee2e2;
         color: #b91c1c;
-        border: 1px solid #fca5a5;
+        border: 2px solid #fca5a5;
     }
 
 
-    /* ------------------------------------------------------
-       Section boxes
-    ------------------------------------------------------ */
+    /* ======================================================
+       RESULT CARDS
+    ====================================================== */
+
+    .result-card {
+        border-radius: 14px;
+        padding: 22px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+
+    .result-low {
+        background: #f0fdf4;
+        border: 2px solid #86efac;
+    }
+
+    .result-medium {
+        background: #fffbeb;
+        border: 2px solid #fcd34d;
+    }
+
+    .result-high {
+        background: #fef2f2;
+        border: 2px solid #fca5a5;
+    }
+
+    .result-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #374151;
+    }
+
+    .result-value {
+        font-size: 1.65rem;
+        font-weight: 800;
+        margin-top: 5px;
+    }
+
+    .result-low .result-value {
+        color: #15803d;
+    }
+
+    .result-medium .result-value {
+        color: #b45309;
+    }
+
+    .result-high .result-value {
+        color: #b91c1c;
+    }
+
+
+    /* ======================================================
+       SECTION BOXES
+    ====================================================== */
 
     .section-box {
         border: 1px solid #d1d5db;
@@ -155,23 +208,52 @@ st.markdown(
     }
 
 
-    /* ------------------------------------------------------
-       Sidebar
-    ------------------------------------------------------ */
+    /* ======================================================
+       SIDEBAR
+    ====================================================== */
 
     section[data-testid="stSidebar"] {
         border-right: 1px solid #d1d5db;
     }
 
 
-    /* ------------------------------------------------------
-       Dataframes
-    ------------------------------------------------------ */
+    /* ======================================================
+       DATAFRAMES
+    ====================================================== */
 
     [data-testid="stDataFrame"] {
-        border: 1px solid #d1d5db;
+        border: 1px solid #9ca3af;
         border-radius: 10px;
         overflow: hidden;
+    }
+
+
+    /* ======================================================
+       STREAMLIT TABLE TEXT
+    ====================================================== */
+
+    [data-testid="stDataFrame"] div {
+        color: #111827;
+    }
+
+
+    /* ======================================================
+       FORM LABELS
+    ====================================================== */
+
+    label {
+        color: #111827 !important;
+        font-weight: 600 !important;
+    }
+
+
+    /* ======================================================
+       GENERAL TEXT
+    ====================================================== */
+
+    p,
+    li {
+        color: #1f2937;
     }
 
     </style>
@@ -196,7 +278,6 @@ def load_data():
 
     df = pd.read_csv(DEFAULT_FILE)
 
-    # Clean column names
     df.columns = [
         str(column).strip()
         for column in df.columns
@@ -220,26 +301,11 @@ def clean_data(df: pd.DataFrame):
             "The dataset must contain a column named 'target'."
         )
 
-    # --------------------------------------------------------
-    # Safely convert target
-    # --------------------------------------------------------
-
     df["target"] = (
         df["target"]
         .astype(str)
         .str.strip()
     )
-
-    # Original UCI target:
-    #
-    # Dropout  -> 1
-    # Graduate -> 0
-    # Enrolled -> 0
-    #
-    # This makes the problem binary:
-    #
-    # 1 = Dropout
-    # 0 = Not Dropout
 
     df["target"] = df["target"].replace(
         {
@@ -264,10 +330,6 @@ def clean_data(df: pd.DataFrame):
 @st.cache_resource(show_spinner=True)
 def train_model(df: pd.DataFrame):
 
-    # --------------------------------------------------------
-    # Features and target
-    # --------------------------------------------------------
-
     X = df.drop(
         "target",
         axis=1
@@ -277,11 +339,6 @@ def train_model(df: pd.DataFrame):
 
     feature_names = X.columns.tolist()
 
-
-    # --------------------------------------------------------
-    # Train / Test Split
-    # --------------------------------------------------------
-
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
@@ -289,11 +346,6 @@ def train_model(df: pd.DataFrame):
         random_state=42,
         stratify=y
     )
-
-
-    # --------------------------------------------------------
-    # Feature Scaling
-    # --------------------------------------------------------
 
     scaler = StandardScaler()
 
@@ -305,11 +357,6 @@ def train_model(df: pd.DataFrame):
         X_test
     )
 
-
-    # --------------------------------------------------------
-    # Logistic Regression
-    # --------------------------------------------------------
-
     model = LogisticRegression(
         max_iter=1000
     )
@@ -319,11 +366,6 @@ def train_model(df: pd.DataFrame):
         y_train
     )
 
-
-    # --------------------------------------------------------
-    # Predictions
-    # --------------------------------------------------------
-
     y_pred = model.predict(
         X_test_scaled
     )
@@ -331,11 +373,6 @@ def train_model(df: pd.DataFrame):
     y_prob = model.predict_proba(
         X_test_scaled
     )[:, 1]
-
-
-    # --------------------------------------------------------
-    # Evaluation
-    # --------------------------------------------------------
 
     cm = confusion_matrix(
         y_test,
@@ -381,11 +418,9 @@ def train_model(df: pd.DataFrame):
         y_prob
     )
 
-
     return {
         "model": model,
         "scaler": scaler,
-
         "feature_names": feature_names,
 
         "X_train": X_train,
@@ -534,11 +569,6 @@ if page == "🏠 Overview":
         unsafe_allow_html=True
     )
 
-
-    # --------------------------------------------------------
-    # Dataset Metrics
-    # --------------------------------------------------------
-
     total_students = len(df)
 
     dropout_students = int(
@@ -549,25 +579,13 @@ if page == "🏠 Overview":
         (df["target"] == 0).sum()
     )
 
-    missing_values = int(
-        df.isnull().sum().sum()
-    )
-
-    duplicate_rows = int(
-        df.duplicated().sum()
-    )
-
     c1, c2, c3, c4 = st.columns(4)
 
     c1.markdown(
         f"""
         <div class="metric-card">
-            <div class="metric-title">
-                Total Students
-            </div>
-            <div class="metric-value">
-                {total_students:,}
-            </div>
+            <div class="metric-title">Total Students</div>
+            <div class="metric-value">{total_students:,}</div>
         </div>
         """,
         unsafe_allow_html=True
@@ -576,12 +594,8 @@ if page == "🏠 Overview":
     c2.markdown(
         f"""
         <div class="metric-card">
-            <div class="metric-title">
-                Dropout Students
-            </div>
-            <div class="metric-value">
-                {dropout_students:,}
-            </div>
+            <div class="metric-title">Dropout Students</div>
+            <div class="metric-value">{dropout_students:,}</div>
         </div>
         """,
         unsafe_allow_html=True
@@ -590,12 +604,8 @@ if page == "🏠 Overview":
     c3.markdown(
         f"""
         <div class="metric-card">
-            <div class="metric-title">
-                Not Dropout
-            </div>
-            <div class="metric-value">
-                {non_dropout_students:,}
-            </div>
+            <div class="metric-title">Not Dropout</div>
+            <div class="metric-value">{non_dropout_students:,}</div>
         </div>
         """,
         unsafe_allow_html=True
@@ -604,9 +614,7 @@ if page == "🏠 Overview":
     c4.markdown(
         f"""
         <div class="metric-card">
-            <div class="metric-title">
-                Dropout Rate
-            </div>
+            <div class="metric-title">Dropout Rate</div>
             <div class="metric-value">
                 {dropout_students / total_students * 100:.1f}%
             </div>
@@ -615,13 +623,7 @@ if page == "🏠 Overview":
         unsafe_allow_html=True
     )
 
-
     st.write("")
-
-
-    # --------------------------------------------------------
-    # Project Summary
-    # --------------------------------------------------------
 
     st.subheader(
         "Project Summary"
@@ -638,20 +640,12 @@ if page == "🏠 Overview":
         s2.write("Logistic Regression")
 
         s3.write("**Input Features**")
-        s3.write(
-            f"{df.shape[1] - 1}"
-        )
+        s3.write(f"{df.shape[1] - 1}")
 
         s4.write("**Train / Test Split**")
         s4.write("80% / 20%")
 
-
     st.write("")
-
-
-    # --------------------------------------------------------
-    # Tabs
-    # --------------------------------------------------------
 
     tab1, tab2, tab3 = st.tabs(
         [
@@ -660,11 +654,6 @@ if page == "🏠 Overview":
             "🎯 Target Distribution",
         ]
     )
-
-
-    # --------------------------------------------------------
-    # Dataset Preview
-    # --------------------------------------------------------
 
     with tab1:
 
@@ -679,11 +668,6 @@ if page == "🏠 Overview":
                 use_container_width=True,
                 hide_index=True
             )
-
-
-    # --------------------------------------------------------
-    # Data Types
-    # --------------------------------------------------------
 
     with tab2:
 
@@ -706,11 +690,6 @@ if page == "🏠 Overview":
                 height=400,
                 hide_index=True
             )
-
-
-    # --------------------------------------------------------
-    # Target Distribution
-    # --------------------------------------------------------
 
     with tab3:
 
@@ -769,18 +748,37 @@ if page == "🏠 Overview":
             plot_bgcolor="white",
             paper_bgcolor="white",
             margin=dict(
-                l=50,
+                l=55,
                 r=30,
                 t=50,
-                b=50
+                b=55
             ),
+        )
+
+        fig.update_xaxes(
+            showline=True,
+            linecolor="#6b7280",
+            tickfont=dict(
+                color="#111827",
+                size=13
+            ),
+            title_font=dict(
+                color="#111827"
+            )
         )
 
         fig.update_yaxes(
             showgrid=True,
             gridcolor="#e5e7eb",
             showline=True,
-            linecolor="#9ca3af"
+            linecolor="#6b7280",
+            tickfont=dict(
+                color="#111827",
+                size=13
+            ),
+            title_font=dict(
+                color="#111827"
+            )
         )
 
         with st.container(border=True):
@@ -789,6 +787,13 @@ if page == "🏠 Overview":
                 fig,
                 use_container_width=True
             )
+
+        st.info(
+            "This chart shows the distribution of students "
+            "between the two project classes. Most students "
+            "in the dataset are classified as Not Dropout, "
+            "while a smaller group is classified as Dropout."
+        )
 
 
 # ============================================================
@@ -811,7 +816,6 @@ elif page == "📊 Exploratory Analysis":
         unsafe_allow_html=True
     )
 
-
     plot_df = df.copy()
 
     plot_df["Status"] = (
@@ -824,17 +828,15 @@ elif page == "📊 Exploratory Analysis":
         )
     )
 
-
     # ========================================================
     # ROW 1
     # ========================================================
 
     col1, col2 = st.columns(2)
 
-
-    # --------------------------------------------------------
-    # Dropout Distribution
-    # --------------------------------------------------------
+    # ========================================================
+    # DROPOUT DISTRIBUTION
+    # ========================================================
 
     with col1:
 
@@ -891,18 +893,43 @@ elif page == "📊 Exploratory Analysis":
 
         fig.update_layout(
             showlegend=False,
-            xaxis_title="",
+            xaxis_title="Student Status",
             yaxis_title="Number of Students",
             height=450,
             plot_bgcolor="white",
             paper_bgcolor="white",
+            margin=dict(
+                l=55,
+                r=30,
+                t=50,
+                b=55
+            ),
+        )
+
+        fig.update_xaxes(
+            showline=True,
+            linecolor="#6b7280",
+            tickfont=dict(
+                color="#111827",
+                size=13
+            ),
+            title_font=dict(
+                color="#111827"
+            )
         )
 
         fig.update_yaxes(
             showgrid=True,
             gridcolor="#e5e7eb",
             showline=True,
-            linecolor="#9ca3af"
+            linecolor="#6b7280",
+            tickfont=dict(
+                color="#111827",
+                size=13
+            ),
+            title_font=dict(
+                color="#111827"
+            )
         )
 
         with st.container(border=True):
@@ -912,10 +939,26 @@ elif page == "📊 Exploratory Analysis":
                 use_container_width=True
             )
 
+        st.markdown(
+            """
+            **What this shows:**  
+            The chart compares the number of students who
+            dropped out with those who did not.
 
-    # --------------------------------------------------------
-    # Tuition Fees
-    # --------------------------------------------------------
+            **Observation:**  
+            The dataset contains more **Not Dropout** students
+            than **Dropout** students. Approximately 67.9% of
+            students are Not Dropout, while 32.1% are Dropout.
+
+            This difference is important because the model needs
+            to correctly identify the smaller but important
+            dropout group.
+            """
+        )
+
+    # ========================================================
+    # TUITION FEES
+    # ========================================================
 
     with col2:
 
@@ -980,10 +1023,26 @@ elif page == "📊 Exploratory Analysis":
                 height=450,
                 plot_bgcolor="white",
                 paper_bgcolor="white",
+                margin=dict(
+                    l=55,
+                    r=30,
+                    t=50,
+                    b=55
+                ),
             )
 
-            # IMPORTANT:
-            # Fixed 0–100% scale
+            fig.update_xaxes(
+                showline=True,
+                linecolor="#6b7280",
+                tickfont=dict(
+                    color="#111827",
+                    size=13
+                ),
+                title_font=dict(
+                    color="#111827"
+                )
+            )
+
             fig.update_yaxes(
                 range=[0, 100],
                 dtick=20,
@@ -991,7 +1050,14 @@ elif page == "📊 Exploratory Analysis":
                 showgrid=True,
                 gridcolor="#e5e7eb",
                 showline=True,
-                linecolor="#9ca3af"
+                linecolor="#6b7280",
+                tickfont=dict(
+                    color="#111827",
+                    size=13
+                ),
+                title_font=dict(
+                    color="#111827"
+                )
             )
 
             with st.container(border=True):
@@ -1001,6 +1067,29 @@ elif page == "📊 Exploratory Analysis":
                     use_container_width=True
                 )
 
+            st.markdown(
+                """
+                **What this shows:**  
+                This chart compares the dropout rate of students
+                according to whether their tuition fees were
+                up to date.
+
+                **Observation:**  
+                Students whose tuition fees were **not up to date**
+                have a much higher dropout rate than students whose
+                fees were up to date.
+
+                In this dataset, the dropout rate is approximately
+                **86.6%** for students whose fees were not up to date,
+                compared with approximately **24.7%** for students
+                whose fees were up to date.
+
+                This is a strong relationship in the dataset, but
+                it should not be interpreted as proof that fee status
+                directly causes dropout.
+                """
+            )
+
         else:
 
             st.info(
@@ -1008,17 +1097,15 @@ elif page == "📊 Exploratory Analysis":
                 "was not found."
             )
 
-
     # ========================================================
-    # ROW 2 — FIRST + SECOND SEMESTER
+    # ROW 2
     # ========================================================
 
     col3, col4 = st.columns(2)
 
-
-    # --------------------------------------------------------
-    # 1st Semester Grade
-    # --------------------------------------------------------
+    # ========================================================
+    # 1ST SEMESTER
+    # ========================================================
 
     with col3:
 
@@ -1043,7 +1130,6 @@ elif page == "📊 Exploratory Analysis":
                 },
             )
 
-            # Make outliers cleaner
             fig.update_traces(
                 line=dict(
                     width=2
@@ -1067,7 +1153,19 @@ elif page == "📊 Exploratory Analysis":
                 ),
             )
 
-            # FIXED grade scale
+            fig.update_xaxes(
+                title="Student Status",
+                showline=True,
+                linecolor="#6b7280",
+                tickfont=dict(
+                    color="#111827",
+                    size=13
+                ),
+                title_font=dict(
+                    color="#111827"
+                )
+            )
+
             fig.update_yaxes(
                 range=[0, 20],
                 dtick=2,
@@ -1076,13 +1174,14 @@ elif page == "📊 Exploratory Analysis":
                 gridcolor="#e5e7eb",
                 zeroline=True,
                 showline=True,
-                linecolor="#9ca3af",
-            )
-
-            fig.update_xaxes(
-                title="Student Status",
-                showline=True,
-                linecolor="#9ca3af"
+                linecolor="#6b7280",
+                tickfont=dict(
+                    color="#111827",
+                    size=13
+                ),
+                title_font=dict(
+                    color="#111827"
+                )
             )
 
             with st.container(border=True):
@@ -1097,10 +1196,31 @@ elif page == "📊 Exploratory Analysis":
                 "box represent statistical outliers."
             )
 
+            st.markdown(
+                """
+                **What this shows:**  
+                The box plot compares the distribution of
+                first-semester grades between Dropout and
+                Not Dropout students.
 
-    # --------------------------------------------------------
-    # 2nd Semester Grade
-    # --------------------------------------------------------
+                **Observation:**  
+                Dropout students generally have lower
+                first-semester grades. The dropout group also
+                contains many very low or zero grades.
+
+                Non-dropout students show a higher and more
+                stable grade distribution overall.
+
+                This suggests that first-semester academic
+                performance can be a useful indicator when
+                identifying students who may require additional
+                support.
+                """
+            )
+
+    # ========================================================
+    # 2ND SEMESTER
+    # ========================================================
 
     with col4:
 
@@ -1125,7 +1245,6 @@ elif page == "📊 Exploratory Analysis":
                 },
             )
 
-            # Make outliers cleaner
             fig.update_traces(
                 line=dict(
                     width=2
@@ -1149,7 +1268,19 @@ elif page == "📊 Exploratory Analysis":
                 ),
             )
 
-            # FIXED grade scale
+            fig.update_xaxes(
+                title="Student Status",
+                showline=True,
+                linecolor="#6b7280",
+                tickfont=dict(
+                    color="#111827",
+                    size=13
+                ),
+                title_font=dict(
+                    color="#111827"
+                )
+            )
+
             fig.update_yaxes(
                 range=[0, 20],
                 dtick=2,
@@ -1158,13 +1289,14 @@ elif page == "📊 Exploratory Analysis":
                 gridcolor="#e5e7eb",
                 zeroline=True,
                 showline=True,
-                linecolor="#9ca3af",
-            )
-
-            fig.update_xaxes(
-                title="Student Status",
-                showline=True,
-                linecolor="#9ca3af"
+                linecolor="#6b7280",
+                tickfont=dict(
+                    color="#111827",
+                    size=13
+                ),
+                title_font=dict(
+                    color="#111827"
+                )
             )
 
             with st.container(border=True):
@@ -1179,9 +1311,27 @@ elif page == "📊 Exploratory Analysis":
                 "box represent statistical outliers."
             )
 
+            st.markdown(
+                """
+                **What this shows:**  
+                This box plot compares second-semester grades
+                for Dropout and Not Dropout students.
+
+                **Observation:**  
+                The difference between the two groups is more
+                pronounced in the second semester.
+
+                Dropout students have substantially lower grades,
+                and a large number of dropout students have a
+                second-semester grade of **0**.
+
+                This makes second-semester academic performance
+                an important warning indicator in this dataset.
+                """
+            )
 
     # ========================================================
-    # OBSERVATIONS
+    # KEY OBSERVATIONS
     # ========================================================
 
     st.write("")
@@ -1194,23 +1344,35 @@ elif page == "📊 Exploratory Analysis":
 
         st.markdown(
             """
-            **1st Semester**
+            **1. Student Distribution**
 
-            - Dropout students generally have lower first-semester grades.
-            - Very low or zero grades are strongly associated with dropout.
-            - Non-dropout students show a more stable grade distribution.
+            Most students in the dataset are classified as
+            **Not Dropout**, while approximately one-third are
+            classified as **Dropout**.
 
-            **2nd Semester**
+            **2. Tuition Fee Status**
 
-            - The difference between dropout and non-dropout students becomes more pronounced.
-            - A large concentration of dropout students has very low or zero grades.
-            - Academic disengagement is therefore a useful warning indicator.
+            Students whose tuition fees were not up to date show
+            a much higher dropout rate than students whose fees
+            were up to date.
 
-            **Important:** These observations show **relationships in the dataset**.
-            They do not prove that low grades directly cause dropout.
+            **3. 1st Semester Performance**
+
+            Lower first-semester grades are associated with a
+            higher proportion of dropout students.
+
+            **4. 2nd Semester Performance**
+
+            The relationship becomes stronger in the second
+            semester, particularly because many dropout students
+            have very low or zero grades.
+
+            **Important:** These observations describe
+            **relationships in the dataset**. They do not prove
+            that any individual factor directly causes a student
+            to drop out.
             """
         )
-
 
     # ========================================================
     # CONSTANT COLUMNS
@@ -1264,19 +1426,12 @@ elif page == "🤖 Model Performance":
         unsafe_allow_html=True
     )
 
-
-    # ========================================================
-    # METRICS
-    # ========================================================
-
     c1, c2, c3, c4, c5 = st.columns(5)
 
     c1.markdown(
         f"""
         <div class="metric-card">
-            <div class="metric-title">
-                Accuracy
-            </div>
+            <div class="metric-title">Accuracy</div>
             <div class="metric-value">
                 {results["accuracy"] * 100:.2f}%
             </div>
@@ -1288,9 +1443,7 @@ elif page == "🤖 Model Performance":
     c2.markdown(
         f"""
         <div class="metric-card">
-            <div class="metric-title">
-                Precision
-            </div>
+            <div class="metric-title">Precision</div>
             <div class="metric-value">
                 {results["precision"] * 100:.2f}%
             </div>
@@ -1302,9 +1455,7 @@ elif page == "🤖 Model Performance":
     c3.markdown(
         f"""
         <div class="metric-card">
-            <div class="metric-title">
-                Recall
-            </div>
+            <div class="metric-title">Recall</div>
             <div class="metric-value">
                 {results["recall"] * 100:.2f}%
             </div>
@@ -1316,9 +1467,7 @@ elif page == "🤖 Model Performance":
     c4.markdown(
         f"""
         <div class="metric-card">
-            <div class="metric-title">
-                F1-Score
-            </div>
+            <div class="metric-title">F1-Score</div>
             <div class="metric-value">
                 {results["f1"] * 100:.2f}%
             </div>
@@ -1330,9 +1479,7 @@ elif page == "🤖 Model Performance":
     c5.markdown(
         f"""
         <div class="metric-card">
-            <div class="metric-title">
-                ROC-AUC
-            </div>
+            <div class="metric-title">ROC-AUC</div>
             <div class="metric-value">
                 {results["roc_auc"]:.3f}
             </div>
@@ -1341,20 +1488,13 @@ elif page == "🤖 Model Performance":
         unsafe_allow_html=True
     )
 
-
     st.write("")
-
-
-    # ========================================================
-    # CONFUSION MATRIX + ROC
-    # ========================================================
 
     col1, col2 = st.columns(2)
 
-
-    # --------------------------------------------------------
-    # Confusion Matrix
-    # --------------------------------------------------------
+    # ========================================================
+    # CONFUSION MATRIX
+    # ========================================================
 
     with col1:
 
@@ -1389,6 +1529,26 @@ elif page == "🤖 Model Performance":
             paper_bgcolor="white",
         )
 
+        fig_cm.update_xaxes(
+            tickfont=dict(
+                color="#111827",
+                size=13
+            ),
+            title_font=dict(
+                color="#111827"
+            )
+        )
+
+        fig_cm.update_yaxes(
+            tickfont=dict(
+                color="#111827",
+                size=13
+            ),
+            title_font=dict(
+                color="#111827"
+            )
+        )
+
         with st.container(border=True):
 
             st.plotly_chart(
@@ -1396,10 +1556,9 @@ elif page == "🤖 Model Performance":
                 use_container_width=True
             )
 
-
-    # --------------------------------------------------------
-    # ROC Curve
-    # --------------------------------------------------------
+    # ========================================================
+    # ROC CURVE
+    # ========================================================
 
     with col2:
 
@@ -1446,13 +1605,27 @@ elif page == "🤖 Model Performance":
         fig_roc.update_xaxes(
             range=[0, 1],
             showgrid=True,
-            gridcolor="#e5e7eb"
+            gridcolor="#e5e7eb",
+            tickfont=dict(
+                color="#111827",
+                size=13
+            ),
+            title_font=dict(
+                color="#111827"
+            )
         )
 
         fig_roc.update_yaxes(
             range=[0, 1],
             showgrid=True,
-            gridcolor="#e5e7eb"
+            gridcolor="#e5e7eb",
+            tickfont=dict(
+                color="#111827",
+                size=13
+            ),
+            title_font=dict(
+                color="#111827"
+            )
         )
 
         with st.container(border=True):
@@ -1461,7 +1634,6 @@ elif page == "🤖 Model Performance":
                 fig_roc,
                 use_container_width=True
             )
-
 
     # ========================================================
     # CLASSIFICATION REPORT
@@ -1486,9 +1658,8 @@ elif page == "🤖 Model Performance":
             use_container_width=True
         )
 
-
     # ========================================================
-    # CONFUSION MATRIX DETAILS
+    # PREDICTION DETAILS
     # ========================================================
 
     st.subheader(
@@ -1550,7 +1721,6 @@ elif page == "🔮 Predict Risk":
         unsafe_allow_html=True
     )
 
-
     feature_names = results[
         "feature_names"
     ]
@@ -1563,7 +1733,6 @@ elif page == "🔮 Predict Risk":
         "X_test"
     ]
 
-
     # ========================================================
     # SESSION STATE
     # ========================================================
@@ -1571,7 +1740,6 @@ elif page == "🔮 Predict Risk":
     if "sample_index" not in st.session_state:
 
         st.session_state.sample_index = None
-
 
     # ========================================================
     # QUICK TEST CASE
@@ -1603,11 +1771,9 @@ elif page == "🔮 Predict Risk":
 
             st.rerun()
 
-
     sample_index = (
         st.session_state.sample_index
     )
-
 
     if sample_index is not None:
 
@@ -1615,7 +1781,6 @@ elif page == "🔮 Predict Risk":
             f"Random test student loaded "
             f"(record index: {sample_index})."
         )
-
 
     # ========================================================
     # DEFAULT VALUES
@@ -1631,7 +1796,6 @@ elif page == "🔮 Predict Risk":
 
         defaults = None
 
-
     # ========================================================
     # PREDICTION FORM
     # ========================================================
@@ -1641,7 +1805,7 @@ elif page == "🔮 Predict Risk":
     ):
 
         # ====================================================
-        # DEMOGRAPHIC SECTION
+        # COLUMNS
         # ====================================================
 
         st.markdown(
@@ -1664,11 +1828,6 @@ elif page == "🔮 Predict Risk":
             if col in feature_names
         ]
 
-
-        # ====================================================
-        # ENROLLMENT SECTION
-        # ====================================================
-
         enrollment_columns = [
             "Application mode",
             "Application order",
@@ -1686,11 +1845,6 @@ elif page == "🔮 Predict Risk":
             for col in enrollment_columns
             if col in feature_names
         ]
-
-
-        # ====================================================
-        # ACADEMIC SECTION
-        # ====================================================
 
         academic_columns = [
             "Previous qualification (grade)",
@@ -1717,11 +1871,6 @@ elif page == "🔮 Predict Risk":
             if col in feature_names
         ]
 
-
-        # ====================================================
-        # FINANCIAL SECTION
-        # ====================================================
-
         financial_columns = [
             "Debtor",
             "Tuition fees up to date",
@@ -1737,11 +1886,6 @@ elif page == "🔮 Predict Risk":
             if col in feature_names
         ]
 
-
-        # ====================================================
-        # OTHER COLUMNS
-        # ====================================================
-
         grouped_columns = (
             demographic_columns
             + enrollment_columns
@@ -1755,9 +1899,7 @@ elif page == "🔮 Predict Risk":
             if col not in grouped_columns
         ]
 
-
         inputs = {}
-
 
         # ====================================================
         # INPUT FUNCTION
@@ -1792,11 +1934,6 @@ elif page == "🔮 Predict Risk":
                     .tolist()
                 )
 
-
-                # --------------------------------------------
-                # Default value
-                # --------------------------------------------
-
                 if defaults is not None:
 
                     default_value = defaults[
@@ -1809,14 +1946,9 @@ elif page == "🔮 Predict Risk":
                         series.median()
                     )
 
-
                 with input_cols[
                     i % 3
                 ]:
-
-                    # ----------------------------------------
-                    # Categorical / Low-cardinality
-                    # ----------------------------------------
 
                     if len(unique_values) <= 10:
 
@@ -1832,7 +1964,6 @@ elif page == "🔮 Predict Risk":
 
                             selected_index = 0
 
-                        # Binary yes/no helper
                         binary_columns = [
                             "Debtor",
                             "Tuition fees up to date",
@@ -1875,10 +2006,6 @@ elif page == "🔮 Predict Risk":
                                 help="Value/code from the dataset.",
                             )
 
-                    # ----------------------------------------
-                    # Continuous numeric
-                    # ----------------------------------------
-
                     else:
 
                         min_value = float(
@@ -1892,9 +2019,6 @@ elif page == "🔮 Predict Risk":
                         default_number = float(
                             default_value
                         )
-
-                        # Protect against possible
-                        # floating-point boundary issues
 
                         if default_number < min_value:
                             default_number = min_value
@@ -1914,9 +2038,8 @@ elif page == "🔮 Predict Risk":
                         col_name
                     ] = value
 
-
         # ====================================================
-        # RENDER SECTIONS
+        # RENDER FORM
         # ====================================================
 
         render_input_group(
@@ -1954,15 +2077,12 @@ elif page == "🔮 Predict Risk":
                 other_columns
             )
 
-
         st.write("")
-
 
         submitted = st.form_submit_button(
             "🔍 Predict Dropout Risk",
             use_container_width=True
         )
-
 
     # ========================================================
     # PREDICTION
@@ -1970,23 +2090,13 @@ elif page == "🔮 Predict Risk":
 
     if submitted:
 
-        # ----------------------------------------------------
-        # Create input dataframe
-        # ----------------------------------------------------
-
         input_df = pd.DataFrame(
             [inputs]
         )
 
-        # Exact feature order
         input_df = input_df[
             feature_names
         ]
-
-
-        # ----------------------------------------------------
-        # Scale
-        # ----------------------------------------------------
 
         input_scaled = (
             results["scaler"]
@@ -1995,11 +2105,6 @@ elif page == "🔮 Predict Risk":
             )
         )
 
-
-        # ----------------------------------------------------
-        # Prediction probability
-        # ----------------------------------------------------
-
         probability = (
             results["model"]
             .predict_proba(
@@ -2007,18 +2112,12 @@ elif page == "🔮 Predict Risk":
             )[0, 1]
         )
 
-
-        # ----------------------------------------------------
-        # Predicted class
-        # ----------------------------------------------------
-
         predicted_class = (
             results["model"]
             .predict(
                 input_scaled
             )[0]
         )
-
 
         # ====================================================
         # RISK CATEGORY
@@ -2028,17 +2127,22 @@ elif page == "🔮 Predict Risk":
 
             risk_label = "Low Risk"
             risk_css = "risk-low"
+            result_css = "result-low"
+            risk_color = "#16a34a"
 
         elif probability < 0.60:
 
             risk_label = "Medium Risk"
             risk_css = "risk-medium"
+            result_css = "result-medium"
+            risk_color = "#d97706"
 
         else:
 
             risk_label = "High Risk"
             risk_css = "risk-high"
-
+            result_css = "result-high"
+            risk_color = "#dc2626"
 
         # ====================================================
         # RESULT
@@ -2050,9 +2154,9 @@ elif page == "🔮 Predict Risk":
             "## 🎯 Prediction Result"
         )
 
-
-        result_col1, result_col2 = st.columns(2)
-
+        result_col1, result_col2 = st.columns(
+            [1.1, 0.9]
+        )
 
         # ====================================================
         # GAUGE
@@ -2065,24 +2169,40 @@ elif page == "🔮 Predict Risk":
                     mode="gauge+number",
                     value=probability * 100,
                     number={
-                        "suffix": "%"
+                        "suffix": "%",
+                        "font": {
+                            "size": 38,
+                            "color": risk_color
+                        }
                     },
                     title={
                         "text":
-                        "Dropout Probability"
+                        "Dropout Probability",
+                        "font": {
+                            "size": 18,
+                            "color": "#111827"
+                        }
                     },
                     gauge={
                         "axis": {
                             "range": [
                                 0,
                                 100
-                            ]
+                            ],
+                            "tickwidth": 1,
+                            "tickcolor": "#374151",
+                            "tickfont": {
+                                "color": "#111827"
+                            }
                         },
 
                         "bar": {
                             "color":
-                            "#1f2937"
+                            risk_color
                         },
+
+                        "borderwidth": 1,
+                        "bordercolor": "#9ca3af",
 
                         "steps": [
                             {
@@ -2099,7 +2219,7 @@ elif page == "🔮 Predict Risk":
                                     60
                                 ],
                                 "color":
-                                "#fef9c3"
+                                "#fef3c7"
                             },
                             {
                                 "range": [
@@ -2110,19 +2230,31 @@ elif page == "🔮 Predict Risk":
                                 "#fee2e2"
                             },
                         ],
+
+                        "threshold": {
+                            "line": {
+                                "color": risk_color,
+                                "width": 5
+                            },
+                            "thickness": 0.8,
+                            "value": probability * 100
+                        }
                     },
                 )
             )
 
             gauge.update_layout(
-                height=330,
+                height=350,
                 margin=dict(
-                    l=20,
-                    r=20,
+                    l=25,
+                    r=25,
                     t=55,
-                    b=10
+                    b=20
                 ),
                 paper_bgcolor="white",
+                font=dict(
+                    color="#111827"
+                )
             )
 
             with st.container(
@@ -2133,7 +2265,6 @@ elif page == "🔮 Predict Risk":
                     gauge,
                     use_container_width=True
                 )
-
 
         # ====================================================
         # RESULT DETAILS
@@ -2156,25 +2287,72 @@ elif page == "🔮 Predict Risk":
 
                 st.write("")
 
-                st.metric(
-                    "Predicted Class",
-                    (
-                        "Dropout"
-                        if predicted_class == 1
-                        else "Not Dropout"
-                    )
+                st.markdown(
+                    f"""
+                    <div class="result-card {result_css}">
+                        <div class="result-title">
+                            Dropout Probability
+                        </div>
+                        <div class="result-value">
+                            {probability * 100:.2f}%
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
                 )
 
-                st.metric(
-                    "Dropout Probability",
-                    f"{probability * 100:.2f}%"
+                predicted_label = (
+                    "Dropout"
+                    if predicted_class == 1
+                    else "Not Dropout"
                 )
 
+                if predicted_class == 1:
+
+                    class_color = "#dc2626"
+                    class_background = "#fef2f2"
+                    class_border = "#fca5a5"
+
+                else:
+
+                    class_color = "#16a34a"
+                    class_background = "#f0fdf4"
+                    class_border = "#86efac"
+
+                st.markdown(
+                    f"""
+                    <div style="
+                        background:{class_background};
+                        border:2px solid {class_border};
+                        border-radius:14px;
+                        padding:18px;
+                        margin-bottom:12px;
+                    ">
+                        <div style="
+                            color:#374151;
+                            font-size:1rem;
+                            font-weight:700;
+                        ">
+                            Predicted Class
+                        </div>
+
+                        <div style="
+                            color:{class_color};
+                            font-size:1.55rem;
+                            font-weight:800;
+                            margin-top:5px;
+                        ">
+                            {predicted_label}
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
                 if predicted_class == 1:
 
                     st.warning(
-                        "The model predicts that this "
+                        "⚠️ The model predicts that this "
                         "student has a higher likelihood "
                         "of dropping out."
                     )
@@ -2182,14 +2360,13 @@ elif page == "🔮 Predict Risk":
                 else:
 
                     st.success(
-                        "The model predicts that this "
+                        "✅ The model predicts that this "
                         "student has a lower likelihood "
                         "of dropping out."
                     )
 
-
         # ====================================================
-        # ACTUAL OUTCOME FOR RANDOM TEST CASE
+        # ACTUAL OUTCOME
         # ====================================================
 
         if sample_index is not None:
@@ -2218,7 +2395,6 @@ elif page == "🔮 Predict Risk":
                 atol=1e-8
             )
 
-
             if same_as_original:
 
                 actual_outcome = int(
@@ -2244,10 +2420,37 @@ elif page == "🔮 Predict Risk":
                         "📌 Actual Outcome"
                     )
 
-                    st.metric(
-                        "Actual Student Outcome",
-                        actual_label
-                    )
+                    if actual_outcome == 1:
+
+                        st.markdown(
+                            """
+                            <div class="result-card result-high">
+                                <div class="result-title">
+                                    Actual Student Outcome
+                                </div>
+                                <div class="result-value">
+                                    🔴 Dropout
+                                </div>
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
+
+                    else:
+
+                        st.markdown(
+                            """
+                            <div class="result-card result-low">
+                                <div class="result-title">
+                                    Actual Student Outcome
+                                </div>
+                                <div class="result-value">
+                                    🟢 Not Dropout
+                                </div>
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
 
                     if (
                         predicted_class
@@ -2266,7 +2469,6 @@ elif page == "🔮 Predict Risk":
                             "does not match the actual outcome."
                         )
 
-
         # ====================================================
         # RISK INTERPRETATION
         # ====================================================
@@ -2281,14 +2483,63 @@ elif page == "🔮 Predict Risk":
                 "📖 Risk Interpretation"
             )
 
-            st.markdown(
-                """
-                **Low Risk:** Dropout probability below 30%
+            r1, r2, r3 = st.columns(3)
 
-                **Medium Risk:** Dropout probability from 30% to below 60%
-
-                **High Risk:** Dropout probability of 60% or higher
+            r1.markdown(
                 """
+                <div style="
+                    background:#f0fdf4;
+                    border:1px solid #86efac;
+                    border-radius:12px;
+                    padding:15px;
+                ">
+                    <h4 style="color:#15803d;">
+                        🟢 Low Risk
+                    </h4>
+                    <p style="color:#166534;">
+                        Dropout probability below 30%.
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            r2.markdown(
+                """
+                <div style="
+                    background:#fffbeb;
+                    border:1px solid #fcd34d;
+                    border-radius:12px;
+                    padding:15px;
+                ">
+                    <h4 style="color:#b45309;">
+                        🟡 Medium Risk
+                    </h4>
+                    <p style="color:#92400e;">
+                        Probability from 30% to below 60%.
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            r3.markdown(
+                """
+                <div style="
+                    background:#fef2f2;
+                    border:1px solid #fca5a5;
+                    border-radius:12px;
+                    padding:15px;
+                ">
+                    <h4 style="color:#b91c1c;">
+                        🔴 High Risk
+                    </h4>
+                    <p style="color:#991b1b;">
+                        Probability of 60% or higher.
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
             st.caption(
