@@ -504,6 +504,294 @@ DEFAULT_FILE = "datasett.csv"
 
 
 # ============================================================
+# CATEGORICAL CODE → HUMAN-READABLE LABEL MAPPINGS
+#
+# Source: Official UCI "Predict Students' Dropout and Academic
+# Success" dataset documentation (Realinho et al., 2021).
+#
+# These dictionaries are used ONLY to control what is DISPLAYED
+# in the Predict Risk dropdowns. The numeric code the user picks
+# is always what gets stored in `inputs` and passed to the model.
+#
+#   Nursing (displayed)  →  9500 (stored + sent to model)
+# ============================================================
+
+MARITAL_STATUS_LABELS = {
+    1: "Single",
+    2: "Married",
+    3: "Widower",
+    4: "Divorced",
+    5: "Facto Union",
+    6: "Legally Separated",
+}
+
+APPLICATION_MODE_LABELS = {
+    1: "1st phase - general contingent",
+    2: "Ordinance No. 612/93",
+    5: "1st phase - special contingent (Azores Island)",
+    7: "Holders of other higher courses",
+    10: "Ordinance No. 854-B/99",
+    15: "International student (bachelor)",
+    16: "1st phase - special contingent (Madeira Island)",
+    17: "2nd phase - general contingent",
+    18: "3rd phase - general contingent",
+    26: "Ordinance No. 533-A/99, item b2 (Different Plan)",
+    27: "Ordinance No. 533-A/99, item b3 (Other Institution)",
+    39: "Over 23 years old",
+    42: "Transfer",
+    43: "Change of course",
+    44: "Technological specialization diploma holders",
+    51: "Change of institution/course",
+    53: "Short cycle diploma holders",
+    57: "Change of institution/course (International)",
+}
+
+COURSE_LABELS = {
+    33: "Biofuel Production Technologies",
+    171: "Animation and Multimedia Design",
+    8014: "Social Service (evening attendance)",
+    9003: "Agronomy",
+    9070: "Communication Design",
+    9085: "Veterinary Nursing",
+    9119: "Informatics Engineering",
+    9130: "Equinculture",
+    9147: "Management",
+    9238: "Social Service",
+    9254: "Tourism",
+    9500: "Nursing",
+    9556: "Oral Hygiene",
+    9670: "Advertising and Marketing Management",
+    9773: "Journalism and Communication",
+    9853: "Basic Education",
+    9991: "Management (evening attendance)",
+}
+
+DAYTIME_EVENING_LABELS = {
+    1: "Daytime",
+    0: "Evening",
+}
+
+PREVIOUS_QUALIFICATION_LABELS = {
+    1: "Secondary education",
+    2: "Higher education - bachelor's degree",
+    3: "Higher education - degree",
+    4: "Higher education - master's",
+    5: "Higher education - doctorate",
+    6: "Frequency of higher education",
+    9: "12th year of schooling - not completed",
+    10: "11th year of schooling - not completed",
+    12: "Other - 11th year of schooling",
+    14: "10th year of schooling",
+    15: "10th year of schooling - not completed",
+    19: "Basic education 3rd cycle (9th/10th/11th year) or equiv.",
+    38: "Basic education 2nd cycle (6th/7th/8th year) or equiv.",
+    39: "Technological specialization course",
+    40: "Higher education - degree (1st cycle)",
+    42: "Professional higher technical course",
+    43: "Higher education - master (2nd cycle)",
+}
+
+NACIONALITY_LABELS = {
+    1: "Portuguese",
+    2: "German",
+    6: "Spanish",
+    11: "Italian",
+    13: "Dutch",
+    14: "English",
+    17: "Lithuanian",
+    21: "Angolan",
+    22: "Cape Verdean",
+    24: "Guinean",
+    25: "Mozambican",
+    26: "Santomean",
+    32: "Turkish",
+    41: "Brazilian",
+    62: "Romanian",
+    100: "Moldova (Republic of)",
+    101: "Mexican",
+    103: "Ukrainian",
+    105: "Russian",
+    108: "Cuban",
+    109: "Colombian",
+}
+
+MOTHER_QUALIFICATION_LABELS = {
+    1: "Secondary Education - 12th Year or Eq.",
+    2: "Higher Education - Bachelor's Degree",
+    3: "Higher Education - Degree",
+    4: "Higher Education - Master's",
+    5: "Higher Education - Doctorate",
+    6: "Frequency of Higher Education",
+    9: "12th Year - Not Completed",
+    10: "11th Year - Not Completed",
+    11: "7th Year (Old)",
+    12: "Other - 11th Year of Schooling",
+    14: "10th Year of Schooling",
+    18: "General commerce course",
+    19: "Basic Education 3rd Cycle (9th/10th/11th Year) or Equiv.",
+    22: "Technical-professional course",
+    26: "7th year of schooling",
+    27: "2nd cycle of the general high school course",
+    29: "9th Year - Not Completed",
+    30: "8th year of schooling",
+    34: "Unknown",
+    35: "Can't read or write",
+    36: "Can read without 4th year of schooling",
+    37: "Basic education 1st cycle (4th/5th year) or equiv.",
+    38: "Basic Education 2nd Cycle (6th/7th/8th Year) or Equiv.",
+    39: "Technological specialization course",
+    40: "Higher education - degree (1st cycle)",
+    41: "Specialized higher studies course",
+    42: "Professional higher technical course",
+    43: "Higher Education - Master (2nd cycle)",
+    44: "Higher Education - Doctorate (3rd cycle)",
+}
+
+FATHER_QUALIFICATION_LABELS = {
+    1: "Secondary Education - 12th Year or Eq.",
+    2: "Higher Education - Bachelor's Degree",
+    3: "Higher Education - Degree",
+    4: "Higher Education - Master's",
+    5: "Higher Education - Doctorate",
+    6: "Frequency of Higher Education",
+    9: "12th Year - Not Completed",
+    10: "11th Year - Not Completed",
+    11: "7th Year (Old)",
+    12: "Other - 11th Year of Schooling",
+    13: "2nd year complementary high school course",
+    14: "10th Year of Schooling",
+    18: "General commerce course",
+    19: "Basic Education 3rd Cycle (9th/10th/11th Year) or Equiv.",
+    20: "Complementary High School Course",
+    22: "Technical-professional course",
+    25: "Complementary High School Course - not concluded",
+    26: "7th year of schooling",
+    27: "2nd cycle of the general high school course",
+    29: "9th Year - Not Completed",
+    30: "8th year of schooling",
+    31: "General Course of Administration and Commerce",
+    33: "Supplementary Accounting and Administration",
+    34: "Unknown",
+    35: "Can't read or write",
+    36: "Can read without 4th year of schooling",
+    37: "Basic education 1st cycle (4th/5th year) or equiv.",
+    38: "Basic Education 2nd Cycle (6th/7th/8th Year) or Equiv.",
+    39: "Technological specialization course",
+    40: "Higher education - degree (1st cycle)",
+    41: "Specialized higher studies course",
+    42: "Professional higher technical course",
+    43: "Higher Education - Master (2nd cycle)",
+    44: "Higher Education - Doctorate (3rd cycle)",
+}
+
+MOTHER_OCCUPATION_LABELS = {
+    0: "Student",
+    1: "Legislative/Executive Directors & Managers",
+    2: "Intellectual & Scientific Specialists",
+    3: "Intermediate Level Technicians",
+    4: "Administrative staff",
+    5: "Personal Services, Security & Sellers",
+    6: "Farmers & Skilled Agriculture/Fishery Workers",
+    7: "Skilled Industry/Construction Workers",
+    8: "Installation & Machine Operators",
+    9: "Unskilled Workers",
+    10: "Armed Forces Professions",
+    90: "Other Situation",
+    99: "(blank)",
+    122: "Health professionals",
+    123: "Teachers",
+    125: "ICT Specialists",
+    131: "Science/Engineering Technicians (Intermediate)",
+    132: "Health Technicians (Intermediate)",
+    134: "Legal/Social/Sports/Cultural Technicians (Intermediate)",
+    141: "Office Workers & Secretaries",
+    143: "Data/Accounting/Finance Operators",
+    144: "Other Administrative Support Staff",
+    151: "Personal Service Workers",
+    152: "Sellers",
+    153: "Personal Care Workers",
+    171: "Skilled Construction Workers",
+    173: "Skilled Printing/Precision/Jewelry Workers",
+    175: "Food/Wood/Clothing Industry Workers",
+    191: "Cleaning Workers",
+    192: "Unskilled Agriculture/Fishery Workers",
+    193: "Unskilled Construction/Manufacturing Workers",
+    194: "Meal Preparation Assistants",
+}
+
+FATHER_OCCUPATION_LABELS = {
+    0: "Student",
+    1: "Legislative/Executive Directors & Managers",
+    2: "Intellectual & Scientific Specialists",
+    3: "Intermediate Level Technicians",
+    4: "Administrative staff",
+    5: "Personal Services, Security & Sellers",
+    6: "Farmers & Skilled Agriculture/Fishery Workers",
+    7: "Skilled Industry/Construction Workers",
+    8: "Installation & Machine Operators",
+    9: "Unskilled Workers",
+    10: "Armed Forces Professions",
+    90: "Other Situation",
+    99: "(blank)",
+    101: "Armed Forces Officers",
+    102: "Armed Forces Sergeants",
+    103: "Other Armed Forces Personnel",
+    112: "Admin. & Commercial Services Directors",
+    114: "Hotel/Catering/Trade Services Directors",
+    121: "Physical Sciences/Engineering Specialists",
+    122: "Health professionals",
+    123: "Teachers",
+    124: "Finance/Accounting/Admin Specialists",
+    131: "Science/Engineering Technicians (Intermediate)",
+    132: "Health Technicians (Intermediate)",
+    134: "Legal/Social/Sports/Cultural Technicians (Intermediate)",
+    135: "ICT Technicians",
+    141: "Office Workers & Secretaries",
+    143: "Data/Accounting/Finance Operators",
+    144: "Other Administrative Support Staff",
+    151: "Personal Service Workers",
+    152: "Sellers",
+    153: "Personal Care Workers",
+    154: "Protection & Security Personnel",
+    161: "Market-oriented Farmers & Skilled Agriculture Workers",
+    163: "Subsistence Farmers/Fishermen/Hunters",
+    171: "Skilled Construction Workers",
+    172: "Skilled Metallurgy/Metalworking Workers",
+    174: "Skilled Electricity/Electronics Workers",
+    175: "Food/Wood/Clothing Industry Workers",
+    181: "Fixed Plant & Machine Operators",
+    182: "Assembly Workers",
+    183: "Vehicle Drivers & Mobile Equipment Operators",
+    192: "Unskilled Agriculture/Fishery Workers",
+    193: "Unskilled Construction/Manufacturing Workers",
+    194: "Meal Preparation Assistants",
+    195: "Street Vendors & Street Service Providers",
+}
+
+GENDER_LABELS = {
+    1: "Male",
+    0: "Female",
+}
+
+# Maps a feature column name to its code → label dictionary.
+# Any column NOT in this dict falls back to the existing
+# behaviour (raw numeric input / plain selectbox).
+CATEGORY_LABELS = {
+    "Marital status": MARITAL_STATUS_LABELS,
+    "Application mode": APPLICATION_MODE_LABELS,
+    "Course": COURSE_LABELS,
+    "Daytime/evening attendance": DAYTIME_EVENING_LABELS,
+    "Previous qualification": PREVIOUS_QUALIFICATION_LABELS,
+    "Nacionality": NACIONALITY_LABELS,
+    "Mother's qualification": MOTHER_QUALIFICATION_LABELS,
+    "Father's qualification": FATHER_QUALIFICATION_LABELS,
+    "Mother's occupation": MOTHER_OCCUPATION_LABELS,
+    "Father's occupation": FATHER_OCCUPATION_LABELS,
+    "Gender": GENDER_LABELS,
+}
+
+
+# ============================================================
 # LOAD DATA
 # ============================================================
 
@@ -2487,15 +2775,16 @@ elif page == "🔮 Predict Risk":
 
                 else:
 
-                    if pd.api.types.is_numeric_dtype(
-                        series
-                    ):
-
-                        default_value = (
-                            series.median()
+                    # Codes (Course, Marital status, etc.) are
+                    # stored as numbers, but a median of codes
+                    # is meaningless — use the most common code
+                    # (mode) instead, same as other categoricals.
+                    if (
+                        col_name in CATEGORY_LABELS
+                        or not pd.api.types.is_numeric_dtype(
+                            series
                         )
-
-                    else:
+                    ):
 
                         mode_values = (
                             series
@@ -2513,6 +2802,12 @@ elif page == "🔮 Predict Risk":
                             default_value = (
                                 clean_series.iloc[0]
                             )
+
+                    else:
+
+                        default_value = (
+                            series.median()
+                        )
 
                 if isinstance(
                     default_value,
@@ -2569,6 +2864,84 @@ elif page == "🔮 Predict Risk":
                                 else "No (0)",
                             key=f"input_{col_name}",
                             help="0 = No, 1 = Yes",
+                        )
+
+                    elif col_name in CATEGORY_LABELS:
+
+                        # --------------------------------------------
+                        # HUMAN-READABLE CATEGORICAL DROPDOWN
+                        #
+                        # The dropdown DISPLAYS the label (e.g.
+                        # "Nursing"), but the value stored in
+                        # `inputs` — and therefore sent to the
+                        # model — is always the original numeric
+                        # code (e.g. 9500).
+                        # --------------------------------------------
+
+                        label_map = CATEGORY_LABELS[
+                            col_name
+                        ]
+
+                        available_codes = sorted(
+                            clean_series
+                            .unique()
+                            .tolist()
+                        )
+
+                        available_codes = [
+                            int(code)
+                            for code in available_codes
+                        ]
+
+                        try:
+
+                            default_code = int(
+                                float(
+                                    default_value
+                                )
+                            )
+
+                        except Exception:
+
+                            default_code = (
+                                available_codes[0]
+                                if available_codes
+                                else 0
+                            )
+
+                        if default_code in available_codes:
+
+                            selected_index = (
+                                available_codes.index(
+                                    default_code
+                                )
+                            )
+
+                        else:
+
+                            selected_index = 0
+
+                        def format_category_code(
+                            code,
+                            _label_map=label_map
+                        ):
+
+                            return _label_map.get(
+                                int(code),
+                                f"Unknown code ({code})"
+                            )
+
+                        value = st.selectbox(
+                            col_name,
+                            options=available_codes,
+                            index=selected_index,
+                            format_func=format_category_code,
+                            key=f"input_{col_name}",
+                            help=(
+                                "Shown by name here, but the "
+                                "original dataset code is what "
+                                "is sent to the model."
+                            ),
                         )
 
                     elif pd.api.types.is_numeric_dtype(
