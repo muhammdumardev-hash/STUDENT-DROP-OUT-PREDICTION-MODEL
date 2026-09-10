@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import plotly.express as px
+import plotly.graph_objects as go
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -15,7 +16,7 @@ from sklearn.metrics import (
 
 
 # ============================================================
-# PAGE CONFIGURATION
+# PAGE CONFIG
 # ============================================================
 
 st.set_page_config(
@@ -34,61 +35,77 @@ st.markdown(
     """
     <style>
 
-    /* --------------------------------------------------------
-       MAIN APPLICATION
-    -------------------------------------------------------- */
+    /* ======================================================
+       GLOBAL
+    ====================================================== */
 
     .stApp {
         background-color: #f5f7fb;
     }
 
-    .main {
-        padding-top: 1rem;
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 3rem;
     }
 
 
-    /* --------------------------------------------------------
-       HEADER
-    -------------------------------------------------------- */
+    /* ======================================================
+       SIDEBAR
+    ====================================================== */
 
-    .main-header {
+    section[data-testid="stSidebar"] {
+        background-color: #111827;
+    }
+
+    section[data-testid="stSidebar"] * {
+        color: white;
+    }
+
+
+    /* ======================================================
+       MAIN HEADER
+    ====================================================== */
+
+    .hero {
         background: linear-gradient(
             135deg,
             #111827 0%,
-            #1f2937 50%,
-            #111827 100%
+            #1f2937 55%,
+            #374151 100%
         );
 
-        padding: 32px 35px;
-        border-radius: 18px;
-        margin-bottom: 25px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        padding: 35px 40px;
+        border-radius: 20px;
+        margin-bottom: 28px;
+
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.12);
     }
 
-    .main-title {
+    .hero-title {
         color: white;
-        font-size: 38px;
+        font-size: 40px;
         font-weight: 800;
-        margin-bottom: 8px;
+        margin: 0;
     }
 
-    .main-subtitle {
+    .hero-subtitle {
         color: #d1d5db;
         font-size: 16px;
-        margin-bottom: 0;
+        margin-top: 8px;
     }
 
 
-    /* --------------------------------------------------------
-       SECTION HEADINGS
-    -------------------------------------------------------- */
+    /* ======================================================
+       SECTION TITLE
+    ====================================================== */
 
     .section-title {
-        font-size: 25px;
-        font-weight: 750;
         color: #111827;
-        margin-top: 25px;
-        margin-bottom: 8px;
+        font-size: 27px;
+        font-weight: 800;
+        margin-top: 15px;
+        margin-bottom: 5px;
     }
 
     .section-description {
@@ -98,20 +115,22 @@ st.markdown(
     }
 
 
-    /* --------------------------------------------------------
+    /* ======================================================
        METRIC CARDS
-    -------------------------------------------------------- */
+    ====================================================== */
 
     .metric-card {
-        background-color: white;
-        border-radius: 15px;
-        padding: 20px;
+        background: white;
         border: 1px solid #e5e7eb;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        border-radius: 16px;
+        padding: 20px;
         text-align: center;
+
+        box-shadow:
+            0 5px 18px rgba(0, 0, 0, 0.06);
     }
 
-    .metric-title {
+    .metric-label {
         color: #6b7280;
         font-size: 14px;
         font-weight: 600;
@@ -125,109 +144,88 @@ st.markdown(
     }
 
 
-    /* --------------------------------------------------------
-       PREDICTION RESULT
-    -------------------------------------------------------- */
+    /* ======================================================
+       RESULT CARD
+    ====================================================== */
 
-    .prediction-card {
-        background-color: white;
-        border-radius: 18px;
-        padding: 30px;
+    .result-card {
+        background: white;
         border: 1px solid #e5e7eb;
-        box-shadow: 0 7px 25px rgba(0,0,0,0.08);
+        border-radius: 20px;
+        padding: 30px;
+
+        box-shadow:
+            0 8px 28px rgba(0, 0, 0, 0.08);
+
         margin-top: 20px;
     }
 
-    .prediction-title {
-        color: #111827;
-        font-size: 25px;
-        font-weight: 800;
-        margin-bottom: 12px;
-    }
 
-    .prediction-probability {
-        color: #111827;
-        font-size: 48px;
-        font-weight: 900;
-    }
+    /* ======================================================
+       INFO CARD
+    ====================================================== */
 
-    .risk-text {
-        color: #111827;
-        font-size: 24px;
-        font-weight: 800;
-        margin-top: 8px;
-    }
-
-
-    /* --------------------------------------------------------
-       INFO BOX
-    -------------------------------------------------------- */
-
-    .info-box {
-        background-color: white;
+    .info-card {
+        background: white;
+        border: 1px solid #e5e7eb;
         border-left: 5px solid #111827;
+
+        border-radius: 12px;
+
         padding: 18px;
-        border-radius: 10px;
-        margin-top: 15px;
-        border-top: 1px solid #e5e7eb;
-        border-right: 1px solid #e5e7eb;
-        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 15px;
     }
 
-    .info-box-title {
+    .info-title {
         color: #111827;
-        font-size: 17px;
         font-weight: 750;
-        margin-bottom: 5px;
+        font-size: 16px;
     }
 
-    .info-box-text {
-        color: #4b5563;
+    .info-text {
+        color: #6b7280;
         font-size: 14px;
+        margin-top: 5px;
     }
 
 
-    /* --------------------------------------------------------
-       SIDEBAR
-    -------------------------------------------------------- */
-
-    section[data-testid="stSidebar"] {
-        background-color: #111827;
-    }
-
-    section[data-testid="stSidebar"] * {
-        color: white;
-    }
-
-
-    /* --------------------------------------------------------
-       BUTTON
-    -------------------------------------------------------- */
+    /* ======================================================
+       BUTTONS
+    ====================================================== */
 
     .stButton > button {
-        width: 100%;
-        border-radius: 10px;
         height: 48px;
+        border-radius: 10px;
         font-weight: 700;
-        border: none;
     }
 
 
-    /* --------------------------------------------------------
-       INPUT LABELS
-    -------------------------------------------------------- */
+    /* ======================================================
+       INPUTS
+    ====================================================== */
 
-    label {
-        font-weight: 600 !important;
+    div[data-baseweb="select"] > div {
+        border-radius: 9px;
+    }
+
+    input {
+        border-radius: 9px !important;
     }
 
 
-    /* --------------------------------------------------------
-       DATAFRAME
-    -------------------------------------------------------- */
+    /* ======================================================
+       FOOTER
+    ====================================================== */
 
-    [data-testid="stDataFrame"] {
-        border-radius: 12px;
+    .footer {
+        text-align: center;
+        color: #6b7280;
+        font-size: 13px;
+
+        margin-top: 50px;
+        padding-top: 20px;
+
+        border-top: 1px solid #e5e7eb;
     }
 
     </style>
@@ -243,13 +241,11 @@ st.markdown(
 @st.cache_data
 def load_dataset():
 
-    df = pd.read_csv("datasett.csv")
-
-    return df
+    return pd.read_csv("datasett.csv")
 
 
 # ============================================================
-# PREPARE DATA
+# TRAIN MODEL
 # ============================================================
 
 @st.cache_resource
@@ -257,35 +253,65 @@ def train_model():
 
     df = load_dataset().copy()
 
-    # Encode target
-    df["target"] = df["target"].replace({
-        "Dropout": 1,
-        "Graduate": 0,
-        "Enrolled": 0
-    })
+    # --------------------------------------------------------
+    # TARGET ENCODING
+    # --------------------------------------------------------
+
+    df["target"] = df["target"].replace(
+        {
+            "Dropout": 1,
+            "Graduate": 0,
+            "Enrolled": 0
+        }
+    )
 
     df["target"] = df["target"].astype(int)
 
-    # Separate features and target
-    X = df.drop("target", axis=1)
+
+    # --------------------------------------------------------
+    # FEATURES / TARGET
+    # --------------------------------------------------------
+
+    X = df.drop(
+        "target",
+        axis=1
+    )
+
     y = df["target"]
 
-    # Train-test split
+
+    # --------------------------------------------------------
+    # TRAIN TEST SPLIT
+    # --------------------------------------------------------
+
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
-        test_size=0.2,
+        test_size=0.20,
         random_state=42,
         stratify=y
     )
 
-    # Scaling
+
+    # --------------------------------------------------------
+    # SCALING
+    # --------------------------------------------------------
+
     scaler = StandardScaler()
 
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+    X_train_scaled = scaler.fit_transform(
+        X_train
+    )
 
-    # Model
+    X_test_scaled = scaler.transform(
+        X_test
+    )
+
+
+    # --------------------------------------------------------
+    # LOGISTIC REGRESSION
+    # --------------------------------------------------------
+
     model = LogisticRegression(
         max_iter=1000
     )
@@ -295,12 +321,24 @@ def train_model():
         y_train
     )
 
-    # Predictions
-    y_pred = model.predict(X_test_scaled)
 
-    y_prob = model.predict_proba(X_test_scaled)[:, 1]
+    # --------------------------------------------------------
+    # TEST PREDICTIONS
+    # --------------------------------------------------------
 
-    # Metrics
+    y_pred = model.predict(
+        X_test_scaled
+    )
+
+    y_probability = model.predict_proba(
+        X_test_scaled
+    )[:, 1]
+
+
+    # --------------------------------------------------------
+    # METRICS
+    # --------------------------------------------------------
+
     accuracy = accuracy_score(
         y_test,
         y_pred
@@ -308,7 +346,7 @@ def train_model():
 
     roc_auc = roc_auc_score(
         y_test,
-        y_prob
+        y_probability
     )
 
     cm = confusion_matrix(
@@ -322,23 +360,24 @@ def train_model():
         output_dict=True
     )
 
-    return (
-        df,
-        X,
-        y,
-        model,
-        scaler,
-        X_train,
-        X_test,
-        y_train,
-        y_test,
-        y_pred,
-        y_prob,
-        accuracy,
-        roc_auc,
-        cm,
-        report
-    )
+
+    return {
+        "df": df,
+        "X": X,
+        "y": y,
+        "X_train": X_train,
+        "X_test": X_test,
+        "y_train": y_train,
+        "y_test": y_test,
+        "model": model,
+        "scaler": scaler,
+        "y_pred": y_pred,
+        "y_probability": y_probability,
+        "accuracy": accuracy,
+        "roc_auc": roc_auc,
+        "cm": cm,
+        "report": report
+    }
 
 
 # ============================================================
@@ -347,32 +386,39 @@ def train_model():
 
 try:
 
-    (
-        df,
-        X,
-        y,
-        model,
-        scaler,
-        X_train,
-        X_test,
-        y_train,
-        y_test,
-        y_pred,
-        y_prob,
-        accuracy,
-        roc_auc,
-        cm,
-        report
-    ) = train_model()
+    data = train_model()
 
 except FileNotFoundError:
 
     st.error(
         "datasett.csv was not found. "
-        "Please place datasett.csv in the same folder as app.py."
+        "Make sure datasett.csv is in the same GitHub repository "
+        "as app.py."
     )
 
     st.stop()
+
+
+df = data["df"]
+X = data["X"]
+y = data["y"]
+
+model = data["model"]
+scaler = data["scaler"]
+
+X_train = data["X_train"]
+X_test = data["X_test"]
+
+y_test = data["y_test"]
+y_pred = data["y_pred"]
+
+accuracy = data["accuracy"]
+roc_auc = data["roc_auc"]
+
+cm = data["cm"]
+report = data["report"]
+
+y_probability = data["y_probability"]
 
 
 # ============================================================
@@ -381,14 +427,14 @@ except FileNotFoundError:
 
 st.markdown(
     """
-    <div class="main-header">
+    <div class="hero">
 
-        <div class="main-title">
+        <div class="hero-title">
             🎓 Student Dropout Prediction
         </div>
 
-        <div class="main-subtitle">
-            Machine Learning Application for Student Risk Assessment
+        <div class="hero-subtitle">
+            Machine Learning based Student Risk Assessment System
         </div>
 
     </div>
@@ -403,13 +449,28 @@ st.markdown(
 
 st.sidebar.markdown(
     """
-    <h2 style="text-align:center;">
-        🎓 Student Risk AI
-    </h2>
+    <div style="
+        text-align:center;
+        padding:10px;
+    ">
 
-    <p style="text-align:center;color:#d1d5db;">
-        Logistic Regression
-    </p>
+        <div style="
+            font-size:42px;
+        ">
+            🎓
+        </div>
+
+        <h2>
+            Student Risk AI
+        </h2>
+
+        <p style="
+            color:#9ca3af;
+        ">
+            Dropout Prediction System
+        </p>
+
+    </div>
     """,
     unsafe_allow_html=True
 )
@@ -431,9 +492,21 @@ st.sidebar.markdown("---")
 
 st.sidebar.markdown(
     """
-    <div style="text-align:center;color:#9ca3af;font-size:12px;">
-        Student Dropout Prediction<br>
-        Internship Phase 7
+    <div style="
+        text-align:center;
+        color:#9ca3af;
+        font-size:12px;
+        line-height:1.6;
+    ">
+
+        <b>Machine Learning Model</b><br>
+
+        Logistic Regression<br>
+
+        StandardScaler<br>
+
+        Binary Classification
+
     </div>
     """,
     unsafe_allow_html=True
@@ -447,36 +520,42 @@ st.sidebar.markdown(
 if page == "🏠 Dashboard":
 
     st.markdown(
-        '<div class="section-title">Dashboard Overview</div>',
+        '<div class="section-title">System Dashboard</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
         """
         <div class="section-description">
-            Overview of the student dropout prediction machine learning system.
+            Overview of the dataset, machine learning model,
+            and prediction system.
         </div>
         """,
         unsafe_allow_html=True
     )
 
 
-    # Metrics
+    # --------------------------------------------------------
+    # METRICS
+    # --------------------------------------------------------
 
     col1, col2, col3, col4 = st.columns(4)
+
 
     with col1:
 
         st.markdown(
             f"""
             <div class="metric-card">
-                <div class="metric-title">
+
+                <div class="metric-label">
                     Total Students
                 </div>
 
                 <div class="metric-value">
                     {len(df):,}
                 </div>
+
             </div>
             """,
             unsafe_allow_html=True
@@ -488,13 +567,15 @@ if page == "🏠 Dashboard":
         st.markdown(
             f"""
             <div class="metric-card">
-                <div class="metric-title">
-                    Features
+
+                <div class="metric-label">
+                    Input Features
                 </div>
 
                 <div class="metric-value">
                     {X.shape[1]}
                 </div>
+
             </div>
             """,
             unsafe_allow_html=True
@@ -506,13 +587,15 @@ if page == "🏠 Dashboard":
         st.markdown(
             f"""
             <div class="metric-card">
-                <div class="metric-title">
-                    Accuracy
+
+                <div class="metric-label">
+                    Model Accuracy
                 </div>
 
                 <div class="metric-value">
                     {accuracy * 100:.2f}%
                 </div>
+
             </div>
             """,
             unsafe_allow_html=True
@@ -524,13 +607,15 @@ if page == "🏠 Dashboard":
         st.markdown(
             f"""
             <div class="metric-card">
-                <div class="metric-title">
+
+                <div class="metric-label">
                     ROC-AUC
                 </div>
 
                 <div class="metric-value">
                     {roc_auc:.3f}
                 </div>
+
             </div>
             """,
             unsafe_allow_html=True
@@ -540,115 +625,153 @@ if page == "🏠 Dashboard":
     st.markdown("")
 
 
+    # --------------------------------------------------------
+    # TARGET CHART
+    # --------------------------------------------------------
+
     col1, col2 = st.columns(2)
 
 
     with col1:
 
         st.markdown(
-            '<div class="section-title">Target Distribution</div>',
-            unsafe_allow_html=True
+            "### Student Outcome Distribution"
         )
 
-        target_counts = df["target"].replace({
-            0: "Not Dropout",
-            1: "Dropout"
-        }).value_counts()
-
-        fig, ax = plt.subplots(
-            figsize=(7, 4)
+        target_chart = (
+            df["target"]
+            .map(
+                {
+                    0: "Not Dropout",
+                    1: "Dropout"
+                }
+            )
+            .value_counts()
+            .reset_index()
         )
 
-        target_counts.plot(
-            kind="bar",
-            ax=ax
+        target_chart.columns = [
+            "Status",
+            "Students"
+        ]
+
+
+        fig = px.bar(
+            target_chart,
+            x="Status",
+            y="Students",
+            text="Students",
+            title="Dropout vs Not Dropout"
         )
 
-        ax.set_title(
-            "Dropout vs Not Dropout",
-            color="black"
+
+        fig.update_traces(
+            textposition="outside"
         )
 
-        ax.set_xlabel(
-            "Student Status",
-            color="black"
+
+        fig.update_layout(
+            template="plotly_white",
+            height=420,
+            font=dict(
+                color="black"
+            ),
+            title_font=dict(
+                color="black"
+            ),
+            xaxis=dict(
+                title_font=dict(
+                    color="black"
+                ),
+                tickfont=dict(
+                    color="black"
+                )
+            ),
+            yaxis=dict(
+                title_font=dict(
+                    color="black"
+                ),
+                tickfont=dict(
+                    color="black"
+                )
+            )
         )
 
-        ax.set_ylabel(
-            "Number of Students",
-            color="black"
+
+        st.plotly_chart(
+            fig,
+            use_container_width=True
         )
 
-        ax.tick_params(
-            axis="both",
-            colors="black"
-        )
 
-        ax.set_xticklabels(
-            ax.get_xticklabels(),
-            rotation=0
-        )
-
-        plt.tight_layout()
-
-        st.pyplot(fig)
-
-        plt.close(fig)
-
+    # --------------------------------------------------------
+    # MODEL INFORMATION
+    # --------------------------------------------------------
 
     with col2:
 
         st.markdown(
-            '<div class="section-title">Model Information</div>',
-            unsafe_allow_html=True
+            "### Model Information"
         )
 
         st.markdown(
             """
-            <div class="info-box">
+            <div class="info-card">
 
-                <div class="info-box-title">
-                    Algorithm
+                <div class="info-title">
+                    🤖 Algorithm
                 </div>
 
-                <div class="info-box-text">
+                <div class="info-text">
                     Logistic Regression
                 </div>
 
             </div>
 
-            <div class="info-box">
+            <div class="info-card">
 
-                <div class="info-box-title">
-                    Feature Scaling
+                <div class="info-title">
+                    📏 Feature Scaling
                 </div>
 
-                <div class="info-box-text">
+                <div class="info-text">
                     StandardScaler
                 </div>
 
             </div>
 
-            <div class="info-box">
+            <div class="info-card">
 
-                <div class="info-box-title">
-                    Training / Testing Split
+                <div class="info-title">
+                    📚 Training Data
                 </div>
 
-                <div class="info-box-text">
-                    80% Training / 20% Testing
+                <div class="info-text">
+                    80% of the dataset
                 </div>
 
             </div>
 
-            <div class="info-box">
+            <div class="info-card">
 
-                <div class="info-box-title">
-                    Prediction Type
+                <div class="info-title">
+                    🧪 Testing Data
                 </div>
 
-                <div class="info-box-text">
-                    Binary Classification
+                <div class="info-text">
+                    20% of the dataset
+                </div>
+
+            </div>
+
+            <div class="info-card">
+
+                <div class="info-title">
+                    🎯 Prediction
+                </div>
+
+                <div class="info-text">
+                    Dropout / Not Dropout
                 </div>
 
             </div>
@@ -671,376 +794,437 @@ elif page == "🔮 Student Risk Prediction":
     st.markdown(
         """
         <div class="section-description">
-            Enter student information below to estimate the probability
-            of student dropout.
+            Enter the student's information and the trained model
+            will estimate the probability of dropout.
         </div>
         """,
         unsafe_allow_html=True
     )
 
 
-    # --------------------------------------------------------
-    # CREATE INPUT DATAFRAME
-    # --------------------------------------------------------
+    # ========================================================
+    # INPUT DATA
+    # ========================================================
 
     input_data = {}
 
 
-    # ========================================================
-    # PERSONAL / DEMOGRAPHIC INFORMATION
-    # ========================================================
+    # --------------------------------------------------------
+    # PERSONAL INFORMATION
+    # --------------------------------------------------------
 
-    st.markdown(
-        "### 👤 Personal & Demographic Information"
-    )
+    with st.expander(
+        "👤 Personal & Demographic Information",
+        expanded=True
+    ):
 
-    col1, col2, col3 = st.columns(3)
+        col1, col2, col3 = st.columns(3)
 
 
-    with col1:
+        with col1:
 
-        input_data["Marital status"] = st.selectbox(
-            "Marital Status",
-            options=sorted(
-                df["Marital status"].unique()
+            input_data["Marital status"] = st.selectbox(
+                "Marital Status",
+                sorted(
+                    df["Marital status"].unique()
+                )
             )
-        )
 
 
-    with col2:
+        with col2:
 
-        input_data["Application mode"] = st.selectbox(
-            "Application Mode",
-            options=sorted(
-                df["Application mode"].unique()
+            input_data["Application mode"] = st.selectbox(
+                "Application Mode",
+                sorted(
+                    df["Application mode"].unique()
+                )
             )
-        )
 
 
-    with col3:
+        with col3:
 
-        input_data["Application order"] = st.number_input(
-            "Application Order",
-            min_value=int(df["Application order"].min()),
-            max_value=int(df["Application order"].max()),
-            value=int(df["Application order"].median()),
-            step=1
-        )
-
-
-    col1, col2, col3 = st.columns(3)
-
-
-    with col1:
-
-        input_data["Course"] = st.selectbox(
-            "Course",
-            options=sorted(
-                df["Course"].unique()
+            input_data["Application order"] = st.number_input(
+                "Application Order",
+                min_value=int(
+                    df["Application order"].min()
+                ),
+                max_value=int(
+                    df["Application order"].max()
+                ),
+                value=int(
+                    df["Application order"].median()
+                )
             )
-        )
 
 
-    with col2:
+        col1, col2, col3 = st.columns(3)
 
-        input_data["Daytime/evening attendance"] = st.selectbox(
-            "Attendance",
-            options=sorted(
-                df["Daytime/evening attendance"].unique()
+
+        with col1:
+
+            input_data["Course"] = st.selectbox(
+                "Course",
+                sorted(
+                    df["Course"].unique()
+                )
             )
-        )
 
 
-    with col3:
+        with col2:
 
-        input_data["Previous qualification"] = st.selectbox(
-            "Previous Qualification",
-            options=sorted(
-                df["Previous qualification"].unique()
+            input_data[
+                "Daytime/evening attendance"
+            ] = st.selectbox(
+                "Attendance",
+                sorted(
+                    df[
+                        "Daytime/evening attendance"
+                    ].unique()
+                )
             )
-        )
 
 
-    col1, col2, col3 = st.columns(3)
+        with col3:
 
-
-    with col1:
-
-        input_data["Previous qualification (grade)"] = st.number_input(
-            "Previous Qualification Grade",
-            min_value=float(
-                df["Previous qualification (grade)"].min()
-            ),
-            max_value=float(
-                df["Previous qualification (grade)"].max()
-            ),
-            value=float(
-                df["Previous qualification (grade)"].median()
+            input_data[
+                "Previous qualification"
+            ] = st.selectbox(
+                "Previous Qualification",
+                sorted(
+                    df[
+                        "Previous qualification"
+                    ].unique()
+                )
             )
-        )
 
 
-    with col2:
+        col1, col2, col3 = st.columns(3)
 
-        input_data["Nacionality"] = st.selectbox(
-            "Nationality",
-            options=sorted(
-                df["Nacionality"].unique()
+
+        with col1:
+
+            input_data[
+                "Previous qualification (grade)"
+            ] = st.number_input(
+                "Previous Qualification Grade",
+                min_value=float(
+                    df[
+                        "Previous qualification (grade)"
+                    ].min()
+                ),
+                max_value=float(
+                    df[
+                        "Previous qualification (grade)"
+                    ].max()
+                ),
+                value=float(
+                    df[
+                        "Previous qualification (grade)"
+                    ].median()
+                )
             )
-        )
 
 
-    with col3:
+        with col2:
 
-        input_data["Mother's qualification"] = st.selectbox(
-            "Mother's Qualification",
-            options=sorted(
-                df["Mother's qualification"].unique()
+            input_data[
+                "Nacionality"
+            ] = st.selectbox(
+                "Nationality",
+                sorted(
+                    df["Nacionality"].unique()
+                )
             )
-        )
 
 
-    col1, col2, col3 = st.columns(3)
+        with col3:
 
-
-    with col1:
-
-        input_data["Father's qualification"] = st.selectbox(
-            "Father's Qualification",
-            options=sorted(
-                df["Father's qualification"].unique()
+            input_data[
+                "Mother's qualification"
+            ] = st.selectbox(
+                "Mother's Qualification",
+                sorted(
+                    df[
+                        "Mother's qualification"
+                    ].unique()
+                )
             )
-        )
 
 
-    with col2:
+        col1, col2, col3 = st.columns(3)
 
-        input_data["Mother's occupation"] = st.selectbox(
-            "Mother's Occupation",
-            options=sorted(
-                df["Mother's occupation"].unique()
+
+        with col1:
+
+            input_data[
+                "Father's qualification"
+            ] = st.selectbox(
+                "Father's Qualification",
+                sorted(
+                    df[
+                        "Father's qualification"
+                    ].unique()
+                )
             )
-        )
 
 
-    with col3:
+        with col2:
 
-        input_data["Father's occupation"] = st.selectbox(
-            "Father's Occupation",
-            options=sorted(
-                df["Father's occupation"].unique()
+            input_data[
+                "Mother's occupation"
+            ] = st.selectbox(
+                "Mother's Occupation",
+                sorted(
+                    df[
+                        "Mother's occupation"
+                    ].unique()
+                )
             )
-        )
 
 
-    # ========================================================
-    # FINANCIAL / SOCIAL INFORMATION
-    # ========================================================
+        with col3:
 
-    st.markdown(
-        "### 💰 Financial & Social Information"
-    )
-
-
-    col1, col2, col3 = st.columns(3)
-
-
-    with col1:
-
-        input_data["Displaced"] = st.selectbox(
-            "Displaced",
-            options=sorted(
-                df["Displaced"].unique()
+            input_data[
+                "Father's occupation"
+            ] = st.selectbox(
+                "Father's Occupation",
+                sorted(
+                    df[
+                        "Father's occupation"
+                    ].unique()
+                )
             )
-        )
 
 
-    with col2:
+    # --------------------------------------------------------
+    # FINANCIAL / SOCIAL
+    # --------------------------------------------------------
 
-        input_data["Educational special needs"] = st.selectbox(
-            "Educational Special Needs",
-            options=sorted(
-                df["Educational special needs"].unique()
+    with st.expander(
+        "💰 Financial & Social Information",
+        expanded=True
+    ):
+
+        col1, col2, col3 = st.columns(3)
+
+
+        with col1:
+
+            input_data["Displaced"] = st.selectbox(
+                "Displaced",
+                sorted(
+                    df["Displaced"].unique()
+                )
             )
-        )
 
 
-    with col3:
+        with col2:
 
-        input_data["Debtor"] = st.selectbox(
-            "Debtor",
-            options=sorted(
-                df["Debtor"].unique()
+            input_data[
+                "Educational special needs"
+            ] = st.selectbox(
+                "Educational Special Needs",
+                sorted(
+                    df[
+                        "Educational special needs"
+                    ].unique()
+                )
             )
-        )
 
 
-    col1, col2, col3 = st.columns(3)
+        with col3:
 
-
-    with col1:
-
-        input_data["Tuition fees up to date"] = st.selectbox(
-            "Tuition Fees Up To Date",
-            options=sorted(
-                df["Tuition fees up to date"].unique()
+            input_data["Debtor"] = st.selectbox(
+                "Debtor",
+                sorted(
+                    df["Debtor"].unique()
+                )
             )
-        )
 
 
-    with col2:
+        col1, col2, col3 = st.columns(3)
 
-        input_data["Gender"] = st.selectbox(
-            "Gender",
-            options=sorted(
-                df["Gender"].unique()
+
+        with col1:
+
+            input_data[
+                "Tuition fees up to date"
+            ] = st.selectbox(
+                "Tuition Fees Up To Date",
+                sorted(
+                    df[
+                        "Tuition fees up to date"
+                    ].unique()
+                )
             )
-        )
 
 
-    with col3:
+        with col2:
 
-        input_data["Scholarship holder"] = st.selectbox(
-            "Scholarship Holder",
-            options=sorted(
-                df["Scholarship holder"].unique()
+            input_data["Gender"] = st.selectbox(
+                "Gender",
+                sorted(
+                    df["Gender"].unique()
+                )
             )
-        )
 
 
-    col1, col2, col3 = st.columns(3)
+        with col3:
 
-
-    with col1:
-
-        input_data["Age at enrollment"] = st.number_input(
-            "Age at Enrollment",
-            min_value=int(
-                df["Age at enrollment"].min()
-            ),
-            max_value=int(
-                df["Age at enrollment"].max()
-            ),
-            value=int(
-                df["Age at enrollment"].median()
+            input_data[
+                "Scholarship holder"
+            ] = st.selectbox(
+                "Scholarship Holder",
+                sorted(
+                    df[
+                        "Scholarship holder"
+                    ].unique()
+                )
             )
-        )
 
 
-    with col2:
+        col1, col2, col3 = st.columns(3)
 
-        input_data["International"] = st.selectbox(
-            "International Student",
-            options=sorted(
-                df["International"].unique()
+
+        with col1:
+
+            input_data[
+                "Age at enrollment"
+            ] = st.number_input(
+                "Age at Enrollment",
+                min_value=int(
+                    df[
+                        "Age at enrollment"
+                    ].min()
+                ),
+                max_value=int(
+                    df[
+                        "Age at enrollment"
+                    ].max()
+                ),
+                value=int(
+                    df[
+                        "Age at enrollment"
+                    ].median()
+                )
             )
-        )
 
 
-    with col3:
+        with col2:
 
-        input_data["GDP"] = st.number_input(
-            "GDP",
-            min_value=float(
-                df["GDP"].min()
-            ),
-            max_value=float(
-                df["GDP"].max()
-            ),
-            value=float(
-                df["GDP"].median()
+            input_data[
+                "International"
+            ] = st.selectbox(
+                "International Student",
+                sorted(
+                    df["International"].unique()
+                )
             )
-        )
 
 
-    # ========================================================
+        with col3:
+
+            input_data["GDP"] = st.number_input(
+                "GDP",
+                min_value=float(
+                    df["GDP"].min()
+                ),
+                max_value=float(
+                    df["GDP"].max()
+                ),
+                value=float(
+                    df["GDP"].median()
+                )
+            )
+
+
+    # --------------------------------------------------------
     # FIRST SEMESTER
-    # ========================================================
+    # --------------------------------------------------------
 
-    st.markdown(
-        "### 📚 First Semester Academic Performance"
-    )
+    with st.expander(
+        "📚 First Semester Academic Performance",
+        expanded=True
+    ):
 
-
-    first_sem_features = [
-        "Curricular units 1st sem (credited)",
-        "Curricular units 1st sem (enrolled)",
-        "Curricular units 1st sem (evaluations)",
-        "Curricular units 1st sem (approved)",
-        "Curricular units 1st sem (grade)",
-        "Curricular units 1st sem (without evaluations)"
-    ]
-
-
-    cols = st.columns(3)
+        first_sem_features = [
+            "Curricular units 1st sem (credited)",
+            "Curricular units 1st sem (enrolled)",
+            "Curricular units 1st sem (evaluations)",
+            "Curricular units 1st sem (approved)",
+            "Curricular units 1st sem (grade)",
+            "Curricular units 1st sem (without evaluations)"
+        ]
 
 
-    for i, feature in enumerate(first_sem_features):
+        cols = st.columns(3)
 
-        with cols[i % 3]:
 
-            input_data[feature] = st.number_input(
-                feature,
-                min_value=float(
-                    df[feature].min()
-                ),
-                max_value=float(
-                    df[feature].max()
-                ),
-                value=float(
-                    df[feature].median()
+        for i, feature in enumerate(
+            first_sem_features
+        ):
+
+            with cols[i % 3]:
+
+                input_data[feature] = st.number_input(
+                    feature,
+                    min_value=float(
+                        df[feature].min()
+                    ),
+                    max_value=float(
+                        df[feature].max()
+                    ),
+                    value=float(
+                        df[feature].median()
+                    )
                 )
-            )
 
 
-    # ========================================================
+    # --------------------------------------------------------
     # SECOND SEMESTER
-    # ========================================================
+    # --------------------------------------------------------
 
-    st.markdown(
-        "### 📖 Second Semester Academic Performance"
-    )
+    with st.expander(
+        "📖 Second Semester Academic Performance",
+        expanded=True
+    ):
 
-
-    second_sem_features = [
-        "Curricular units 2nd sem (credited)",
-        "Curricular units 2nd sem (enrolled)",
-        "Curricular units 2nd sem (evaluations)",
-        "Curricular units 2nd sem (approved)",
-        "Curricular units 2nd sem (grade)",
-        "Curricular units 2nd sem (without evaluations)"
-    ]
-
-
-    cols = st.columns(3)
+        second_sem_features = [
+            "Curricular units 2nd sem (credited)",
+            "Curricular units 2nd sem (enrolled)",
+            "Curricular units 2nd sem (evaluations)",
+            "Curricular units 2nd sem (approved)",
+            "Curricular units 2nd sem (grade)",
+            "Curricular units 2nd sem (without evaluations)"
+        ]
 
 
-    for i, feature in enumerate(second_sem_features):
+        cols = st.columns(3)
 
-        with cols[i % 3]:
 
-            input_data[feature] = st.number_input(
-                feature,
-                min_value=float(
-                    df[feature].min()
-                ),
-                max_value=float(
-                    df[feature].max()
-                ),
-                value=float(
-                    df[feature].median()
+        for i, feature in enumerate(
+            second_sem_features
+        ):
+
+            with cols[i % 3]:
+
+                input_data[feature] = st.number_input(
+                    feature,
+                    min_value=float(
+                        df[feature].min()
+                    ),
+                    max_value=float(
+                        df[feature].max()
+                    ),
+                    value=float(
+                        df[feature].median()
+                    )
                 )
-            )
 
 
-    # ========================================================
-    # OTHER INFORMATION
-    # ========================================================
-
-    st.markdown(
-        "### 🏫 Additional Information"
-    )
-
+    # --------------------------------------------------------
+    # REMAINING FEATURES
+    # --------------------------------------------------------
 
     remaining_features = [
         feature
@@ -1049,66 +1233,70 @@ elif page == "🔮 Student Risk Prediction":
     ]
 
 
-    if len(remaining_features) > 0:
+    if remaining_features:
 
-        cols = st.columns(3)
+        with st.expander(
+            "🏫 Additional Student Information",
+            expanded=False
+        ):
 
-        for i, feature in enumerate(remaining_features):
+            cols = st.columns(3)
 
-            with cols[i % 3]:
 
-                if pd.api.types.is_numeric_dtype(
-                    df[feature]
-                ):
+            for i, feature in enumerate(
+                remaining_features
+            ):
 
-                    input_data[feature] = st.number_input(
-                        feature,
-                        min_value=float(
-                            df[feature].min()
-                        ),
-                        max_value=float(
-                            df[feature].max()
-                        ),
-                        value=float(
-                            df[feature].median()
+                with cols[i % 3]:
+
+                    if pd.api.types.is_numeric_dtype(
+                        df[feature]
+                    ):
+
+                        input_data[feature] = st.number_input(
+                            feature,
+                            min_value=float(
+                                df[feature].min()
+                            ),
+                            max_value=float(
+                                df[feature].max()
+                            ),
+                            value=float(
+                                df[feature].median()
+                            )
                         )
-                    )
 
-                else:
+                    else:
 
-                    input_data[feature] = st.selectbox(
-                        feature,
-                        options=sorted(
-                            df[feature].unique()
+                        input_data[feature] = st.selectbox(
+                            feature,
+                            sorted(
+                                df[feature].unique()
+                            )
                         )
-                    )
 
 
     # ========================================================
-    # PREDICTION BUTTON
+    # PREDICT
     # ========================================================
 
     st.markdown("")
 
-    predict_button = st.button(
-        "🔮 Predict Student Risk",
+    predict = st.button(
+        "🔮 Analyze Student Risk",
         type="primary",
         use_container_width=True
     )
 
 
-    if predict_button:
-
-        # ----------------------------------------------------
-        # CREATE INPUT DATAFRAME
-        # ----------------------------------------------------
+    if predict:
 
         input_df = pd.DataFrame(
             [input_data]
         )
 
 
-        # Ensure exact feature order
+        # Exact feature order
         input_df = input_df[
             X.columns
         ]
@@ -1117,7 +1305,7 @@ elif page == "🔮 Student Risk Prediction":
         try:
 
             # ------------------------------------------------
-            # SCALE INPUT
+            # SCALE
             # ------------------------------------------------
 
             input_scaled = scaler.transform(
@@ -1126,7 +1314,7 @@ elif page == "🔮 Student Risk Prediction":
 
 
             # ------------------------------------------------
-            # PREDICTION
+            # PREDICT
             # ------------------------------------------------
 
             prediction = model.predict(
@@ -1139,61 +1327,73 @@ elif page == "🔮 Student Risk Prediction":
             )[0][1]
 
 
-            probability_percentage = (
+            dropout_percentage = (
                 probability * 100
             )
 
 
             # ------------------------------------------------
-            # RISK LEVEL
+            # RISK
             # ------------------------------------------------
 
             if probability < 0.30:
 
-                risk_level = "LOW RISK"
-
-                risk_message = (
-                    "The student currently shows a low "
-                    "estimated probability of dropout."
+                risk = "LOW RISK"
+                risk_description = (
+                    "The model estimates a relatively low "
+                    "probability of dropout."
                 )
 
             elif probability < 0.60:
 
-                risk_level = "MEDIUM RISK"
-
-                risk_message = (
-                    "The student shows a moderate estimated "
-                    "probability of dropout. Academic progress "
-                    "should be monitored."
+                risk = "MEDIUM RISK"
+                risk_description = (
+                    "The model estimates a moderate probability "
+                    "of dropout. The student's progress should "
+                    "be monitored."
                 )
 
             else:
 
-                risk_level = "HIGH RISK"
-
-                risk_message = (
-                    "The student shows a high estimated "
-                    "probability of dropout. Early academic "
-                    "support and intervention may be beneficial."
+                risk = "HIGH RISK"
+                risk_description = (
+                    "The model estimates a high probability "
+                    "of dropout. Early academic support may "
+                    "be appropriate."
                 )
 
 
-            # ------------------------------------------------
-            # RESULT
-            # ------------------------------------------------
+            predicted_class = (
+                "Dropout"
+                if prediction == 1
+                else "Not Dropout"
+            )
+
+
+            # =================================================
+            # RESULT HEADER
+            # =================================================
 
             st.markdown(
                 """
-                <div class="prediction-card">
+                <div class="result-card">
+
+                    <h2 style="
+                        color:#111827;
+                        margin-top:0;
+                    ">
+                        🎯 Student Risk Assessment
+                    </h2>
+
+                </div>
                 """,
                 unsafe_allow_html=True
             )
 
 
-            st.markdown(
-                "## 🎯 Prediction Result"
-            )
-
+            # -------------------------------------------------
+            # RESULT METRICS
+            # -------------------------------------------------
 
             col1, col2, col3 = st.columns(3)
 
@@ -1202,77 +1402,136 @@ elif page == "🔮 Student Risk Prediction":
 
                 st.metric(
                     "Dropout Probability",
-                    f"{probability_percentage:.2f}%"
+                    f"{dropout_percentage:.2f}%"
                 )
 
 
             with col2:
 
-                if prediction == 1:
-
-                    prediction_text = "Dropout"
-
-                else:
-
-                    prediction_text = "Not Dropout"
-
-
                 st.metric(
-                    "Predicted Class",
-                    prediction_text
+                    "Predicted Outcome",
+                    predicted_class
                 )
 
 
             with col3:
 
                 st.metric(
-                    "Risk Level",
-                    risk_level
+                    "Risk Category",
+                    risk
                 )
 
 
-            # Probability bar
+            # -------------------------------------------------
+            # GAUGE
+            # -------------------------------------------------
 
             st.markdown(
-                "### Dropout Probability"
+                "### 📊 Dropout Probability"
             )
 
-            st.progress(
-                float(probability)
+
+            gauge = go.Figure(
+                go.Indicator(
+                    mode="gauge+number",
+                    value=dropout_percentage,
+                    number={
+                        "suffix": "%",
+                        "font": {
+                            "color": "black",
+                            "size": 40
+                        }
+                    },
+                    gauge={
+                        "axis": {
+                            "range": [0, 100],
+                            "tickfont": {
+                                "color": "black"
+                            }
+                        },
+
+                        "bar": {
+                            "color": "#111827"
+                        },
+
+                        "steps": [
+                            {
+                                "range": [0, 30],
+                                "color": "#e5e7eb"
+                            },
+                            {
+                                "range": [30, 60],
+                                "color": "#d1d5db"
+                            },
+                            {
+                                "range": [60, 100],
+                                "color": "#9ca3af"
+                            }
+                        ],
+
+                        "threshold": {
+                            "line": {
+                                "color": "black",
+                                "width": 4
+                            },
+                            "thickness": 0.75,
+                            "value": dropout_percentage
+                        }
+                    }
+                )
             )
 
+
+            gauge.update_layout(
+                height=350,
+                margin=dict(
+                    l=20,
+                    r=20,
+                    t=30,
+                    b=20
+                ),
+                paper_bgcolor="white",
+                font=dict(
+                    color="black"
+                )
+            )
+
+
+            st.plotly_chart(
+                gauge,
+                use_container_width=True
+            )
+
+
+            # -------------------------------------------------
+            # RISK INTERPRETATION
+            # -------------------------------------------------
+
+            if probability < 0.30:
+
+                st.success(
+                    f"🟢 {risk}: {risk_description}"
+                )
+
+            elif probability < 0.60:
+
+                st.warning(
+                    f"🟡 {risk}: {risk_description}"
+                )
+
+            else:
+
+                st.error(
+                    f"🔴 {risk}: {risk_description}"
+                )
+
+
+            # -------------------------------------------------
+            # PROBABILITY COMPARISON
+            # -------------------------------------------------
 
             st.markdown(
-                f"""
-                <div class="prediction-probability">
-                    {probability_percentage:.2f}%
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-
-            st.markdown(
-                f"""
-                <div class="risk-text">
-                    {risk_level}
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-
-            st.info(
-                risk_message
-            )
-
-
-            # ------------------------------------------------
-            # PROBABILITY BREAKDOWN
-            # ------------------------------------------------
-
-            st.markdown(
-                "### 📊 Probability Breakdown"
+                "### 📈 Prediction Probability Breakdown"
             )
 
 
@@ -1283,99 +1542,77 @@ elif page == "🔮 Student Risk Prediction":
                         "Dropout"
                     ],
                     "Probability": [
-                        1 - probability,
-                        probability
+                        (1 - probability) * 100,
+                        probability * 100
                     ]
                 }
             )
 
 
-            probability_df["Probability (%)"] = (
-                probability_df["Probability"] * 100
+            probability_fig = px.bar(
+                probability_df,
+                x="Outcome",
+                y="Probability",
+                text="Probability",
+                title="Model Prediction Probabilities"
             )
 
 
-            st.dataframe(
-                probability_df[
-                    [
-                        "Outcome",
-                        "Probability (%)"
-                    ]
-                ].style.format(
-                    {
-                        "Probability (%)": "{:.2f}%"
-                    }
+            probability_fig.update_traces(
+                texttemplate="%{text:.2f}%",
+                textposition="outside"
+            )
+
+
+            probability_fig.update_layout(
+                template="plotly_white",
+                height=400,
+                yaxis=dict(
+                    range=[
+                        0,
+                        100
+                    ],
+                    title="Probability (%)",
+                    title_font=dict(
+                        color="black"
+                    ),
+                    tickfont=dict(
+                        color="black"
+                    )
                 ),
-                use_container_width=True,
-                hide_index=True
-            )
-
-
-            # ------------------------------------------------
-            # MODEL INTERPRETATION
-            # ------------------------------------------------
-
-            st.markdown(
-                "### 🧠 Interpretation"
-            )
-
-
-            if probability < 0.30:
-
-                st.success(
-                    "Low Risk: The model estimates that this "
-                    "student has a relatively low likelihood of "
-                    "dropping out."
+                xaxis=dict(
+                    title="Outcome",
+                    title_font=dict(
+                        color="black"
+                    ),
+                    tickfont=dict(
+                        color="black"
+                    )
+                ),
+                font=dict(
+                    color="black"
+                ),
+                title_font=dict(
+                    color="black"
                 )
-
-            elif probability < 0.60:
-
-                st.warning(
-                    "Medium Risk: The model identifies this "
-                    "student as requiring monitoring because "
-                    "the estimated dropout probability is moderate."
-                )
-
-            else:
-
-                st.error(
-                    "High Risk: The model estimates a relatively "
-                    "high dropout probability. Academic monitoring "
-                    "and early intervention should be considered."
-                )
-
-
-            st.markdown(
-                """
-                <div class="info-box">
-
-                    <div class="info-box-title">
-                        Important Note
-                    </div>
-
-                    <div class="info-box-text">
-                        This prediction is generated by a machine
-                        learning model and should be treated as an
-                        estimated risk indicator rather than a
-                        definitive decision about a student.
-                    </div>
-
-                </div>
-                """,
-                unsafe_allow_html=True
             )
 
 
-            st.markdown(
-                "</div>",
-                unsafe_allow_html=True
+            st.plotly_chart(
+                probability_fig,
+                use_container_width=True
             )
 
 
-        except Exception as e:
+            # -------------------------------------------------
+            # IMPORTANT NOTE
+            # -------------------------------------------------
 
-            st.error(
-                f"Prediction error: {str(e)}"
+            st.info(
+                "This prediction is an estimated risk indicator "
+                "generated by the Logistic Regression model. "
+                "It should not be treated as a definitive "
+                "decision about a student's future."
             )
 
 
@@ -1393,15 +1630,15 @@ elif page == "📊 Dataset Overview":
     st.markdown(
         """
         <div class="section-description">
-            Explore the dataset used for training the dropout
-            prediction model.
+            Explore the dataset used to train the student
+            dropout prediction model.
         </div>
         """,
         unsafe_allow_html=True
     )
 
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
 
     with col1:
@@ -1415,16 +1652,24 @@ elif page == "📊 Dataset Overview":
     with col2:
 
         st.metric(
-            "Features",
-            X.shape[1]
+            "Columns",
+            df.shape[1]
         )
 
 
     with col3:
 
         st.metric(
-            "Target Classes",
-            2
+            "Features",
+            X.shape[1]
+        )
+
+
+    with col4:
+
+        st.metric(
+            "Duplicates",
+            df.duplicated().sum()
         )
 
 
@@ -1432,50 +1677,46 @@ elif page == "📊 Dataset Overview":
         "### Dataset Preview"
     )
 
-    display_df = df.copy()
 
-    display_df["target"] = display_df[
-        "target"
-    ].replace(
-        {
-            0: "Not Dropout",
-            1: "Dropout"
-        }
+    preview_df = df.copy()
+
+    preview_df["target"] = (
+        preview_df["target"]
+        .replace(
+            {
+                0: "Not Dropout",
+                1: "Dropout"
+            }
+        )
     )
 
+
     st.dataframe(
-        display_df.head(20),
+        preview_df.head(20),
         use_container_width=True,
         hide_index=True
     )
 
 
-    st.markdown(
-        "### Dataset Shape"
-    )
-
-    st.write(
-        f"Rows: **{df.shape[0]}**"
-    )
-
-    st.write(
-        f"Columns: **{df.shape[1]}**"
-    )
-
+    # --------------------------------------------------------
+    # MISSING VALUES
+    # --------------------------------------------------------
 
     st.markdown(
         "### Missing Values"
     )
 
+
     missing_df = pd.DataFrame(
         {
-            "Column": df.columns,
+            "Feature": df.columns,
             "Missing Values": [
                 df[column].isnull().sum()
                 for column in df.columns
             ]
         }
     )
+
 
     st.dataframe(
         missing_df,
@@ -1484,29 +1725,25 @@ elif page == "📊 Dataset Overview":
     )
 
 
-    st.markdown(
-        "### Duplicate Records"
-    )
-
-    st.write(
-        f"Total duplicate records: "
-        f"**{df.duplicated().sum()}**"
-    )
-
+    # --------------------------------------------------------
+    # DATA TYPES
+    # --------------------------------------------------------
 
     st.markdown(
         "### Data Types"
     )
 
+
     dtype_df = pd.DataFrame(
         {
-            "Column": df.columns,
+            "Feature": df.columns,
             "Data Type": [
                 str(df[column].dtype)
                 for column in df.columns
             ]
         }
     )
+
 
     st.dataframe(
         dtype_df,
@@ -1529,235 +1766,272 @@ elif page == "📈 Exploratory Analysis":
     st.markdown(
         """
         <div class="section-description">
-            Visual analysis of important factors related to student dropout.
+            Interactive visual analysis of important student
+            characteristics associated with dropout.
         </div>
         """,
         unsafe_allow_html=True
     )
 
 
-    # --------------------------------------------------------
+    # ========================================================
     # TARGET DISTRIBUTION
-    # --------------------------------------------------------
+    # ========================================================
 
     st.markdown(
-        "### 1. Dropout Distribution"
+        "### 1. Student Outcome Distribution"
     )
 
 
-    target_counts = df["target"].value_counts()
-
-    fig, ax = plt.subplots(
-        figsize=(8, 5)
+    target_df = (
+        df["target"]
+        .map(
+            {
+                0: "Not Dropout",
+                1: "Dropout"
+            }
+        )
+        .value_counts()
+        .reset_index()
     )
 
-    target_counts.plot(
-        kind="bar",
-        ax=ax
+
+    target_df.columns = [
+        "Status",
+        "Students"
+    ]
+
+
+    fig = px.pie(
+        target_df,
+        names="Status",
+        values="Students",
+        title="Student Outcome Distribution",
+        hole=0.45
     )
 
-    ax.set_title(
-        "Dropout vs Not Dropout",
-        color="black"
+
+    fig.update_layout(
+        template="plotly_white",
+        font=dict(
+            color="black"
+        ),
+        title_font=dict(
+            color="black"
+        )
     )
 
-    ax.set_xlabel(
-        "Student Status",
-        color="black"
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
     )
 
-    ax.set_ylabel(
-        "Number of Students",
-        color="black"
-    )
 
-    ax.set_xticklabels(
-        [
-            "Not Dropout",
-            "Dropout"
-        ],
-        rotation=0
-    )
-
-    ax.tick_params(
-        axis="both",
-        colors="black"
-    )
-
-    plt.tight_layout()
-
-    st.pyplot(fig)
-
-    plt.close(fig)
-
-
-    # --------------------------------------------------------
+    # ========================================================
     # FIRST SEMESTER GRADE
-    # --------------------------------------------------------
+    # ========================================================
 
     st.markdown(
         "### 2. First Semester Grade vs Dropout"
     )
 
 
-    fig, ax = plt.subplots(
-        figsize=(8, 5)
+    grade_df = df.copy()
+
+    grade_df["Status"] = (
+        grade_df["target"]
+        .map(
+            {
+                0: "Not Dropout",
+                1: "Dropout"
+            }
+        )
     )
 
 
-    df.boxplot(
-        column="Curricular units 1st sem (grade)",
-        by="target",
-        ax=ax
+    fig = px.box(
+        grade_df,
+        x="Status",
+        y="Curricular units 1st sem (grade)",
+        color="Status",
+        title="First Semester Grade Distribution"
     )
 
 
-    ax.set_title(
-        "1st Semester Grade vs Dropout",
-        color="black"
+    fig.update_layout(
+        template="plotly_white",
+        font=dict(
+            color="black"
+        ),
+        title_font=dict(
+            color="black"
+        ),
+        xaxis=dict(
+            title="Student Status",
+            tickfont=dict(
+                color="black"
+            ),
+            title_font=dict(
+                color="black"
+            )
+        ),
+        yaxis=dict(
+            title="First Semester Grade",
+            tickfont=dict(
+                color="black"
+            ),
+            title_font=dict(
+                color="black"
+            )
+        ),
+        showlegend=False
     )
 
-    ax.set_xlabel(
-        "Student Status",
-        color="black"
-    )
 
-    ax.set_ylabel(
-        "1st Semester Grade",
-        color="black"
-    )
-
-    ax.set_xticklabels(
-        [
-            "Not Dropout",
-            "Dropout"
-        ]
-    )
-
-    ax.tick_params(
-        axis="both",
-        colors="black"
+    st.plotly_chart(
+        fig,
+        use_container_width=True
     )
 
 
-    plt.suptitle("")
-
-    plt.tight_layout()
-
-    st.pyplot(fig)
-
-    plt.close(fig)
-
-
-    # --------------------------------------------------------
+    # ========================================================
     # TUITION FEES
-    # --------------------------------------------------------
+    # ========================================================
 
     st.markdown(
         "### 3. Tuition Fees Status vs Dropout"
     )
 
 
-    tuition_rate = df.groupby(
+    tuition_df = (
+        df.groupby(
+            "Tuition fees up to date"
+        )["target"]
+        .mean()
+        .reset_index()
+    )
+
+
+    tuition_df["Dropout Rate"] = (
+        tuition_df["target"] * 100
+    )
+
+
+    tuition_df[
+        "Tuition Status"
+    ] = tuition_df[
         "Tuition fees up to date"
-    )["target"].mean()
-
-
-    fig, ax = plt.subplots(
-        figsize=(8, 5)
+    ].map(
+        {
+            0: "Not Up to Date",
+            1: "Up to Date"
+        }
     )
 
 
-    tuition_rate.plot(
-        kind="bar",
-        ax=ax
+    fig = px.bar(
+        tuition_df,
+        x="Tuition Status",
+        y="Dropout Rate",
+        text="Dropout Rate",
+        title="Dropout Rate by Tuition Fee Status"
     )
 
 
-    ax.set_title(
-        "Tuition Fees Status vs Dropout",
-        color="black"
-    )
-
-    ax.set_xlabel(
-        "Tuition Fees Up to Date",
-        color="black"
-    )
-
-    ax.set_ylabel(
-        "Dropout Rate",
-        color="black"
-    )
-
-    ax.tick_params(
-        axis="both",
-        colors="black"
+    fig.update_traces(
+        texttemplate="%{text:.2f}%",
+        textposition="outside"
     )
 
 
-    plt.tight_layout()
+    fig.update_layout(
+        template="plotly_white",
+        font=dict(
+            color="black"
+        ),
+        title_font=dict(
+            color="black"
+        ),
+        yaxis=dict(
+            title="Dropout Rate (%)",
+            tickfont=dict(
+                color="black"
+            ),
+            title_font=dict(
+                color="black"
+            )
+        ),
+        xaxis=dict(
+            title="Tuition Status",
+            tickfont=dict(
+                color="black"
+            ),
+            title_font=dict(
+                color="black"
+            )
+        )
+    )
 
-    st.pyplot(fig)
 
-    plt.close(fig)
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
 
 
-    # --------------------------------------------------------
+    # ========================================================
     # SECOND SEMESTER
-    # --------------------------------------------------------
+    # ========================================================
 
     st.markdown(
         "### 4. Second Semester Grade vs Dropout"
     )
 
 
-    fig, ax = plt.subplots(
-        figsize=(8, 5)
+    fig = px.box(
+        grade_df,
+        x="Status",
+        y="Curricular units 2nd sem (grade)",
+        color="Status",
+        title="Second Semester Grade Distribution"
     )
 
 
-    df.boxplot(
-        column="Curricular units 2nd sem (grade)",
-        by="target",
-        ax=ax
+    fig.update_layout(
+        template="plotly_white",
+        font=dict(
+            color="black"
+        ),
+        title_font=dict(
+            color="black"
+        ),
+        xaxis=dict(
+            title="Student Status",
+            tickfont=dict(
+                color="black"
+            ),
+            title_font=dict(
+                color="black"
+            )
+        ),
+        yaxis=dict(
+            title="Second Semester Grade",
+            tickfont=dict(
+                color="black"
+            ),
+            title_font=dict(
+                color="black"
+            )
+        ),
+        showlegend=False
     )
 
 
-    ax.set_title(
-        "2nd Semester Grade vs Dropout",
-        color="black"
+    st.plotly_chart(
+        fig,
+        use_container_width=True
     )
-
-    ax.set_xlabel(
-        "Student Status",
-        color="black"
-    )
-
-    ax.set_ylabel(
-        "2nd Semester Grade",
-        color="black"
-    )
-
-    ax.set_xticklabels(
-        [
-            "Not Dropout",
-            "Dropout"
-        ]
-    )
-
-    ax.tick_params(
-        axis="both",
-        colors="black"
-    )
-
-
-    plt.suptitle("")
-
-    plt.tight_layout()
-
-    st.pyplot(fig)
-
-    plt.close(fig)
 
 
 # ============================================================
@@ -1774,8 +2048,8 @@ elif page == "🤖 Model Performance":
     st.markdown(
         """
         <div class="section-description">
-            Evaluation results of the Logistic Regression model
-            on unseen test data.
+            Evaluation of the Logistic Regression model using
+            unseen test data.
         </div>
         """,
         unsafe_allow_html=True
@@ -1783,7 +2057,7 @@ elif page == "🤖 Model Performance":
 
 
     # --------------------------------------------------------
-    # PERFORMANCE METRICS
+    # METRICS
     # --------------------------------------------------------
 
     col1, col2, col3, col4 = st.columns(4)
@@ -1830,86 +2104,42 @@ elif page == "🤖 Model Performance":
     )
 
 
-    fig, ax = plt.subplots(
-        figsize=(7, 5)
-    )
-
-
-    ax.imshow(
-        cm
-    )
-
-
-    ax.set_title(
-        "Confusion Matrix",
-        color="black"
-    )
-
-
-    ax.set_xlabel(
-        "Predicted Label",
-        color="black"
-    )
-
-
-    ax.set_ylabel(
-        "Actual Label",
-        color="black"
-    )
-
-
-    ax.set_xticks(
-        [0, 1]
-    )
-
-    ax.set_yticks(
-        [0, 1]
-    )
-
-
-    ax.set_xticklabels(
-        [
-            "Not Dropout",
-            "Dropout"
+    cm_df = pd.DataFrame(
+        cm,
+        index=[
+            "Actual: Not Dropout",
+            "Actual: Dropout"
         ],
-        color="black"
+        columns=[
+            "Predicted: Not Dropout",
+            "Predicted: Dropout"
+        ]
     )
 
 
-    ax.set_yticklabels(
-        [
-            "Not Dropout",
-            "Dropout"
-        ],
-        color="black"
+    fig = px.imshow(
+        cm_df,
+        text_auto=True,
+        title="Confusion Matrix",
+        aspect="auto"
     )
 
 
-    for i in range(
-        cm.shape[0]
-    ):
-
-        for j in range(
-            cm.shape[1]
-        ):
-
-            ax.text(
-                j,
-                i,
-                cm[i, j],
-                ha="center",
-                va="center",
-                color="black",
-                fontsize=14,
-                fontweight="bold"
-            )
+    fig.update_layout(
+        template="plotly_white",
+        font=dict(
+            color="black"
+        ),
+        title_font=dict(
+            color="black"
+        )
+    )
 
 
-    plt.tight_layout()
-
-    st.pyplot(fig)
-
-    plt.close(fig)
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
 
 
     # --------------------------------------------------------
@@ -1921,70 +2151,130 @@ elif page == "🤖 Model Performance":
     )
 
 
-    report_df = pd.DataFrame(
-        report
-    ).transpose()
-
-
-    st.dataframe(
-        report_df,
-        use_container_width=True
+    report_df = (
+        pd.DataFrame(report)
+        .transpose()
+        .reset_index()
     )
 
 
-    # --------------------------------------------------------
-    # PREDICTION SUMMARY
-    # --------------------------------------------------------
-
-    st.markdown(
-        "### Test Set Prediction Summary"
-    )
-
-
-    prediction_summary = pd.DataFrame(
-        {
-            "Actual": y_test.values,
-            "Predicted": y_pred,
-            "Dropout Probability": y_prob
+    report_df = report_df.rename(
+        columns={
+            "index": "Class"
         }
     )
 
 
-    prediction_summary["Actual"] = (
-        prediction_summary["Actual"]
-        .replace(
-            {
-                0: "Not Dropout",
-                1: "Dropout"
-            }
-        )
-    )
-
-
-    prediction_summary["Predicted"] = (
-        prediction_summary["Predicted"]
-        .replace(
-            {
-                0: "Not Dropout",
-                1: "Dropout"
-            }
-        )
-    )
-
-
-    prediction_summary["Dropout Probability"] = (
-        prediction_summary["Dropout Probability"] * 100
-    )
-
-
     st.dataframe(
-        prediction_summary.head(20).style.format(
+        report_df.style.format(
             {
-                "Dropout Probability": "{:.2f}%"
-            }
+                "precision": "{:.3f}",
+                "recall": "{:.3f}",
+                "f1-score": "{:.3f}"
+            },
+            na_rep="-"
         ),
         use_container_width=True,
         hide_index=True
+    )
+
+
+    # --------------------------------------------------------
+    # TEST PREDICTION DISTRIBUTION
+    # --------------------------------------------------------
+
+    st.markdown(
+        "### Test Set Prediction Distribution"
+    )
+
+
+    prediction_df = pd.DataFrame(
+        {
+            "Actual": y_test.values,
+            "Predicted": y_pred
+        }
+    )
+
+
+    prediction_df["Actual"] = (
+        prediction_df["Actual"]
+        .map(
+            {
+                0: "Not Dropout",
+                1: "Dropout"
+            }
+        )
+    )
+
+
+    prediction_df["Predicted"] = (
+        prediction_df["Predicted"]
+        .map(
+            {
+                0: "Not Dropout",
+                1: "Dropout"
+            }
+        )
+    )
+
+
+    comparison_df = (
+        prediction_df
+        .value_counts()
+        .reset_index(
+            name="Students"
+        )
+    )
+
+
+    fig = px.bar(
+        comparison_df,
+        x="Actual",
+        y="Students",
+        color="Predicted",
+        barmode="group",
+        text="Students",
+        title="Actual vs Predicted Student Outcomes"
+    )
+
+
+    fig.update_traces(
+        textposition="outside"
+    )
+
+
+    fig.update_layout(
+        template="plotly_white",
+        font=dict(
+            color="black"
+        ),
+        title_font=dict(
+            color="black"
+        ),
+        xaxis=dict(
+            title="Actual Outcome",
+            tickfont=dict(
+                color="black"
+            ),
+            title_font=dict(
+                color="black"
+            )
+        ),
+        yaxis=dict(
+            title="Number of Students",
+            tickfont=dict(
+                color="black"
+            ),
+            title_font=dict(
+                color="black"
+            )
+        )
+    )
+
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
     )
 
 
@@ -1994,18 +2284,11 @@ elif page == "🤖 Model Performance":
 
 st.markdown(
     """
-    <br><br>
+    <div class="footer">
 
-    <div style="
-        text-align:center;
-        color:#6b7280;
-        padding:20px;
-        border-top:1px solid #e5e7eb;
-    ">
+        <b>Student Dropout Prediction System</b><br>
 
-        <strong>Student Dropout Prediction System</strong><br>
-
-        Logistic Regression • StandardScaler • Machine Learning
+        Logistic Regression • StandardScaler • Plotly • Streamlit
 
     </div>
     """,
