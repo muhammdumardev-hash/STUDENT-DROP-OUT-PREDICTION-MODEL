@@ -790,6 +790,54 @@ CATEGORY_LABELS = {
     "Gender": GENDER_LABELS,
 }
 
+# ============================================================
+# ACADEMIC INFORMATION — FIELD HELP TEXT
+#
+# These fields are NOT categorical codes — they are genuine
+# numeric values (grades and unit counts) with two different
+# scales in this dataset (0–200 for grades taken before/at
+# enrollment, 0–20 for semester grades, and plain counts for
+# everything else). There is nothing to convert into a name
+# like "Nursing" here — instead, each field gets a clear,
+# human-readable description of what the number means and
+# what scale it's on, shown as a tooltip on the input.
+# ============================================================
+
+ACADEMIC_FIELD_HELP = {
+    "Previous qualification (grade)":
+        "Grade obtained in the student's previous qualification. Scale: 0 to 200.",
+    "Admission grade":
+        "Grade used for admission into the course. Scale: 0 to 200.",
+
+    "Curricular units 1st sem (credited)":
+        "Number of 1st-semester curricular units credited "
+        "(carried over from a previous qualification, not newly taken).",
+    "Curricular units 1st sem (enrolled)":
+        "Number of curricular units the student enrolled in during the 1st semester.",
+    "Curricular units 1st sem (evaluations)":
+        "Number of evaluations/exams taken for 1st-semester curricular units.",
+    "Curricular units 1st sem (approved)":
+        "Number of 1st-semester curricular units the student passed.",
+    "Curricular units 1st sem (grade)":
+        "Average grade across the student's 1st-semester curricular units. Scale: 0 to 20.",
+    "Curricular units 1st sem (without evaluations)":
+        "Number of 1st-semester curricular units with no evaluation recorded.",
+
+    "Curricular units 2nd sem (credited)":
+        "Number of 2nd-semester curricular units credited "
+        "(carried over from a previous qualification, not newly taken).",
+    "Curricular units 2nd sem (enrolled)":
+        "Number of curricular units the student enrolled in during the 2nd semester.",
+    "Curricular units 2nd sem (evaluations)":
+        "Number of evaluations/exams taken for 2nd-semester curricular units.",
+    "Curricular units 2nd sem (approved)":
+        "Number of 2nd-semester curricular units the student passed.",
+    "Curricular units 2nd sem (grade)":
+        "Average grade across the student's 2nd-semester curricular units. Scale: 0 to 20.",
+    "Curricular units 2nd sem (without evaluations)":
+        "Number of 2nd-semester curricular units with no evaluation recorded.",
+}
+
 
 # ============================================================
 # LOAD DATA
@@ -3000,6 +3048,9 @@ elif page == "🔮 Predict Risk":
                                 step=1,
                                 format="%d",
                                 key=f"input_{col_name}",
+                                help=ACADEMIC_FIELD_HELP.get(
+                                    col_name
+                                ),
                             )
 
                         else:
@@ -3012,6 +3063,9 @@ elif page == "🔮 Predict Risk":
                                 step=0.01,
                                 format="%.2f",
                                 key=f"input_{col_name}",
+                                help=ACADEMIC_FIELD_HELP.get(
+                                    col_name
+                                ),
                             )
 
                     else:
