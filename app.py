@@ -66,59 +66,6 @@ st.markdown(
     <style>
 
     /* ======================================================
-       GLOBAL TEXT VISIBILITY
-    ====================================================== */
-
-    html,
-    body,
-    [class*="css"],
-    .stApp {
-        color: #111827 !important;
-    }
-
-    /* Main Streamlit text */
-    .stMarkdown,
-    .stText,
-    .stCaption,
-    .stAlert,
-    .stInfo,
-    .stSuccess,
-    .stWarning,
-    .stError {
-        color: #111827 !important;
-    }
-
-    /* Paragraphs */
-    p {
-        color: #111827 !important;
-        font-size: 1rem;
-        line-height: 1.65;
-    }
-
-    /* Bold text */
-    strong,
-    b {
-        color: #111827 !important;
-        font-weight: 750 !important;
-    }
-
-    /* Lists */
-    li {
-        color: #111827 !important;
-        line-height: 1.65;
-    }
-
-    /* Headings */
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        color: #111827 !important;
-    }
-
-    /* ======================================================
        MAIN TITLE
     ====================================================== */
 
@@ -126,15 +73,14 @@ st.markdown(
         font-size: 2.2rem;
         font-weight: 800;
         margin-bottom: 0px;
-        color: #111827 !important;
+        color: #ffffff;
     }
 
     .subtitle {
-        color: #374151 !important;
-        font-size: 1.05rem;
+        color: #ffffff;
+        font-size: 1rem;
         margin-top: 0px;
         margin-bottom: 1.5rem;
-        line-height: 1.6;
     }
 
 
@@ -144,21 +90,21 @@ st.markdown(
 
     .metric-card {
         background: #ffffff;
-        border: 1px solid #9ca3af;
+        border: 1px solid #d1d5db;
         border-radius: 14px;
         padding: 18px 20px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         min-height: 105px;
     }
 
     .metric-title {
-        color: #374151 !important;
+        color: #ffffff;
         font-size: 0.9rem;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     .metric-value {
-        color: #111827 !important;
+        color: #ffffff;
         font-size: 1.8rem;
         font-weight: 800;
         margin-top: 5px;
@@ -181,19 +127,19 @@ st.markdown(
 
     .risk-low {
         background: #dcfce7;
-        color: #15803d !important;
+        color: #15803d;
         border: 2px solid #86efac;
     }
 
     .risk-medium {
         background: #fef3c7;
-        color: #b45309 !important;
+        color: #b45309;
         border: 2px solid #fcd34d;
     }
 
     .risk-high {
         background: #fee2e2;
-        color: #b91c1c !important;
+        color: #b91c1c;
         border: 2px solid #fca5a5;
     }
 
@@ -227,7 +173,7 @@ st.markdown(
     .result-title {
         font-size: 1.05rem;
         font-weight: 700;
-        color: #374151 !important;
+        color: #ffffff;
     }
 
     .result-value {
@@ -237,15 +183,15 @@ st.markdown(
     }
 
     .result-low .result-value {
-        color: #15803d !important;
+        color: #15803d;
     }
 
     .result-medium .result-value {
-        color: #b45309 !important;
+        color: #b45309;
     }
 
     .result-high .result-value {
-        color: #b91c1c !important;
+        color: #b91c1c;
     }
 
 
@@ -254,7 +200,7 @@ st.markdown(
     ====================================================== */
 
     .section-box {
-        border: 1px solid #9ca3af;
+        border: 1px solid #d1d5db;
         border-radius: 14px;
         padding: 18px;
         background: #ffffff;
@@ -270,14 +216,6 @@ st.markdown(
         border-right: 1px solid #d1d5db;
     }
 
-    section[data-testid="stSidebar"] * {
-        color: #111827 !important;
-    }
-
-    section[data-testid="stSidebar"] p {
-        color: #374151 !important;
-    }
-
 
     /* ======================================================
        DATAFRAMES
@@ -289,8 +227,13 @@ st.markdown(
         overflow: hidden;
     }
 
+
+    /* ======================================================
+       STREAMLIT TABLE TEXT
+    ====================================================== */
+
     [data-testid="stDataFrame"] div {
-        color: #111827 !important;
+        color: #ffffff;
     }
 
 
@@ -299,112 +242,8 @@ st.markdown(
     ====================================================== */
 
     label {
-        color: #111827 !important;
-        font-weight: 650 !important;
-    }
-
-    [data-testid="stWidgetLabel"] {
-        color: #111827 !important;
-    }
-
-    [data-testid="stWidgetLabel"] p {
-        color: #111827 !important;
-        font-weight: 650 !important;
-    }
-
-
-    /* ======================================================
-       INPUT TEXT
-    ====================================================== */
-
-    input {
-        color: #111827 !important;
-    }
-
-    textarea {
-        color: #111827 !important;
-    }
-
-    /* Selectbox text */
-    div[data-baseweb="select"] {
-        color: #111827 !important;
-    }
-
-    div[data-baseweb="select"] * {
-        color: #111827 !important;
-    }
-
-
-    /* ======================================================
-       CAPTIONS
-    ====================================================== */
-
-    .stCaption,
-    [data-testid="stCaptionContainer"] {
-        color: #374151 !important;
-        font-size: 0.9rem !important;
-    }
-
-
-    /* ======================================================
-       INFO / SUCCESS / WARNING / ERROR BOXES
-    ====================================================== */
-
-    [data-testid="stAlert"] p {
-        color: #111827 !important;
-        font-weight: 500;
-    }
-
-    [data-testid="stAlert"] strong {
-        color: #111827 !important;
-    }
-
-
-    /* ======================================================
-       TABS
-    ====================================================== */
-
-    button[data-baseweb="tab"] {
-        color: #374151 !important;
-        font-weight: 650 !important;
-    }
-
-    button[data-baseweb="tab"][aria-selected="true"] {
-        color: #111827 !important;
-        font-weight: 800 !important;
-    }
-
-
-    /* ======================================================
-       EXPANDER
-    ====================================================== */
-
-    [data-testid="stExpander"] summary {
-        color: #111827 !important;
-        font-weight: 700 !important;
-    }
-
-    [data-testid="stExpander"] summary p {
-        color: #111827 !important;
-        font-weight: 700 !important;
-    }
-
-
-    /* ======================================================
-       BUTTONS
-    ====================================================== */
-
-    button {
-        font-weight: 650 !important;
-    }
-
-
-    /* ======================================================
-       DIVIDERS
-    ====================================================== */
-
-    hr {
-        border-color: #d1d5db !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
     }
 
 
@@ -412,19 +251,55 @@ st.markdown(
        GENERAL TEXT
     ====================================================== */
 
-    .stMarkdown p,
-    .stMarkdown li {
-        color: #111827 !important;
+    p,
+    li {
+        color: #ffffff;
     }
 
-    .stMarkdown h1,
-    .stMarkdown h2,
-    .stMarkdown h3,
-    .stMarkdown h4,
-    .stMarkdown h5,
-    .stMarkdown h6 {
-        color: #111827 !important;
+
+    /* ======================================================
+       STREAMLIT HEADINGS
+    ====================================================== */
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: #ffffff !important;
     }
+
+
+    /* ======================================================
+       STREAMLIT CAPTIONS
+    ====================================================== */
+
+    [data-testid="stCaptionContainer"] {
+        color: #ffffff !important;
+    }
+
+
+    /* ======================================================
+       STREAMLIT MARKDOWN TEXT
+    ====================================================== */
+
+    [data-testid="stMarkdownContainer"] {
+        color: #ffffff;
+    }
+
+
+    /* ======================================================
+       SIDEBAR TEXT
+    ====================================================== */
+
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] span,
+    section[data-testid="stSidebar"] div {
+        color: #ffffff;
+    }
+
 
     </style>
     """,
@@ -929,11 +804,11 @@ if page == "🏠 Overview":
             showline=True,
             linecolor="#6b7280",
             tickfont=dict(
-                color="#111827",
+                color="#ffffff",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#ffffff"
             )
         )
 
@@ -943,11 +818,11 @@ if page == "🏠 Overview":
             showline=True,
             linecolor="#6b7280",
             tickfont=dict(
-                color="#111827",
+                color="#ffffff",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#ffffff"
             )
         )
 
@@ -1080,11 +955,11 @@ elif page == "📊 Exploratory Analysis":
             showline=True,
             linecolor="#6b7280",
             tickfont=dict(
-                color="#111827",
+                color="#ffffff",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#ffffff"
             )
         )
 
@@ -1094,11 +969,11 @@ elif page == "📊 Exploratory Analysis":
             showline=True,
             linecolor="#6b7280",
             tickfont=dict(
-                color="#111827",
+                color="#ffffff",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#ffffff"
             )
         )
 
@@ -1205,11 +1080,11 @@ elif page == "📊 Exploratory Analysis":
                 showline=True,
                 linecolor="#6b7280",
                 tickfont=dict(
-                    color="#111827",
+                    color="#ffffff",
                     size=13
                 ),
                 title_font=dict(
-                    color="#111827"
+                    color="#ffffff"
                 )
             )
 
@@ -1222,11 +1097,11 @@ elif page == "📊 Exploratory Analysis":
                 showline=True,
                 linecolor="#6b7280",
                 tickfont=dict(
-                    color="#111827",
+                    color="#ffffff",
                     size=13
                 ),
                 title_font=dict(
-                    color="#111827"
+                    color="#ffffff"
                 )
             )
 
@@ -1328,11 +1203,11 @@ elif page == "📊 Exploratory Analysis":
                 showline=True,
                 linecolor="#6b7280",
                 tickfont=dict(
-                    color="#111827",
+                    color="#ffffff",
                     size=13
                 ),
                 title_font=dict(
-                    color="#111827"
+                    color="#ffffff"
                 )
             )
 
@@ -1346,11 +1221,11 @@ elif page == "📊 Exploratory Analysis":
                 showline=True,
                 linecolor="#6b7280",
                 tickfont=dict(
-                    color="#111827",
+                    color="#ffffff",
                     size=13
                 ),
                 title_font=dict(
-                    color="#111827"
+                    color="#ffffff"
                 )
             )
 
@@ -1443,11 +1318,11 @@ elif page == "📊 Exploratory Analysis":
                 showline=True,
                 linecolor="#6b7280",
                 tickfont=dict(
-                    color="#111827",
+                    color="#ffffff",
                     size=13
                 ),
                 title_font=dict(
-                    color="#111827"
+                    color="#ffffff"
                 )
             )
 
@@ -1461,11 +1336,11 @@ elif page == "📊 Exploratory Analysis":
                 showline=True,
                 linecolor="#6b7280",
                 tickfont=dict(
-                    color="#111827",
+                    color="#ffffff",
                     size=13
                 ),
                 title_font=dict(
-                    color="#111827"
+                    color="#ffffff"
                 )
             )
 
@@ -1701,21 +1576,21 @@ elif page == "🤖 Model Performance":
 
         fig_cm.update_xaxes(
             tickfont=dict(
-                color="#111827",
+                color="#ffffff",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#ffffff"
             )
         )
 
         fig_cm.update_yaxes(
             tickfont=dict(
-                color="#111827",
+                color="#ffffff",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#ffffff"
             )
         )
 
@@ -1777,11 +1652,11 @@ elif page == "🤖 Model Performance":
             showgrid=True,
             gridcolor="#e5e7eb",
             tickfont=dict(
-                color="#111827",
+                color="#ffffff",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#ffffff"
             )
         )
 
@@ -1790,11 +1665,11 @@ elif page == "🤖 Model Performance":
             showgrid=True,
             gridcolor="#e5e7eb",
             tickfont=dict(
-                color="#111827",
+                color="#ffffff",
                 size=13
             ),
             title_font=dict(
-                color="#111827"
+                color="#ffffff"
             )
         )
 
@@ -2191,11 +2066,9 @@ elif page == "🔮 Predict Risk":
                         )
 
                         if default_number < min_value:
-
                             default_number = min_value
 
                         if default_number > max_value:
-
                             default_number = max_value
 
                         value = st.number_input(
@@ -2352,7 +2225,7 @@ elif page == "🔮 Predict Risk":
                         "Dropout Probability",
                         "font": {
                             "size": 18,
-                            "color": "#111827"
+                            "color": "#ffffff"
                         }
                     },
                     gauge={
@@ -2362,9 +2235,9 @@ elif page == "🔮 Predict Risk":
                                 100
                             ],
                             "tickwidth": 1,
-                            "tickcolor": "#374151",
+                            "tickcolor": "#ffffff",
                             "tickfont": {
-                                "color": "#111827"
+                                "color": "#ffffff"
                             }
                         },
 
@@ -2425,7 +2298,7 @@ elif page == "🔮 Predict Risk":
                 ),
                 paper_bgcolor="white",
                 font=dict(
-                    color="#111827"
+                    color="#ffffff"
                 )
             )
 
@@ -2501,7 +2374,7 @@ elif page == "🔮 Predict Risk":
                         margin-bottom:12px;
                     ">
                         <div style="
-                            color:#374151 !important;
+                            color:#ffffff;
                             font-size:1rem;
                             font-weight:700;
                         ">
@@ -2509,7 +2382,7 @@ elif page == "🔮 Predict Risk":
                         </div>
 
                         <div style="
-                            color:{class_color} !important;
+                            color:{class_color};
                             font-size:1.55rem;
                             font-weight:800;
                             margin-top:5px;
@@ -2665,10 +2538,10 @@ elif page == "🔮 Predict Risk":
                     border-radius:12px;
                     padding:15px;
                 ">
-                    <h4 style="color:#15803d !important;">
+                    <h4 style="color:#15803d;">
                         🟢 Low Risk
                     </h4>
-                    <p style="color:#166534 !important;">
+                    <p style="color:#166534;">
                         Dropout probability below 30%.
                     </p>
                 </div>
@@ -2684,10 +2557,10 @@ elif page == "🔮 Predict Risk":
                     border-radius:12px;
                     padding:15px;
                 ">
-                    <h4 style="color:#b45309 !important;">
+                    <h4 style="color:#b45309;">
                         🟡 Medium Risk
                     </h4>
-                    <p style="color:#92400e !important;">
+                    <p style="color:#92400e;">
                         Probability from 30% to below 60%.
                     </p>
                 </div>
@@ -2703,10 +2576,10 @@ elif page == "🔮 Predict Risk":
                     border-radius:12px;
                     padding:15px;
                 ">
-                    <h4 style="color:#b91c1c !important;">
+                    <h4 style="color:#b91c1c;">
                         🔴 High Risk
                     </h4>
-                    <p style="color:#991b1b !important;">
+                    <p style="color:#991b1b;">
                         Probability of 60% or higher.
                     </p>
                 </div>
