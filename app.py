@@ -2650,49 +2650,48 @@ elif page == "🔮 Predict Risk":
 
                 st.write("")
 
-                st.markdown(
-                    f"""
-                    <div class="result-card {result_css}">
-                        <div class="result-title">
-                            Dropout Probability
-                        </div>
-                        <div class="result-value">
-                            {probability * 100:.2f}%
-                        </div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+               st.markdown(
+    f"""
+    <div class="result-card {result_css}">
+        <div class="result-title">
+            Dropout Probability
+        </div>
+        <div class="result-value">
+            {probability * 100:.2f}%
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
-                predicted_label = (
-                    "Dropout"
-                    if predicted_class == 1
-                    else "Not Dropout"
-                )
+predicted_label = (
+    "Dropout" if predicted_class == 1 else "Not Dropout"
+)
 
-                if predicted_class == 1:
+if predicted_class == 1:
 
-                    class_color = "#dc2626"
-                    class_background = "#fef2f2"
-                    class_border = "#fca5a5"
+    class_color = "#f87171"
+    class_background = "#2d1a1e"
+    class_border = "#ef4444"
 
-                else:
+else:
 
-                    class_color = "#16a34a"
-                    class_background = "#f0fdf4"
-                    class_border = "#86efac"
+    class_color = "#34d399"
+    class_background = "#142921"
+    class_border = "#10b981"
 
-                # ====================================================
-                # FIXED PREDICTED CLASS CARD
-                # ====================================================
+# ====================================================
+# FIXED PREDICTED CLASS CARD
+# ====================================================
 
-                st.markdown(
-                    f'<div style="background:#e0f2fe;border:2px solid {class_border};border-radius:14px;padding:18px;margin-bottom:12px;">'
-                    f'<div style="color:#374151 !important;font-size:1rem;font-weight:700;">Predicted Class</div>'
-                    f'<div style="color:{class_color} !important;font-size:1.55rem;font-weight:800;margin-top:5px;">{predicted_label}</div>'
-                    f'</div>',
-                    unsafe_allow_html=True
-                )
+st.markdown(
+    f'<div style="background:{class_background};border:2px solid {class_border};border-radius:14px;padding:18px;margin-bottom:12px;">'
+    f'<div style="color:#94a3b8 !important;font-size:1rem;font-weight:700;">Predicted Class</div>'
+    f'<div style="color:{class_color} !important;font-size:1.55rem;font-weight:800;margin-top:5px;">{predicted_label}</div>'
+    f"</div>",
+    unsafe_allow_html=True,
+)
+
                 if predicted_class == 1:
 
                     st.warning(
