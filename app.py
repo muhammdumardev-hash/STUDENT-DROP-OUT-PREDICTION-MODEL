@@ -1250,11 +1250,11 @@ elif page == "📊 Exploratory Analysis":
 
         st.markdown(
             """
-            **What this shows:**  
+            **What this shows:**   
             The chart compares the number of students who
             dropped out with those who did not.
 
-            **Observation:**  
+            **Observation:**   
             The dataset contains more **Not Dropout** students
             than **Dropout** students. Approximately 67.9% of
             students are Not Dropout, while 32.1% are Dropout.
@@ -1385,12 +1385,12 @@ elif page == "📊 Exploratory Analysis":
 
             st.markdown(
                 """
-                **What this shows:**  
+                **What this shows:**   
                 This chart compares the dropout rate of students
                 according to whether their tuition fees were
                 up to date.
 
-                **Observation:**  
+                **Observation:**   
                 Students whose tuition fees were **not up to date**
                 have a much higher dropout rate than students whose
                 fees were up to date.
@@ -1517,12 +1517,12 @@ elif page == "📊 Exploratory Analysis":
 
             st.markdown(
                 """
-                **What this shows:**  
+                **What this shows:**   
                 The box plot compares the distribution of
                 first-semester grades between Dropout and
                 Not Dropout students.
 
-                **Observation:**  
+                **Observation:**   
                 Dropout students generally have lower
                 first-semester grades. The dropout group also
                 contains many very low or zero grades.
@@ -1635,11 +1635,11 @@ elif page == "📊 Exploratory Analysis":
 
             st.markdown(
                 """
-                **What this shows:**  
+                **What this shows:**   
                 This box plot compares second-semester grades
                 for Dropout and Not Dropout students.
 
-                **Observation:**  
+                **Observation:**   
                 The difference between the two groups is more
                 pronounced in the second semester.
 
@@ -2682,33 +2682,15 @@ elif page == "🔮 Predict Risk":
                     class_background = "#f0fdf4"
                     class_border = "#86efac"
 
-                st.markdown(
-                    f"""
-                    <div style="
-                        background:{class_background};
-                        border:2px solid {class_border};
-                        border-radius:14px;
-                        padding:18px;
-                        margin-bottom:12px;
-                    ">
-                        <div style="
-                            color:#1e1e1e !important;
-                            font-size:1rem;
-                            font-weight:700;
-                        ">
-                            Predicted Class
-                        </div>
+                # ====================================================
+                # FIXED PREDICTED CLASS CARD
+                # ====================================================
 
-                        <div style="
-                            color:{class_color} !important;
-                            font-size:1.55rem;
-                            font-weight:800;
-                            margin-top:5px;
-                        ">
-                            {predicted_label}
-                        </div>
-                    </div>
-                    """,
+                st.markdown(
+                    f'<div style="background:{class_background};border:2px solid {class_border};border-radius:14px;padding:18px;margin-bottom:12px;">'
+                    f'<div style="color:#374151 !important;font-size:1rem;font-weight:700;">Predicted Class</div>'
+                    f'<div style="color:{class_color} !important;font-size:1.55rem;font-weight:800;margin-top:5px;">{predicted_label}</div>'
+                    f'</div>',
                     unsafe_allow_html=True
                 )
 
@@ -2848,60 +2830,39 @@ elif page == "🔮 Predict Risk":
 
             r1, r2, r3 = st.columns(3)
 
+            # ====================================================
+            # FIXED LOW RISK CARD
+            # ====================================================
+
             r1.markdown(
-                """
-                <div style="
-                    background:#f0fdf4;
-                    border:1px solid #86efac;
-                    border-radius:12px;
-                    padding:15px;
-                ">
-                    <h4 style="color:#15803d !important;">
-                        🟢 Low Risk
-                    </h4>
-                    <p style="color:#166534 !important;">
-                        Dropout probability below 30%.
-                    </p>
-                </div>
-                """,
+                '<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:15px;">'
+                '<h4 style="color:#15803d !important;">🟢 Low Risk</h4>'
+                '<p style="color:#166534 !important;">Dropout probability below 30%.</p>'
+                '</div>',
                 unsafe_allow_html=True
             )
+
+            # ====================================================
+            # FIXED MEDIUM RISK CARD
+            # ====================================================
 
             r2.markdown(
-                """
-                <div style="
-                    background:#fffbeb;
-                    border:1px solid #fcd34d;
-                    border-radius:12px;
-                    padding:15px;
-                ">
-                    <h4 style="color:#b45309 !important;">
-                        🟡 Medium Risk
-                    </h4>
-                    <p style="color:#92400e !important;">
-                        Probability from 30% to below 60%.
-                    </p>
-                </div>
-                """,
+                '<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:12px;padding:15px;">'
+                '<h4 style="color:#b45309 !important;">🟡 Medium Risk</h4>'
+                '<p style="color:#92400e !important;">Probability from 30% to below 60%.</p>'
+                '</div>',
                 unsafe_allow_html=True
             )
 
+            # ====================================================
+            # FIXED HIGH RISK CARD
+            # ====================================================
+
             r3.markdown(
-                """
-                <div style="
-                    background:#fef2f2;
-                    border:1px solid #fca5a5;
-                    border-radius:12px;
-                    padding:15px;
-                ">
-                    <h4 style="color:#b91c1c !important;">
-                        🔴 High Risk
-                    </h4>
-                    <p style="color:#991b1b !important;">
-                        Probability of 60% or higher.
-                    </p>
-                </div>
-                """,
+                '<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:12px;padding:15px;">'
+                '<h4 style="color:#b91c1c !important;">🔴 High Risk</h4>'
+                '<p style="color:#991b1b !important;">Probability of 60% or higher.</p>'
+                '</div>',
                 unsafe_allow_html=True
             )
 
