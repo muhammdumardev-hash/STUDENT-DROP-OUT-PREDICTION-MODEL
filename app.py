@@ -1975,6 +1975,17 @@ elif page == "🔮 Predict Risk":
         "y_test"
     ]
 
+    # ========================================================
+    # IMPORTANT:
+    # X_test_raw contains the exact feature values from the
+    # cleaned dataset, while raw_df contains the original
+    # values directly loaded from datasett.csv.
+    #
+    # The original pandas index is preserved during
+    # train_test_split, so sample_index can be used to retrieve
+    # the exact corresponding dataset row from raw_df.
+    # ========================================================
+
     if "sample_index" not in st.session_state:
         st.session_state.sample_index = None
 
@@ -2113,6 +2124,10 @@ elif page == "🔮 Predict Risk":
 
         selected_student = None
 
+    # ========================================================
+    # LOAD TEST STUDENT VALUES INTO INPUT FIELDS
+    # ========================================================
+
     if (
         selected_student is not None
         and st.session_state.get(
@@ -2146,6 +2161,23 @@ elif page == "🔮 Predict Risk":
     else:
         defaults = None
 
+    # ========================================================
+    # VERIFY LOADED TEST STUDENT VALUES
+    #
+    # IMPORTANT FIX:
+    #
+    # Original Dataset Value is retrieved directly from
+    # raw_df, which was loaded from datasett.csv.
+    #
+    # It is NOT retrieved from the input fields.
+    #
+    # Loaded Input Value is retrieved from session_state,
+    # which represents the current value inside the form.
+    #
+    # This allows us to detect if a user changes any value
+    # after loading a test student.
+    # ========================================================
+
     if selected_student is not None:
 
         with st.expander(
@@ -2154,20 +2186,81 @@ elif page == "🔮 Predict Risk":
 
             verification_rows = []
 
+            # ------------------------------------------------
+            # GET THE EXACT ORIGINAL DATASET ROW
+            # ------------------------------------------------
+            #
+            # train_test_split preserves the original pandas
+            # index. Therefore sample_index points to the same
+            # record in raw_df that came from datasett.csv.
+            #
+            # We explicitly remove target because this section
+            # verifies feature values only.
+            # ------------------------------------------------
+
+            original_dataset_row = (
+                raw_df.loc[
+                    sample_index,
+                    feature_names
+                ]
+            )
+
             for col_name in feature_names:
 
+                # --------------------------------------------
+                # ORIGINAL VALUE
+                # --------------------------------------------
+                #
+                # This comes directly from datasett.csv.
+                # --------------------------------------------
+
                 original_value = (
-                    selected_student[
+                    original_dataset_row[
                         col_name
                     ]
                 )
 
+                # --------------------------------------------
+                # CURRENT INPUT VALUE
+                # --------------------------------------------
+                #
+                # This comes from the Streamlit form/session
+                # state.
+                # --------------------------------------------
+
                 loaded_value = (
                     st.session_state.get(
                         f"input_{col_name}",
-                        original_value
+                        selected_student[col_name]
                     )
                 )
+
+                # --------------------------------------------
+                # Convert NumPy scalar values to normal
+                # Python values for clean dataframe display.
+                # --------------------------------------------
+
+                if isinstance(
+                    original_value,
+                    np.generic
+                ):
+
+                    original_value = (
+                        original_value.item()
+                    )
+
+                if isinstance(
+                    loaded_value,
+                    np.generic
+                ):
+
+                    loaded_value = (
+                        loaded_value.item()
+                    )
+
+                # --------------------------------------------
+                # COMPARE VALUES
+                # --------------------------------------------
 
                 try:
 
@@ -2186,17 +2279,21 @@ elif page == "🔮 Predict Risk":
                         atol=1e-8
                     )
 
-                except Exception:
+                except (
+                    TypeError,
+                    ValueError
+                ):
 
                     is_match = (
-                        str(original_value)
-                        == str(loaded_value)
+                        str(original_value).strip()
+                        ==
+                        str(loaded_value).strip()
                     )
 
                 verification_rows.append(
                     {
                         "Feature": col_name,
-                        "Original Test Value": original_value,
+                        "Original Dataset Value": original_value,
                         "Loaded Input Value": loaded_value,
                         "Match": (
                             "✅"
@@ -2223,20 +2320,35 @@ elif page == "🔮 Predict Risk":
                 ).sum()
             )
 
+            # ------------------------------------------------
+            # ALL VALUES MATCH
+            # ------------------------------------------------
+
             if mismatch_count == 0:
 
                 st.success(
                     f"✅ All {len(feature_names)} "
                     "test-student feature values "
-                    "are loaded correctly."
+                    "exactly match the original "
+                    "dataset record."
                 )
+
+            # ------------------------------------------------
+            # SOME VALUES CHANGED
+            # ------------------------------------------------
 
             else:
 
-                st.error(
-                    f"❌ {mismatch_count} feature "
-                    "value(s) do not match the "
-                    "original test record."
+                st.warning(
+                    f"⚠️ {mismatch_count} feature "
+                    "value(s) have been changed "
+                    "from the original dataset values."
+                )
+
+                st.caption(
+                    "Original Dataset Value comes directly "
+                    "from datasett.csv. Loaded Input Value "
+                    "shows the current value in the form."
                 )
 
     # ========================================================
@@ -2629,6 +2741,10 @@ elif page == "🔮 Predict Risk":
 
         input_df = input_df.astype(float)
 
+        # ====================================================
+        # TARGET LEAKAGE SECURITY CHECK
+        # ====================================================
+
         if "target" in input_df.columns:
 
             st.error(
@@ -2638,6 +2754,10 @@ elif page == "🔮 Predict Risk":
 
             st.stop()
 
+        # ====================================================
+        # SCALE INPUT
+        # ====================================================
+
         input_scaled = (
             results["scaler"]
             .transform(
@@ -2645,12 +2765,20 @@ elif page == "🔮 Predict Risk":
             )
         )
 
+        # ====================================================
+        # PREDICT PROBABILITY
+        # ====================================================
+
         probability = (
             results["model"]
             .predict_proba(
                 input_scaled
             )[0, 1]
         )
+
+        # ====================================================
+        # PREDICT CLASS
+        # ====================================================
 
         predicted_class = int(
             results["model"]
@@ -2861,10 +2989,6 @@ elif page == "🔮 Predict Risk":
 
                 # ------------------------------------------------
                 # PROBABILITY CARD
-                #
-                # FIX:
-                # This uses st.html instead of relying on
-                # markdown HTML parsing for the result block.
                 # ------------------------------------------------
 
                 probability_background = {
@@ -2935,10 +3059,6 @@ elif page == "🔮 Predict Risk":
 
                 # ------------------------------------------------
                 # PREDICTED CLASS
-                #
-                # FIX:
-                # Uses st.html so HTML is rendered rather than
-                # displayed as text.
                 # ------------------------------------------------
 
                 st.html(
@@ -3000,8 +3120,16 @@ elif page == "🔮 Predict Risk":
 
         if sample_index is not None:
 
+            # ------------------------------------------------
+            # IMPORTANT:
+            # Compare the model input with the ORIGINAL
+            # feature values from datasett.csv.
+            #
+            # raw_df is used here rather than input fields.
+            # ------------------------------------------------
+
             original_values = (
-                X_test_raw
+                raw_df
                 .loc[
                     sample_index,
                     feature_names
